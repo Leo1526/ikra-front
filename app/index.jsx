@@ -7,7 +7,7 @@ const RootLayout = () => {
     <View className="flex-1 items-center justify-center bg-white">
       <Text className="text-3xl font-pblack">hacep</Text>
       <StatusBar style='auto' />
-      <Link href="/sign-in" style={{color: 'blue'}} >Go to Sign In</Link>
+      <Link href="/sign-in" style={{color: 'blue'}} >Go to Salih</Link>
     </View>
   )
 }
