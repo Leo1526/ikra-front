@@ -1,96 +1,123 @@
-import { View,StyleSheet, Text, ScrollView, Image } from 'react-native'
-import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link } from 'expo-router'
+import React, { useState } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { TextInput, Button, Snackbar, Text } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
+const LoginScreen = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const navigation = useNavigation();
 
-import { images } from '../../constants'
-import FormField from '../../components/FormField'
-import CustomButton from '../../components/CustomButton'
+  const handleLogin = () => {
+    if (username === 'admin' && password === 'admin123') {
+      // Kullanıcı doğrulandı, burada giriş işlemini gerçekleştirin
+      console.log('Giriş başarılı!');
+    } else {
+      // Kullanıcı doğrulanamadı, hata mesajı göster
+      setSnackbarVisible(true);
+    }
+  };
 
+  return (
+    <View style={styles.container}>
+      {/* Logo ve uygulama adı */}
+      <Image
+        source={require('../../assets/images/logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text style={styles.appName}>Uygulama Adı</Text>
 
+      <TextInput
+        label="Kullanıcı Adı"
+        value={username}
+        onChangeText={text => setUsername(text)}
+        style={styles.input}
+        theme={{ colors: { primary: 'blue' } }}
+      />
+      <TextInput
+        label="Parola"
+        value={password}
+        onChangeText={text => setPassword(text)}
+        secureTextEntry={true}
+        style={styles.input}
+        theme={{ colors: { primary: 'blue' } }}
+      />
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        style={styles.button}
+        color="blue"
+      >
+        Giriş Yap
+      </Button>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: 'Tamam',
+          onPress: () => setSnackbarVisible(false),
+        }}
+      >
+        Kullanıcı adı veya parola hatalı
+      </Snackbar>
+
+      {/* Hesap yoksa kayıt sayfasına yönlendirme butonu */}
+      <Button
+        onPress={() => navigation.navigate('SignIn')}
+        style={styles.signupButton}
+        labelStyle={styles.signupButtonText}
+        color="blue"
+      >
+        Hesabın yok mu? Kayıt Ol
+      </Button>
+
+      {/* Developer Team bilgisi */}
+      <Text style={styles.developerText}>Developed by Developer Team</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f0f0f0', // Arka plan rengi
+  },
+  logo: {
+    width: 100,
+    height: 100,
+  },
+  appName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: 'blue', // Uygulama adı rengi
+  },
+  input: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  button: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  signupButton: {
+    backgroundColor: 'transparent',
+    marginBottom: 16,
+  },
+  signupButtonText: {
+    color: 'blue',
+  },
+  developerText: {
+    position: 'absolute',
+    bottom: 16,
+    color: 'gray', // Developer Team bilgisi rengi
   },
 });
 
-const SignIn = () => {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  })
-
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const handlePress = () => {
-    console.log('Button pressed!');
-  };
-
-  const submit = () => {
-
-  }
-
-  return (
-    <SafeAreaView className= "bg-customLightBlue h-full">
-      <ScrollView>
-        <View className="w-full justify-center min-h-[85vh]
-        px-4 my-6">
-          <Image source={images.logo}
-          resizeMode='contain' 
-          className="w-[115px] h-[35px]"
-          />
-
-          <Text className="text-2xl text-customWhite 
-          text-semibold mt-10">Log in to Hacep
-          </Text>
-
-          <FormField
-            title="Email"
-            value= {form.email}
-            handleChangeText={(e) => setForm({ ...form,
-            email: e})}
-            otherStyles="mt-7"
-            keyboardType="email-address"
-          />
-          <FormField
-            title="Password"
-            value= {form.password}
-            handleChangeText={(e) => setForm({ ...form,
-            password: e})}
-            otherStyles="mt-7"
-          />
-          
-          <View style = {styles.container}>
-          <CustomButton 
-            title="Sign In"
-            handlePress={submit}
-            color = "secondary"
-          />
-          </View>
-
-          
-          <View className="justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-customWhite font-pregular">
-              Don't have account?
-            </Text>
-            <Link href="/sign-up" className="text-lg font-psemibold text-customRed">Sign Up</Link>
-          </View>
-
-          <Image source={images.logo}
-            resizeMode='contain'
-            className="w-[115px] h-[35px]"
-            otherStyles="mt-7"
-          />
-
-        </View>
-      </ScrollView>
-
-    </SafeAreaView>
-  )
-
-
-}
-
-export default SignIn
+export default LoginScreen;

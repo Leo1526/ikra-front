@@ -1,15 +1,34 @@
-import { StatusBar } from 'expo-status-bar'
-import { Text, View } from 'react-native'
-import { Link } from 'expo-router';
+import React from 'react';
+import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import { Link } from '@react-navigation/native';
 
 const RootLayout = () => {
   return (
-    <View className="flex-1 items-center justify-center bg-customWhite">
-      <Text className="text-3xl font-pblack">hacep</Text>
-      <StatusBar style='auto' />
-      <Link href="/sign-in" style={{color: 'blue'}} >Go to Sign In</Link>
-    </View>
+    <View style={styles.container}>
+    <Text style={styles.text}>hacasasep</Text>
+    <StatusBar style='auto' />
+    <Link to="/home" style={styles.link}>Go to assa In</Link>
+    <Link to="/deneme" style={styles.link}>Go to deneme</Link>
+  </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  link: {
+    color: 'blue',
+    fontSize: 18,
+    marginVertical: 10,
+  },
+});
 
 export default RootLayout

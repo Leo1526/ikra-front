@@ -28,7 +28,7 @@ const CustomButton = ({
     >
       <Text style={[
         styles.buttonText,
-        { fontFamily: fonts.semibold }, // themes.js dosyasından yarı kalın font alın
+        { fontFamily: fonts.bold }, // themes.js dosyasından yarı kalın font alın
         textStyles,
       ]}>
         {title}

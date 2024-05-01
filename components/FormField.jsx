@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     color: "#FFFFFF",
-    fontFamily: "pmedium",
   },
   inputContainer: {
     marginTop: 8,
@@ -66,7 +65,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: "#FFFFFF",
-    fontFamily: "font-semibold",
     fontSize: 16,
   },
   eyeIcon: {
