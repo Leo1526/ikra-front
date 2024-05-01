@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View,StyleSheet, Text, ScrollView, Image } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link } from 'expo-router'
@@ -8,6 +8,15 @@ import { images } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 
+
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 const SignIn = () => {
   const [form, setForm] = useState({
     email: '',
@@ -15,7 +24,9 @@ const SignIn = () => {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const handlePress = () => {
+    console.log('Button pressed!');
+  };
 
   const submit = () => {
 
@@ -51,12 +62,15 @@ const SignIn = () => {
             otherStyles="mt-7"
           />
           
+          <View style = {styles.container}>
           <CustomButton 
             title="Sign In"
             handlePress={submit}
-            containerStyles="mt-7"
-            isLoading={isSubmitting}
+            color = "secondary"
           />
+          </View>
+
+          
           <View className="justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-customWhite font-pregular">
               Don't have account?
@@ -75,6 +89,8 @@ const SignIn = () => {
 
     </SafeAreaView>
   )
+
+
 }
 
 export default SignIn
