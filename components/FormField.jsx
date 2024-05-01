@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 import { icons } from "../constants";
 
@@ -14,12 +14,12 @@ const FormField = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className={`space-y-2 ${otherStyles}`}>
-      <Text className="text-base text-gray-100 font-pmedium">{title}</Text>
+    <View style={[styles.container, otherStyles]}>
+      <Text style={styles.title}>{title}</Text>
 
-      <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary flex flex-row items-center">
+      <View style={styles.inputContainer}>
         <TextInput
-          className="flex-1 text-white font-psemibold text-base"
+          style={styles.input}
           value={value}
           placeholder={placeholder}
           placeholderTextColor="#7B7B8B"
@@ -32,7 +32,7 @@ const FormField = ({
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={!showPassword ? icons.eye : icons.eyeHide}
-              className="w-6 h-6"
+              style={styles.eyeIcon}
               resizeMode="contain"
             />
           </TouchableOpacity>
@@ -41,5 +41,38 @@ const FormField = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 8,
+  },
+  title: {
+    fontSize: 20,
+    color: "#FFFFFF",
+    fontFamily: "pmedium",
+  },
+  inputContainer: {
+    marginTop: 8,
+    width: "100%",
+    height: 48,
+    paddingHorizontal: 16,
+    backgroundColor: "#000000",
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#000000",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    color: "#FFFFFF",
+    fontFamily: "font-semibold",
+    fontSize: 16,
+  },
+  eyeIcon: {
+    width: 24,
+    height: 24,
+  },
+});
 
 export default FormField;

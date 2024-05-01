@@ -4,7 +4,7 @@ import { Link } from 'expo-router';
 
 const RootLayout = () => {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center bg-customWhite">
       <Text className="text-3xl font-pblack">hacep</Text>
       <StatusBar style='auto' />
       <Link href="/sign-in" style={{color: 'blue'}} >Go to Sign In</Link>

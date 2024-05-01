@@ -22,15 +22,16 @@ const SignIn = () => {
   }
 
   return (
-    <SafeAreaView className= "bg-customWhite h-full">
+    <SafeAreaView className= "bg-customLightBlue h-full">
       <ScrollView>
         <View className="w-full justify-center min-h-[85vh]
         px-4 my-6">
           <Image source={images.logo}
-          resizeMode='contain' className="w-[115px] 
-          h-[35px]" />
+          resizeMode='contain' 
+          className="w-[115px] h-[35px]"
+          />
 
-          <Text className="text-2xl text-white 
+          <Text className="text-2xl text-customWhite 
           text-semibold mt-10">Log in to Hacep
           </Text>
 
@@ -49,8 +50,7 @@ const SignIn = () => {
             password: e})}
             otherStyles="mt-7"
           />
-
-
+          
           <CustomButton 
             title="Sign In"
             handlePress={submit}
@@ -58,11 +58,17 @@ const SignIn = () => {
             isLoading={isSubmitting}
           />
           <View className="justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100 font-pregular">
+            <Text className="text-lg text-customWhite font-pregular">
               Don't have account?
             </Text>
-            <Link href="/sign-up" className="text-lg font-psemibold text-secondary">Sign Up</Link>
+            <Link href="/sign-up" className="text-lg font-psemibold text-customRed">Sign Up</Link>
           </View>
+
+          <Image source={images.logo}
+            resizeMode='contain'
+            className="w-[115px] h-[35px]"
+            otherStyles="mt-7"
+          />
 
         </View>
       </ScrollView>
