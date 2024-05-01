@@ -23,7 +23,7 @@ const SignUp = () => {
   }
 
   return (
-    <SafeAreaView className= "bg-primary h-full">
+    <SafeAreaView className= "bg-customWhite h-full">
       <ScrollView>
         <View className="w-full justify-center min-h-[85vh]
         px-4 my-6">
@@ -60,7 +60,7 @@ const SignUp = () => {
 
 
           <CustomButton 
-            title="Sign In"
+            title="Sign Up"
             handlePress={submit}
             containerStyles="mt-7"
             isLoading={isSubmitting}
