@@ -27,7 +27,11 @@ const SignUp = () => {
   ];
 
   return (
-   
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+    >
       <ScrollView contentContainerStyle={styles.container}>
         <Image
           source={require('../../assets/images/logo.png')}
@@ -111,12 +115,13 @@ const SignUp = () => {
             labelStyle={styles.signupButtonText}
             buttonColor={colors.secondary}
           >
-            Kayıt Ol
+            Giriş Yap
           </Button>
         </View>
 
         <Text style={styles.developerText}>Developed by Developer Team</Text>
       </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -156,8 +161,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signupButtonText: {
-    color: colors.text,
     fontWeight: 'bold',
+    color: colors.primary,
   },
   developerText: {
     position: 'absolute',
