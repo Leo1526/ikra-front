@@ -34,6 +34,8 @@ const LoginScreen = () => {
         label="Kullanıcı Adı"
         value={username}
         onChangeText={text => setUsername(text)}
+        selectionColor= {colors.primary}
+        activeUnderlineColor= {colors.primary}
         style={styles.input}
         theme={{ colors: { primary: 'blue' } }}
       />
@@ -43,6 +45,8 @@ const LoginScreen = () => {
         onChangeText={text => setPassword(text)}
         secureTextEntry={!showPassword}
         style={styles.input}
+        selectionColor= {colors.primary}
+        activeUnderlineColor= {colors.primary}
         theme={{ colors: { primary: 'blue' } }}
         right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color= {colors.primary} onPress={() => setShowPassword(!showPassword)} />}
       />
@@ -69,7 +73,7 @@ const LoginScreen = () => {
       <View style={styles.textContainer}>
       <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
       <Button
-        onPress={() => navigation.navigate('SignIn')}
+        onPress={() => navigation.navigate('sign-up')}
         labelStyle={styles.signupButtonText}
         buttonColor= {colors.secondary}
       >

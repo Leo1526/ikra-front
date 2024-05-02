@@ -1,82 +1,171 @@
-import { View, Text, ScrollView, Image } from 'react-native'
-import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link } from 'expo-router'
-
-
-import { images } from '../../constants'
-import FormField from '../../components/FormField'
-import CustomButton from '../../components/CustomButton'
+import React, { useState } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { TextInput, Button, Snackbar, Text } from 'react-native-paper';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import { colors } from '../../design/themes';
 
 const SignUp = () => {
-  const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: ''
-  })
+  const [email, setEmail] = useState('');
+  const [university, setUniversity] = useState('');
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [studentId, setStudentId] = useState('');
+  const [password, setPassword] = useState('');
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
-
-  const submit = () => {
-
-  }
-
+  const handleSignUp = () => {
+    // Kayıt işlemleri burada gerçekleştirilir
+    console.log('Kayıt başarılı!');
+  };
+  const schools = [
+    { label: 'Okul 1', value: 'Okul 1' },
+    { label: 'Okul 2', value: 'Okul 2' },
+    { label: 'Okul 3', value: 'Okul 3' },
+  ];
   return (
-    <SafeAreaView className= "bg-customWhite h-full">
-      <ScrollView>
-        <View className="w-full justify-center min-h-[85vh]
-        px-4 my-6">
-          <Image source={images.logo}
-          resizeMode='contain' className="w-[115px] 
-          h-[35px]" />
-
-          <Text className="text-2xl text-white 
-          text-semibold mt-10">Sign up to Hacep
-          </Text>
-
-          <FormField
-            title="Username"
-            value= {form.username}
-            handleChangeText={(e) => setForm({ ...form,
-            username: e})}
-            otherStyles="mt-10"
-          />
-          <FormField
-            title="Email"
-            value= {form.email}
-            handleChangeText={(e) => setForm({ ...form,
-            email: e})}
-            otherStyles="mt-7"
-            keyboardType="email-address"
-          />
-          <FormField
-            title="Password"
-            value= {form.password}
-            handleChangeText={(e) => setForm({ ...form,
-            password: e})}
-            otherStyles="mt-7"
-          />
+    <View style={styles.container}>
+      {/* Logo ve uygulama adı */}
+      <Image
+        source={require('../../assets/images/logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text style={styles.appName}>Uygulama Adı</Text>
 
 
-          <CustomButton 
-            title="Sign Up"
-            handlePress={submit}
-            containerStyles="mt-7"
-            isLoading={isSubmitting}
-          />
-          <View className="justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100 font-pregular">
-              Have an account already?
-            </Text>
-            <Link href="/sign-in" className="text-lg font-psemibold text-secondary">Sign In</Link>
-          </View>
+      <Picker
+        selectedValue={schools}
+        onValueChange={(itemValue, itemIndex) => setSchool(itemValue)}
+        style={[styles.input]}
+      >
+        {schools.map((school, index) => (
+          <Picker.Item key={index} label={school.label} value={school.value} />
+        ))}
+      </Picker>
 
-        </View>
-      </ScrollView>
+      <TextInput
+        label="Email"
+        value={email}
+        onChangeText={text => setEmail(text)}
+        style={styles.input}
+        theme={{ colors: { primary: colors.primary } }}
+        keyboardType="email-address"
+      />
+      
+      <TextInput
+        label="İsim"
+        value={name}
+        onChangeText={text => setName(text)}
+        style={styles.input}
+        theme={{ colors: { primary: colors.primary } }}
+      />
+      <TextInput
+        label="Soyisim"
+        value={surname}
+        onChangeText={text => setSurname(text)}
+        style={styles.input}
+        theme={{ colors: { primary: colors.primary } }}
+      />
+      <TextInput
+        label="Öğrenci Numarası"
+        value={studentId}
+        onChangeText={text => setStudentId(text)}
+        style={styles.input}
+        theme={{ colors: { primary: colors.primary } }}
+        keyboardType="numeric"
+      />
+      <TextInput
+        label="Parola"
+        value={password}
+        onChangeText={text => setPassword(text)}
+        secureTextEntry={!showPassword}
+        style={styles.input}
+        selectionColor= {colors.primary}
+        activeUnderlineColor= {colors.primary}
+        theme={{ colors: { primary: 'blue' } }}
+        right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color= {colors.primary} onPress={() => setShowPassword(!showPassword)} />}
 
-    </SafeAreaView>
-  )
-}
+      />
+      <Button
+        mode="contained"
+        onPress={handleSignUp}
+        style={styles.button}
+        buttonColor={colors.primary}
+      >
+        Kayıt Ol
+      </Button>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: 'Tamam',
+          onPress: () => setSnackbarVisible(false),
+        }}
+      >
+        Kayıt olma işlemi başarısız oldu.
+      </Snackbar>
 
-export default SignUp
+      {/* Giriş sayfasına yönlendirme butonu */}
+      <Button
+        onPress={() => navigation.navigate('sign-in')}
+        style={styles.signupButton}
+        labelStyle={styles.signupButtonText}
+        color={colors.primary}
+      >
+        Hesabın var mı? Giriş Yap
+      </Button>
+
+      {/* Developer Team bilgisi */}
+      <Text style={styles.developerText}>Developed by Developer Team</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: colors.background,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+  },
+  appName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: colors.text,
+  },
+  input: {
+    width: '100%',
+    marginBottom: 16,
+    backgroundColor: colors.text,
+    borderRadius : 8,
+  },
+  button: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  signupButton: {
+    backgroundColor: 'transparent',
+    marginBottom: 16,
+  },
+  signupButtonText: {
+    color: colors.primary,
+  },
+  developerText: {
+    position: 'absolute',
+    bottom: 16,
+    color: colors.text,
+  },
+});
+
+export default SignUp;
