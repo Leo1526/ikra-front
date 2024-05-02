@@ -4,7 +4,7 @@ import { TextInput, Button, Snackbar, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../design/themes';
-
+import RNPickerSelect from 'react-native-picker-select';
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [university, setUniversity] = useState('');
@@ -36,8 +36,20 @@ const SignUp = () => {
       />
       <Text style={styles.appName}>Uygulama Adı</Text>
 
-
-      <Picker
+      <RNPickerSelect
+        onValueChange={(value) => console.log(value)}
+        items={schools}
+        style={{
+          inputIOS: styles.input,
+          inputAndroid: styles.input,
+        }}
+        placeholder={{
+          label: 'Bir okul seçin...',
+          value: null,
+        }}
+        value={schools}
+      />
+      {/* <Picker
         selectedValue={schools}
         onValueChange={(itemValue, itemIndex) => setSchool(itemValue)}
         style={[styles.input]}
@@ -45,7 +57,7 @@ const SignUp = () => {
         {schools.map((school, index) => (
           <Picker.Item key={index} label={school.label} value={school.value} />
         ))}
-      </Picker>
+      </Picker> */}
 
       <TextInput
         label="Email"
@@ -111,14 +123,16 @@ const SignUp = () => {
       </Snackbar>
 
       {/* Giriş sayfasına yönlendirme butonu */}
+      <View style={styles.textContainer}>
+      <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
       <Button
-        onPress={() => navigation.navigate('sign-in')}
-        style={styles.signupButton}
+        onPress={() => navigation.navigate('sign-up')}
         labelStyle={styles.signupButtonText}
-        color={colors.primary}
+        buttonColor= {colors.secondary}
       >
-        Hesabın var mı? Giriş Yap
+         Kayıt Ol
       </Button>
+      </View>
 
       {/* Developer Team bilgisi */}
       <Text style={styles.developerText}>Developed by Developer Team</Text>
@@ -133,6 +147,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: colors.background,
+  },
+  textContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    color :"red",
+    
   },
   logo: {
     width: 100,
@@ -149,6 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: colors.text,
     borderRadius : 8,
+    
   },
   button: {
     width: '100%',

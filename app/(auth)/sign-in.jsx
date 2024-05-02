@@ -79,7 +79,7 @@ const LoginScreen = () => {
       >
          Kayıt Ol
       </Button>
-    </View>
+      </View>
 
       {/* Developer Team bilgisi */}
       <Text style={styles.developerText}>Developed by Developer Team</Text>
