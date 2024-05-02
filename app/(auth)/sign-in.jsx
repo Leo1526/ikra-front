@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Te
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors, fonts } from '../../design/themes';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -20,67 +21,73 @@ const LoginScreen = () => {
   };
 
   return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.appName}>Uygulama Adı</Text>
 
-        <TextInput
-          label="Kullanıcı Adı"
-          value={username}
-          onChangeText={text => setUsername(text)}
-          selectionColor={colors.primary}
-          activeUnderlineColor={colors.primary}
-          style={styles.input}
-          theme={{ colors: { primary: 'blue' } }}
-        />
-        <TextInput
-          label="Parola"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry={!showPassword}
-          style={styles.input}
-          selectionColor={colors.primary}
-          activeUnderlineColor={colors.primary}
-          theme={{ colors: { primary: 'blue' } }}
-          right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
-        />
-        <Button
-          mode="contained"
-          onPress={handleLogin}
-          style={styles.button}
-          buttonColor={colors.primary}
-        >
-          Giriş Yap
-        </Button>
-        <Snackbar
-          visible={snackbarVisible}
-          onDismiss={() => setSnackbarVisible(false)}
-          duration={3000}
-          action={{
-            label: 'Tamam',
-            onPress: () => setSnackbarVisible(false),
-          }}
-        >
-          Kullanıcı adı veya parola hatalı
-        </Snackbar>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.appName}>Uygulama Adı</Text>
 
-        <View style={styles.textContainer}>
-          <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+          <TextInput
+            label="Kullanıcı Adı"
+            value={username}
+            onChangeText={text => setUsername(text)}
+            selectionColor={colors.primary}
+            activeUnderlineColor={colors.primary}
+            style={styles.input}
+            theme={{ colors: { primary: 'blue' } }}
+          />
+          <TextInput
+            label="Parola"
+            value={password}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry={!showPassword}
+            style={styles.input}
+            selectionColor={colors.primary}
+            activeUnderlineColor={colors.primary}
+            theme={{ colors: { primary: 'blue' } }}
+            right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
+          />
           <Button
-            onPress={() => navigation.navigate('sign-up')}
-            labelStyle={styles.signupButtonText}
-            buttonColor={colors.secondary}
+            mode="contained"
+            onPress={handleLogin}
+            style={styles.button}
+            buttonColor={colors.primary}
           >
-            Kayıt Ol
+            Giriş Yap
           </Button>
-        </View>
+          <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={3000}
+            action={{
+              label: 'Tamam',
+              onPress: () => setSnackbarVisible(false),
+            }}
+          >
+            Kullanıcı adı veya parola hatalı
+          </Snackbar>
 
-        <Text style={styles.developerText}>Developed by Developer Team</Text>
-      </ScrollView>
+          <View style={styles.textContainer}>
+            <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+            <Button
+              onPress={() => navigation.navigate('sign-up')}
+              labelStyle={styles.signupButtonText}
+              buttonColor={colors.secondary}
+            >
+              Kayıt Ol
+            </Button>
+          </View>
+
+          <Text style={styles.developerText}>Developed by Developer Team</Text>
+        </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

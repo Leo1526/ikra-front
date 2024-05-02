@@ -92,6 +92,7 @@ const SignUp = () => {
           mode="contained"
           onPress={handleSignUp}
           style={styles.button}
+          
         >
           Kayıt Ol
         </Button>
@@ -152,8 +153,8 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    padding: 10,
     backgroundColor: colors.primary,
+    marginBottom: 16,
   },
   textContainer: {
     flexDirection: 'row',
