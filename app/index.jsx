@@ -7,7 +7,7 @@ const RootLayout = () => {
     <View style={styles.container}>
     <Text style={styles.text}>hacasasep</Text>
     <StatusBar style='auto' />
-    <Link to="/home" style={styles.link}>Go to assa In</Link>
+    <Link to="/sign-in" style={styles.link}>Go to assa In</Link>
     <Link to="/deneme" style={styles.link}>Go to deneme</Link>
   </View>
   )

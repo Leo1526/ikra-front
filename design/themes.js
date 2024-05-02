@@ -1,8 +1,8 @@
 export const colors = {
-    primary: 'blue',
-    secondary: 'green',
-    background: 'white',
-    text: 'black',
+    primary: '#30475E',
+    secondary: '#F05454',
+    background: '#222831',
+    text: '#E8E8E8',
     // Diğer renkler
   };
   

@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { TextInput, Button, Snackbar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-
+import { colors,fonts } from '../../design/themes';
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
     if (username === 'admin' && password === 'admin123') {
@@ -40,15 +41,16 @@ const LoginScreen = () => {
         label="Parola"
         value={password}
         onChangeText={text => setPassword(text)}
-        secureTextEntry={true}
+        secureTextEntry={!showPassword}
         style={styles.input}
         theme={{ colors: { primary: 'blue' } }}
+        right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color= {colors.primary} onPress={() => setShowPassword(!showPassword)} />}
       />
       <Button
         mode="contained"
         onPress={handleLogin}
         style={styles.button}
-        color="blue"
+        buttonColor= {colors.primary}
       >
         Giriş Yap
       </Button>
@@ -64,15 +66,16 @@ const LoginScreen = () => {
         Kullanıcı adı veya parola hatalı
       </Snackbar>
 
-      {/* Hesap yoksa kayıt sayfasına yönlendirme butonu */}
+      <View style={styles.textContainer}>
+      <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
       <Button
         onPress={() => navigation.navigate('SignIn')}
-        style={styles.signupButton}
         labelStyle={styles.signupButtonText}
-        color="blue"
+        buttonColor= {colors.secondary}
       >
-        Hesabın yok mu? Kayıt Ol
+         Kayıt Ol
       </Button>
+    </View>
 
       {/* Developer Team bilgisi */}
       <Text style={styles.developerText}>Developed by Developer Team</Text>
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f0f0f0', // Arka plan rengi
+    backgroundColor: colors.background, // Arka plan rengi
   },
   logo: {
     width: 100,
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: 'blue', // Uygulama adı rengi
+    color: colors.text, // Uygulama adı rengi
   },
   input: {
     width: '100%',
@@ -110,13 +113,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginBottom: 16,
   },
-  signupButtonText: {
-    color: 'blue',
-  },
   developerText: {
     position: 'absolute',
     bottom: 16,
-    color: 'gray', // Developer Team bilgisi rengi
+    color: colors.text, // Developer Team bilgisi rengi
+  },
+  textContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    color :"red",
+    
+  },
+  signupButtonText: {
+    color: colors.text,
+    fontWeight: 'bold',
   },
 });
 
