@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Image,StyleSheet,Platform, KeyboardAvoidingView, Text, Alert } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { View, ScrollView, Image, StyleSheet, Platform, KeyboardAvoidingView, Text, Alert, TouchableOpacity } from 'react-native';
+import { TextInput, Button, Modal, List, Checkbox } from 'react-native-paper'; // Modal ve List ekledik
 import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 const TransactionPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [recipientName, setRecipientName] = useState('');
@@ -10,6 +11,55 @@ const TransactionPage = () => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [recipientDisplayName, setRecipientDisplayName] = useState('');
+  const [visible, setVisible] = useState(false); // Modal görünürlüğü için state ekledik
+  const [sendToRecipients, setSendToRecipients] = useState(false); // Kayıtlı alıcılara gönder seçeneği
+  // Örnek kayıtlı alıcılar
+  const recipients = [
+    { accountNumber: '21945872', name: 'Salih Bakkal' },
+    { accountNumber: '12345678', name: 'Ahmet Market' },
+    { accountNumber: '98765432', name: 'Ayşe Restoran' },    
+    { accountNumber: '11111111', name: 'New Recipient 1' },
+    { accountNumber: '22222222', name: 'New Recipient 2' },
+    { accountNumber: '33333333', name: 'New Recipient 3' },
+    { accountNumber: '44444444', name: 'New Recipient 4' },
+    { accountNumber: '55555555', name: 'New Recipient 5' },
+    { accountNumber: '66666666', name: 'New Recipient 6' },
+    { accountNumber: '77777777', name: 'New Recipient 7' },
+    { accountNumber: '88888888', name: 'New Recipient 8' },
+    { accountNumber: '99999999', name: 'New Recipient 9' },
+    { accountNumber: '10101010', name: 'New Recipient 10' },
+    { accountNumber: '12121212', name: 'New Recipient 11' },
+    { accountNumber: '13131313', name: 'New Recipient 12' },
+    { accountNumber: '14141414', name: 'New Recipient 13' },
+    { accountNumber: '15151515', name: 'New Recipient 14' },
+    { accountNumber: '16161616', name: 'New Recipient 15' }
+
+  ];
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+
+  const selectRecipient = (selectedRecipient) => {
+    const fetchedName = selectedRecipient.name; // Backend'den gelen isim
+    const maskedName = nameMasker(fetchedName);
+
+    setRecipientDisplayName(maskedName);
+    setRecipientName(fetchedName);
+    setEnteredName(fetchedName);
+    setAccountNumber(selectedRecipient.accountNumber);
+
+    hideModal(); // Modalı kapat
+  };
+
+  const nameMasker = (name) =>{
+    const fetchedName = name; // Backend'den gelen isim
+    const nameParts = fetchedName.split(' ');
+    const maskedName = nameParts.map((part, index) => {
+        return part.replace(/\B\w/g, '*') + ' '; // İlk harf hariç diğer harfleri * ile değiştir
+    }).join(' ');
+
+    return maskedName;
+  }
 
   const fetchRecipientName = async () => {
     if(accountNumber == ""){
@@ -20,8 +70,10 @@ const TransactionPage = () => {
 
     // Bu fonksiyon backend'e hesap numarasıyla sorgu atacak
     // Örnek olarak statik bir isim döndürelim
-    const fetchedName = 'Salih Bakkal'; // Backend'den gelen isim
-    const maskedName = fetchedName.replace(/(\w)\w*\s(\w)\w*/, '$1*** $2***');
+    const fetchedName = "Salih Bakkal"; // Backend'den gelen isim
+    const maskedName = nameMasker(fetchedName);
+
+
     setRecipientDisplayName(maskedName);
     setRecipientName(fetchedName);
   };
@@ -47,71 +99,125 @@ const TransactionPage = () => {
     } else {
     Alert.alert("Yanlış isim", "Girilen isim hesap sahibiyle uyuşmuyor, lütfen kontrol edin.");
     }
+
+
+
+    if (sendToRecipients) {
+      // Kayıtlı alıcılara gönder seçeneği seçili ise backend'e sorgu atılacak
+      // Burada işlemin gerçekleştirileceği fonksiyonu çağırabilirsiniz
+      console.log('Backend\'e sorgu atılıyor...');
+    } else {
+      // Kayıtlı alıcılara gönder seçeneği seçili değilse normal işlem yapılacak
+      // Burada işlemin gerçekleştirileceği fonksiyonu çağırabilirsiniz
+      console.log('Normal işlem gerçekleştiriliyor...');
+    }
   };
+  // Diğer fonksiyonlar ve JSX içeriği buraya gelecek
 
   return (
     <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={styles.safeArea} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.safeArea}
     >
-
-    <SafeAreaView style={styles.safeArea}>
-    <View style={styles.container}>
-                  <Image
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Image
             source={require('../../assets/images/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
           <Text style={styles.appName}>Uygulama Adı</Text>
-      <TextInput
-        label="Hesap Numarası"
-        value={accountNumber}
-        onChangeText={text => 
-            {const filteredText = text.replace(/[^0-9]/g, '');
-            setAccountNumber(filteredText);}}
-        style={styles.input}
-        keyboardType="numeric"
-        onEndEditing={fetchRecipientName}
-      />
-      {recipientDisplayName ? (
-        <>
-          <Text style={styles.infoText}>Alıcı: {recipientDisplayName}</Text>
+
+          {/* Kayıtlı alıcıları göstermek için buton */}
+          <Button
+        mode="outlined"
+        onPress={showModal}
+        style={styles.savedReceiversButton}
+        contentStyle={styles.buttonContent} // İçerik stilini belirtmek için contentStyle kullanıyoruz
+        labelStyle={styles.buttonLabel} // Etiketin stilini belirtmek için labelStyle kullanıyoruz
+      >
+        Kayıtlı Alıcıları Göster
+      </Button>
+
+
           <TextInput
-            label="Alıcı Adını Doğrula"
-            value={enteredName}
-            onChangeText={text => {
-                
-                setEnteredName(text);
-              }}
+            label="Hesap Numarası"
+            value={accountNumber}
+            onChangeText={(text) => {
+              const filteredText = text.replace(/[^0-9]/g, '');
+              setAccountNumber(filteredText);
+            }}
             style={styles.input}
+            keyboardType="numeric"
+            onEndEditing={fetchRecipientName}
           />
-        </>
-      ) : null}
-      <TextInput
-        label="Gönderilecek Miktar"
-        value={amount}
-        onChangeText={text => {
-            const filteredText = text.replace(/[^0-9]/g, '');
-            setAmount(filteredText);}
-        }
-        style={styles.input}
-        keyboardType="numeric"
-      />
-                <TextInput
+          {recipientDisplayName ? (
+            <>
+              <Text style={styles.infoText}>Alıcı: {recipientDisplayName}</Text>
+              <TextInput
+                label="Alıcı Adını Doğrula"
+                value={enteredName}
+                onChangeText={(text) => {
+                  setEnteredName(text);
+                }}
+                style={styles.input}
+              />
+            </>
+          ) : null}
+          <TextInput
+            label="Gönderilecek Miktar"
+            value={amount}
+            onChangeText={(text) => {
+              const filteredText = text.replace(/[^0-9]/g, '');
+              setAmount(filteredText);
+            }}
+            style={styles.input}
+            keyboardType="numeric"
+          />
+          <TextInput
             label="Açıklama"
             value={description}
-            onChangeText={text => setDescription(text)}
+            onChangeText={setDescription}
             style={styles.input}
             maxLength={50}
             multiline
-            numberOfLines={2} 
+            numberOfLines={2}
             right={<TextInput.Affix text={`${description.length}/50`} />}
           />
-      <Button mode="contained" onPress={handleSendMoney} style={styles.button}>
-        Para Gönder
-      </Button>
-    </View>
-    </SafeAreaView>  
+
+          <Checkbox.Item
+            label="Kayıtlı alıcılara gönder"
+            status={sendToRecipients ? 'checked' : 'unchecked'}
+            onPress={() => setSendToRecipients(!sendToRecipients)}
+            style={styles.checkbox}
+            labelStyle={styles.checkboxLabel}
+          />
+
+          <Button mode="contained" onPress={handleSendMoney} style={styles.button}>
+            Para Gönder
+          </Button>
+
+
+
+          {/* Modal */}
+          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+          <View style={styles.modalContent}>
+            <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
+            <ScrollView>
+              <List.Section>
+                {recipients.map((recipient) => (
+                  <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)}>
+                    <List.Item title={`${recipient.accountNumber} - ${recipient.name}`} />
+                  </TouchableOpacity>
+                ))}
+              </List.Section>
+            </ScrollView>
+          </View>
+        </Modal>
+
+
+        </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
@@ -124,6 +230,15 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.background, // SignIn'den alınan genel arka plan rengi
   },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+  },
+  subheader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  
   input: {
     width: '90%',
     marginBottom: 16,
@@ -135,6 +250,10 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 16,
     backgroundColor: colors.secondary, // SignIn'den alınan buton rengi
+  },
+  savedReceiversButton: {
+    width: '80%',
+    marginBottom: 16,
   },
   logo: {
     width: 100,
@@ -153,8 +272,33 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flexGrow: 1,
-    backgroundColor: colors.background
-  }
+    backgroundColor: colors.background,
+  },
+  modal: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 40,
+    borderRadius: 10,
+
+  },
+  buttonContent: {
+    width: '100%', // İçerik genişliğini buton genişliğine eşitliyoruz
+  },
+  buttonLabel: {
+    fontSize: 16, // Yazı boyutunu ayarlayabilirsiniz
+    color: colors.secondary,
+    fontWeight : "normal"
+  },
+  checkbox: {
+    alignSelf: 'flex-start',
+    marginLeft: '5%',
+
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    color: colors.text,
+  },
+  
 });
 
 export default TransactionPage;
