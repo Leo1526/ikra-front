@@ -189,7 +189,7 @@ const TransactionPage = () => {
           />
 
           <Checkbox.Item
-            label="Kayıtlı alıcılara gönder"
+            label="Kayıtlı alıcılara kaydet"
             status={sendToRecipients ? 'checked' : 'unchecked'}
             onPress={() => setSendToRecipients(!sendToRecipients)}
             style={styles.checkbox}
@@ -205,11 +205,11 @@ const TransactionPage = () => {
           {/* Modal */}
           <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
           <View style={styles.modalContent}>
-            <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
-            <ScrollView>
+          <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
+            <ScrollView style={{ height: '75%' }}>
               <List.Section>
                 {recipients.map((recipient) => (
-                  <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)}>
+                  <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
                     <List.Item title={`${recipient.accountNumber} - ${recipient.name}`} />
                   </TouchableOpacity>
                 ))}
@@ -234,18 +234,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background, // SignIn'den alınan genel arka plan rengi
   },
   modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
+    backgroundColor: colors.primary,
+    padding: 10,
   },
+  touchable: {
+    backgroundColor: colors.text,
+    borderColor: colors.secondary,
+    borderWidth: 1, // Kenarlık kalınlığı
+    borderColor: colors.primary, // Kenarlık rengi
+    borderRadius: 10
+  },
+  
   subheader: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "normal",
+    color: colors.text,
+    marginBottom: 5,
+    textAlign: "center"
   },
   
   input: {
     width: '90%',
     marginBottom: 16,
-    backgroundColor: 'white', // SignIn'den alınan giriş alanı rengi
+    backgroundColor: colors.text, // SignIn'den alınan giriş alanı rengi
     borderRadius: 8,
   },
   button: {
@@ -278,8 +289,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   modal: {
-    backgroundColor: 'white',
-    padding: 20,
+    backgroundColor: colors.primary,
     margin: 40,
     borderRadius: 10,
 
