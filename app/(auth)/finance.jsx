@@ -5,6 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../design/themes';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TransactionItem from '../../components/TransactionItem';
+import { Link } from '@react-navigation/native';
+
+
 const FinanceScreen = () => {
   const navigation = useNavigation();
 
@@ -23,7 +26,7 @@ const FinanceScreen = () => {
     { id: '10', date: '12.06.2023', amount: 90, description: 'Hediye', sender: 'Anne', recipient: 'Ben' }
   ];
 
-  const lastFiveTransactions = transactions.slice(-5);
+  const lastTenTransactions = transactions.slice(-10);
 
   const renderItem = ({ item }) => (
     <View style={styles.transaction}>
@@ -46,10 +49,20 @@ const FinanceScreen = () => {
       </View>
       
       <View style={styles.transactionsContainer}>
-        <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
-        <View style={{ maxHeight: '70%' }}>
+        <View style= {styles.rightEnd}>
+        <Text style={styles.transactionsHeading}>Geçmiş İşlemler
+        </Text>
+        <View style={styles.rightEnd}>
+          <Link to="/sign-in"
+          >
+            <Text style= {styles.link}>Tümünü gör</Text>
+          </Link>
+        </View>
+        
+        </View>
+        <View style={{ maxHeight: '80%' }}>
     <FlatList
-      data={transactions}
+      data={lastTenTransactions}
       renderItem={({ item }) => (
         <TransactionItem
           date={item.date}
@@ -124,7 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
-    height: '50%'
+    maxHeight: '70%',
   },
   transactionsHeading: {
     fontSize: 20,
@@ -152,7 +165,18 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.text,
     fontWeight: 'bold',
+    alignItems: 'baseline'
   },
+  link: {
+    color: colors.secondary,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  rightEnd: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  }
+
 });
 
 export default FinanceScreen;
