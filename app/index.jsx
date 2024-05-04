@@ -8,9 +8,7 @@ const RootLayout = () => {
     <Text style={styles.text}>hacasasep</Text>
     <StatusBar style='auto' />
     <Link to="/sign-in" style={styles.link}>Go to assa In</Link>
-<<<<<<< HEAD
     <Link to="/transaction" style={styles.link}>Go to deneme</Link>
-=======
     <Link to="/finance" style={styles.link}>Go to finance</Link>
     
   </View>
