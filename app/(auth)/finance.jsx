@@ -14,16 +14,16 @@ const FinanceScreen = () => {
   // Example card balance and transactions
   const cardBalance = 1000;
   const transactions = [
-    { id: '1', date: '01.05.2023', amount: -100, description: 'Kira ödemesi', sender: 'Ben', recipient: 'Kira Şirketi' },
-    { id: '2', date: '15.05.2023', amount: 200, description: 'Maaş', sender: 'İşveren', recipient: 'Ben' },
-    { id: '3', date: '20.05.2023', amount: -50, description: 'Hediye', sender: 'Ben', recipient: 'Arkadaş' },
-    { id: '4', date: '22.05.2023', amount: 150, description: 'Alacak', sender: 'Arkadaş', recipient: 'Ben' },
-    { id: '5', date: '25.05.2023', amount: -70, description: 'Market alışverişi', sender: 'Ben', recipient: 'Market' },
-    { id: '6', date: '02.06.2023', amount: -150, description: 'Elektrik Faturası', sender: 'Ben', recipient: 'Enerji Şirketi' },
-    { id: '7', date: '05.06.2023', amount: 300, description: 'Freelance İş', sender: 'Müşteri', recipient: 'Ben' },
-    { id: '8', date: '07.06.2023', amount: -45, description: 'Kitap Satın Alma', sender: 'Ben', recipient: 'Kitapçı' },
-    { id: '9', date: '10.06.2023', amount: -30, description: 'Sinema', sender: 'Ben', recipient: 'Sinema' },
-    { id: '10', date: '12.06.2023', amount: 90, description: 'Hediye', sender: 'Anne', recipient: 'Ben' }
+    { id: '1', date: '01.05.2023', type: 'Kira', amount: -100, description: 'Kira ödemesi', sender: 'Ben', recipient: 'Kira Şirketi' },
+    { id: '2', date: '15.05.2023', type: 'Maaş', amount: 200, description: 'Maaş', sender: 'İşveren', recipient: 'Ben' },
+    { id: '3', date: '20.05.2023', type: 'Diğer', amount: -50, description: 'Hediye', sender: 'Ben', recipient: 'Arkadaş' },
+    { id: '4', date: '22.05.2023', type: 'Diğer', amount: 150, description: 'Alacak', sender: 'Arkadaş', recipient: 'Ben' },
+    { id: '5', date: '25.05.2023', type: 'Yemek', amount: -70, description: 'Market alışverişi', sender: 'Ben', recipient: 'Market' },
+    { id: '6', date: '02.06.2023', type: 'Diğer', amount: -150, description: 'Elektrik Faturası', sender: 'Ben', recipient: 'Enerji Şirketi' },
+    { id: '7', date: '05.06.2023', type: 'Transfer', amount: 300, description: 'Freelance İş', sender: 'Müşteri', recipient: 'Ben' },
+    { id: '8', date: '07.06.2023', type: 'Diğer', amount: -45, description: 'Kitap Satın Alma', sender: 'Ben', recipient: 'Kitapçı' },
+    { id: '9', date: '10.06.2023', type: 'Eğlence', amount: -30, description: 'Sinema', sender: 'Ben', recipient: 'Sinema' },
+    { id: '10', date: '12.06.2023', type: 'Diğer', amount: 90, description: 'Hediye', sender: 'Anne', recipient: 'Ben' }
   ];
 
   const lastTenTransactions = transactions.slice(-10);
@@ -53,7 +53,7 @@ const FinanceScreen = () => {
         <Text style={styles.transactionsHeading}>Geçmiş İşlemler
         </Text>
         <View style={styles.rightEnd}>
-          <Link to="/sign-in"
+          <Link to="/all_transactions"
           >
             <Text style= {styles.link}>Tümünü gör</Text>
           </Link>
@@ -67,6 +67,7 @@ const FinanceScreen = () => {
         <TransactionItem
           date={item.date}
           description={item.description}
+          type={item.type}
           sender={item.sender}
           recipient={item.recipient}
           amount={item.amount}
