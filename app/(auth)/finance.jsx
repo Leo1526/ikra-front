@@ -47,7 +47,7 @@ const FinanceScreen = () => {
       
       <View style={styles.transactionsContainer}>
         <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
-        <ScrollView style={{ maxHeight: 400 }}>
+        <View style={{ maxHeight: '70%' }}>
     <FlatList
       data={transactions}
       renderItem={({ item }) => (
@@ -61,7 +61,7 @@ const FinanceScreen = () => {
       )}
       keyExtractor={item => item.id}
     />
-  </ScrollView>
+  </View>
 
       </View>
 
@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
+    height: '50%'
   },
   transactionsHeading: {
     fontSize: 20,
