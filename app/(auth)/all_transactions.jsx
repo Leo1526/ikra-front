@@ -82,10 +82,12 @@ const AllTransactionsScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.filterButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.filterButtonText}>Filtrele</Text>
-        </TouchableOpacity>
+        <View style= {{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={styles.heading}>Tüm İşlemler</Text>
+        <Button style={styles.filterButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.filterButtonText}>Filtrele</Text>
+        </Button>
+        </View>
         <FlatList
           data={filteredTransactions.length > 0 ? filteredTransactions : transactions}
           renderItem={({ item }) => (
@@ -171,13 +173,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.text,
     marginBottom: 10,
+    flexDirection: 'row'
   },
   filterButton: {
     backgroundColor: colors.secondary,
-    padding: 10,
     borderRadius: 8,
     marginBottom: 10,
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-end',
   },
   filterButtonText: {
     color: colors.text,
@@ -221,6 +223,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: colors.secondary,
   },
+  
 });
 
 export default AllTransactionsScreen;
