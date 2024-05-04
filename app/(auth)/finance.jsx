@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View,ScrollView, Text, StyleSheet, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../design/themes';
@@ -52,19 +52,22 @@ const FinanceScreen = () => {
       
       <View style={styles.transactionsContainer}>
         <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
-        <FlatList
-  data={transactions}
-  renderItem={({ item }) => (
-    <TransactionItem
-      date={item.date}
-      description={item.description}
-      sender={item.sender}
-      recipient={item.recipient}
-      amount={item.amount}
+        <ScrollView style={{ maxHeight: 400 }}>
+    <FlatList
+      data={transactions}
+      renderItem={({ item }) => (
+        <TransactionItem
+          date={item.date}
+          description={item.description}
+          sender={item.sender}
+          recipient={item.recipient}
+          amount={item.amount}
+        />
+      )}
+      keyExtractor={item => item.id}
     />
-  )}
-  keyExtractor={item => item.id}
-/>
+  </ScrollView>
+
       </View>
 
       <View style= {styles.centerView}>
