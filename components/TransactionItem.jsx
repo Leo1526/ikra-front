@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const TransactionItem = ({ date, description, sender, recipient, amount }) => {
+const TransactionItem = ({ date, description, type, sender, recipient, amount }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -11,7 +11,7 @@ const TransactionItem = ({ date, description, sender, recipient, amount }) => {
         </Text>
       </View>
       <Text style={styles.description}>
-        Açıklama: {description}, Gönderen: {sender}, Alıcı: {recipient}
+        Açıklama: {description}, İşlem Türü: {type}, Gönderen: {sender}, Alıcı: {recipient}
       </Text>
     </View>
   );

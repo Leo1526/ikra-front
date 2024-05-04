@@ -92,6 +92,7 @@ const AllTransactionsScreen = () => {
             <TransactionItem
               date={item.date}
               description={item.description}
+              type={item.type}
               sender={item.sender}
               recipient={item.recipient}
               amount={item.amount}
