@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../design/themes';
@@ -27,11 +29,13 @@ const SignUp = () => {
   ];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style= {styles.safeArea} 
     >
+    
+    
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <Image
           source={require('../../assets/images/logo.png')}
@@ -114,7 +118,7 @@ const SignUp = () => {
           <Button
             onPress={() => navigation.navigate('sign-in')}
             labelStyle={styles.signupButtonText}
-            buttonColor={colors.secondary}
+            buttonColor={colors.primary}
           >
             Giriş Yap
           </Button>
@@ -122,7 +126,9 @@ const SignUp = () => {
 
         <Text style={styles.developerText}>Developed by Developer Team</Text>
       </ScrollView>
-    </KeyboardAvoidingView>
+      
+    </SafeAreaView>
+  </KeyboardAvoidingView>
   );
 };
 
@@ -153,7 +159,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     marginBottom: 16,
   },
   textContainer: {
@@ -162,14 +168,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signupButtonText: {
+    color: colors.text,
     fontWeight: 'bold',
-    color: colors.primary,
   },
   developerText: {
     position: 'absolute',
     bottom: 10,
     color: colors.text,
   },
+  safeArea: {
+    flexGrow: 1,
+    backgroundColor: colors.background
+  }
 });
 
 export default SignUp;

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { colors, fonts } from '../../design/themes';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const LoginScreen = () => {
+const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -24,8 +24,10 @@ const LoginScreen = () => {
 
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}>
+      style={styles.safeArea} 
+      >
+
+      <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
           <Image
             source={require('../../assets/images/logo.png')}
@@ -43,6 +45,7 @@ const LoginScreen = () => {
             style={styles.input}
             theme={{ colors: { primary: 'blue' } }}
           />
+          
           <TextInput
             label="Parola"
             value={password}
@@ -54,6 +57,7 @@ const LoginScreen = () => {
             theme={{ colors: { primary: 'blue' } }}
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
           />
+          
           <Button
             mode="contained"
             onPress={handleLogin}
@@ -79,7 +83,7 @@ const LoginScreen = () => {
             <Button
               onPress={() => navigation.navigate('sign-up')}
               labelStyle={styles.signupButtonText}
-              buttonColor={colors.secondary}
+              buttonColor={colors.primary}
             >
               Kayıt Ol
             </Button>
@@ -87,6 +91,7 @@ const LoginScreen = () => {
 
           <Text style={styles.developerText}>Developed by Developer Team</Text>
         </ScrollView>
+      </SafeAreaView>  
     </KeyboardAvoidingView>
   );
 };
@@ -112,24 +117,33 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     marginBottom: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
   button: {
     width: '100%',
+    backgroundColor: colors.secondary,
     marginBottom: 16,
   },
-  developerText: {
-    position: 'absolute',
-    bottom: 16,
-    color: colors.text, // Developer Team bilgisi rengi
-  },
+  
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 20,
   },
   signupButtonText: {
     color: colors.text,
     fontWeight: 'bold',
   },
+  developerText: {
+    position: 'absolute',
+    bottom: 10,
+    color: colors.text,
+  },
+  safeArea: {
+    flexGrow: 1,
+    backgroundColor: colors.background
+  }
 });
 
-export default LoginScreen;
+export default SignIn;
