@@ -111,7 +111,7 @@ const AllTransactionsScreen = () => {
               value={filterKeyword}
               onChangeText={text => setFilterKeyword(text)}
             />
-            <Text style={styles.inputHeading}>İşlem tipine göre filtrele</Text>
+            <Text style={styles.inputHeading}>Gelir/Gider'e göre filtrele</Text>
             <RNPickerSelect
               onValueChange={(value) => setTransactionType(value)}
               items={[
@@ -123,7 +123,12 @@ const AllTransactionsScreen = () => {
                 inputIOS: styles.input,
                 inputAndroid: styles.input,
               }}
+              placeholder={{
+                label: 'Gelir/Gider seçin...',
+                value: null,
+              }}
             />
+            <Text style={styles.inputHeading}>İşlem tipine göre filtrele</Text>
             <RNPickerSelect
               onValueChange={(value) => setTransactionType(value)}
               items={[
@@ -136,6 +141,10 @@ const AllTransactionsScreen = () => {
               style={{
                 inputIOS: styles.input,
                 inputAndroid: styles.input,
+              }}
+              placeholder={{
+                label: 'Bir işlem tipi seçin...',
+                value: null,
               }}
             />
             <Button mode="contained" style={styles.applyButton} onPress={applyFilter}>
