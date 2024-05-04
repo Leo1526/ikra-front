@@ -40,15 +40,16 @@ const FinanceScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-
-      <View style={styles.balanceContainer}>
-        <Text style={styles.balanceHeading}>Kart Bakiyesi</Text>
-        <View style={styles.balanceAmountContainer}>
-          <Text style={styles.currencySymbol}>TL</Text>
-          <Text style={styles.balanceAmount}>{cardBalance}</Text>
+      <View style={styles.centerView}>
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceHeading}>Kart Bakiyesi</Text>
+          <View style={styles.balanceAmountContainer}>
+            <Text style={styles.currencySymbol}>TL</Text>
+            <Text style={styles.balanceAmount}>{cardBalance}</Text>
+          </View>
         </View>
       </View>
-
+      
       <View style={styles.transactionsContainer}>
         <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
         <FlatList
@@ -56,18 +57,21 @@ const FinanceScreen = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.transactionsList}
-          height = {150}
+          height = {'20%'}
         />
       </View>
 
-      <Button
-        onPress={() => navigation.navigate('send-money')}
-        style={styles.button}
-        labelStyle={styles.buttonText}
-        buttonColor={colors.secondary}
-      >
-        Para Gönder
-      </Button>
+      <View style= {styles.centerView}>
+        <Button
+          onPress={() => navigation.navigate('send-money')}
+          style={styles.button}
+          labelStyle={styles.buttonText}
+          buttonColor={colors.secondary}
+        >
+          Para Gönder
+        </Button>
+      </View>
+
     </SafeAreaView>
   );
 };
@@ -76,13 +80,19 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
-    justifyContent: ''
+    justifyContent: 'center'
+  },
+  centerView: {
+    justifyContent:'center',
+    alignItems: 'center'
   },
   balanceContainer: {
     backgroundColor: colors.text,
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
+    alignItems: 'center',
+    width: '60%'
   },
   balanceHeading: {
     fontSize: 20,
@@ -132,6 +142,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: colors.secondary,
+    width: '60%',
   },
   buttonText: {
     color: colors.text,
