@@ -80,12 +80,12 @@ const FinanceScreen = () => {
 
       <View style= {styles.centerView}>
         <Button
-          onPress={() => navigation.navigate('send-money')}
+          onPress={() => navigation.navigate('transaction')}
           style={styles.button}
           labelStyle={styles.buttonText}
           buttonColor={colors.secondary}
         >
-          Para Gönder
+          Para Transferi
         </Button>
       </View>
 
