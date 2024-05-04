@@ -25,6 +25,12 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+        <Stack.Screen 
+          name='finance'
+          options={{
+            headerShown: false
+          }}
+        />
       </Stack>
     
       <StatusBar backgroundColor='#161622'
