@@ -55,9 +55,12 @@ const TransactionPage = () => {
     const fetchedName = name; // Backend'den gelen isim
     const nameParts = fetchedName.split(' ');
     const maskedName = nameParts.map((part, index) => {
-        return part.replace(/\B\w/g, '*') + ' '; // İlk harf hariç diğer harfleri * ile değiştir
-    }).join(' ');
 
+        const firstLetter = part.charAt(0);
+        const otherLetters = "*".repeat(part.length-1);
+        return firstLetter + otherLetters + ' ';
+      
+    }).join(' ');
     return maskedName;
   }
 
