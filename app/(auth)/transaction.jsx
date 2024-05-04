@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Image,StyleSheet, Text, Alert } from 'react-native';
+import { View, Image,StyleSheet,Platform, KeyboardAvoidingView, Text, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 const TransactionPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [recipientName, setRecipientName] = useState('');
@@ -50,6 +50,12 @@ const TransactionPage = () => {
   };
 
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.safeArea} 
+    >
+
+    <SafeAreaView style={styles.safeArea}>
     <View style={styles.container}>
                   <Image
             source={require('../../assets/images/logo.png')}
@@ -96,7 +102,7 @@ const TransactionPage = () => {
             value={description}
             onChangeText={text => setDescription(text)}
             style={styles.input}
-            maxLength={100}
+            maxLength={50}
             multiline
             numberOfLines={2} 
             right={<TextInput.Affix text={`${description.length}/50`} />}
@@ -105,6 +111,8 @@ const TransactionPage = () => {
         Para Gönder
       </Button>
     </View>
+    </SafeAreaView>  
+    </KeyboardAvoidingView>
   );
 };
 
@@ -143,6 +151,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: colors.text, // SignIn'den alınan metin rengi
   },
+  safeArea: {
+    flexGrow: 1,
+    backgroundColor: colors.background
+  }
 });
 
 export default TransactionPage;
