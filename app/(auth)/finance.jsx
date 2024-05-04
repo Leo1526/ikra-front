@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../design/themes';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import TransactionItem from '../../components/TransactionItem';
 const FinanceScreen = () => {
   const navigation = useNavigation();
 
@@ -53,12 +53,18 @@ const FinanceScreen = () => {
       <View style={styles.transactionsContainer}>
         <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
         <FlatList
-          data={lastFiveTransactions}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.transactionsList}
-          height = {'20%'}
-        />
+  data={transactions}
+  renderItem={({ item }) => (
+    <TransactionItem
+      date={item.date}
+      description={item.description}
+      sender={item.sender}
+      recipient={item.recipient}
+      amount={item.amount}
+    />
+  )}
+  keyExtractor={item => item.id}
+/>
       </View>
 
       <View style= {styles.centerView}>
