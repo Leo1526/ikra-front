@@ -25,6 +25,13 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+
+        <Stack.Screen 
+          name='transaction'
+          options={{
+            headerShown: false
+          }}
+        />
       </Stack>
     
       <StatusBar backgroundColor='#161622'
