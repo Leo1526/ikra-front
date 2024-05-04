@@ -25,9 +25,14 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+<<<<<<< HEAD
 
         <Stack.Screen 
           name='transaction'
+=======
+        <Stack.Screen 
+          name='finance'
+>>>>>>> origin/transaction-component
           options={{
             headerShown: false
           }}
