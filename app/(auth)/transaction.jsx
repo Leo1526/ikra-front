@@ -3,7 +3,6 @@ import { View, ScrollView, Image, StyleSheet, Platform, KeyboardAvoidingView, Te
 import { TextInput, Button, Modal, List, Checkbox } from 'react-native-paper'; // Modal ve List ekledik
 import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 const TransactionPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [recipientName, setRecipientName] = useState('');
