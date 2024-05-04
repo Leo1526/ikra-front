@@ -53,7 +53,7 @@ const FinanceScreen = () => {
         <Text style={styles.transactionsHeading}>Geçmiş İşlemler
         </Text>
         <View style={styles.rightEnd}>
-          <Link to="/sign-in"
+          <Link to="/all_transactions"
           >
             <Text style= {styles.link}>Tümünü gör</Text>
           </Link>
