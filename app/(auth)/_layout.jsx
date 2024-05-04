@@ -25,6 +25,7 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+<<<<<<< HEAD
         <Stack.Screen 
           name='transaction'
           options={{
@@ -34,6 +35,16 @@ const AuthLayout = () => {
 
         <Stack.Screen 
           name='finance'
+=======
+        <Stack.Screen 
+          name='finance'
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen 
+          name='transaction'
+>>>>>>> f9c1efe38bef884c16d8fcead2631c61c3c1383e
           options={{
             headerShown: false
           }}
