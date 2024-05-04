@@ -11,21 +11,16 @@ const FinanceScreen = () => {
   // Example card balance and transactions
   const cardBalance = 1000;
   const transactions = [
-    { id: 1, recipient: 'Ali', amount: 50, date: '01/05/2024' },
-    { id: 2, recipient: 'Ayşe', amount: 100, date: '29/04/2024' },
-    { id: 3, recipient: 'Veli', amount: 200, date: '25/04/2024' },
-    { id: 4, recipient: 'Fatma', amount: 75, date: '22/04/2024' },
-    { id: 5, recipient: 'Ahmet', amount: 150, date: '18/04/2024' },
-    { id: 1, recipient: 'Ali', amount: 50, date: '01/05/2024' },
-    { id: 2, recipient: 'Ayşe', amount: 100, date: '29/04/2024' },
-    { id: 3, recipient: 'Veli', amount: 200, date: '25/04/2024' },
-    { id: 4, recipient: 'Fatma', amount: 75, date: '22/04/2024' },
-    { id: 5, recipient: 'Ahmet', amount: 150, date: '18/04/2024' },
-    { id: 1, recipient: 'Ali', amount: 50, date: '01/05/2024' },
-    { id: 2, recipient: 'Ayşe', amount: 100, date: '29/04/2024' },
-    { id: 3, recipient: 'Veli', amount: 200, date: '25/04/2024' },
-    { id: 4, recipient: 'Fatma', amount: 75, date: '22/04/2024' },
-    { id: 5, recipient: 'Ahmet', amount: 150, date: '18/04/2024' },
+    { id: '1', date: '01.05.2023', amount: -100, description: 'Kira ödemesi', sender: 'Ben', recipient: 'Kira Şirketi' },
+    { id: '2', date: '15.05.2023', amount: 200, description: 'Maaş', sender: 'İşveren', recipient: 'Ben' },
+    { id: '3', date: '20.05.2023', amount: -50, description: 'Hediye', sender: 'Ben', recipient: 'Arkadaş' },
+    { id: '4', date: '22.05.2023', amount: 150, description: 'Alacak', sender: 'Arkadaş', recipient: 'Ben' },
+    { id: '5', date: '25.05.2023', amount: -70, description: 'Market alışverişi', sender: 'Ben', recipient: 'Market' },
+    { id: '6', date: '02.06.2023', amount: -150, description: 'Elektrik Faturası', sender: 'Ben', recipient: 'Enerji Şirketi' },
+    { id: '7', date: '05.06.2023', amount: 300, description: 'Freelance İş', sender: 'Müşteri', recipient: 'Ben' },
+    { id: '8', date: '07.06.2023', amount: -45, description: 'Kitap Satın Alma', sender: 'Ben', recipient: 'Kitapçı' },
+    { id: '9', date: '10.06.2023', amount: -30, description: 'Sinema', sender: 'Ben', recipient: 'Sinema' },
+    { id: '10', date: '12.06.2023', amount: 90, description: 'Hediye', sender: 'Anne', recipient: 'Ben' }
   ];
 
   const lastFiveTransactions = transactions.slice(-5);
