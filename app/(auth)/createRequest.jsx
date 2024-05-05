@@ -27,8 +27,9 @@ const RequestComponent = () => {
     });
   
     if (!pickerResult.cancelled) {
-      console.log(pickerResult.uri)
-      setImageUri(pickerResult.uri);
+      myUri = pickerResult.assets[0].uri;
+      console.log(myUri);
+      setImageUri(myUri);
     }
   };
   
