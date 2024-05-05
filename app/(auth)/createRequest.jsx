@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Image, Button, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { TextInput, Card, IconButton } from 'react-native-paper';
-import ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 
 const RequestComponent = () => {
@@ -9,15 +9,29 @@ const RequestComponent = () => {
   const [requestText, setRequestText] = useState('');
   const [options, setOptions] = useState(['', '']);
 
-  const handleChoosePhoto = () => {
-    const options = { noData: true };
-    ImagePicker.launchImageLibrary(options, response => {
-      if (response.uri) {
-        setImageUri(response.uri);
-      }
+  const handleChoosePhoto = async () => {
+    // Kullanıcının galerisine erişim izni isteme
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  
+    if (permissionResult.granted === false) {
+      alert("Uygulamanın fotoğraflarınıza erişimi olması gerekiyor!");
+      return;
+    }
+  
+    // ImagePicker ile galeriden resim seçme
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
+  
+    if (!pickerResult.cancelled) {
+      console.log(pickerResult.uri)
+      setImageUri(pickerResult.uri);
+    }
   };
-
+  
   const addOption = () => {
     if (options.length < 5) {
       setOptions([...options, '']);
