@@ -26,6 +26,12 @@ const AuthLayout = () => {
           }}
         />
         <Stack.Screen 
+          name='createRequest'
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen 
           name='finance'
           options={{
             headerShown: false
