@@ -10,29 +10,25 @@ const RequestComponent = () => {
   const [options, setOptions] = useState(['', '']);
 
   const handleChoosePhoto = async () => {
-    // Kullanıcının galerisine erişim izni isteme
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
     if (permissionResult.granted === false) {
       alert("Uygulamanın fotoğraflarınıza erişimi olması gerekiyor!");
       return;
     }
-  
-    // ImagePicker ile galeriden resim seçme
+
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+      quality: 0.1,
     });
-  
+
     if (!pickerResult.cancelled) {
-      myUri = pickerResult.assets[0].uri;
-      console.log(myUri);
+      const myUri = pickerResult.assets[0].uri;
+      console.log("file address: ",myUri);
       setImageUri(myUri);
     }
   };
-  
+
   const addOption = () => {
     if (options.length < 5) {
       setOptions([...options, '']);
@@ -40,8 +36,16 @@ const RequestComponent = () => {
   };
 
   const removeOption = index => {
-    const newOptions = options.filter((option, idx) => idx !== index);
-    setOptions(newOptions);
+    if (index > 1) { // Sadece 3. şıktan itibaren silinebilir
+      const newOptions = options.filter((option, idx) => idx !== index);
+      setOptions(newOptions);
+    }
+  };
+
+  const handleSubmit = () => {
+    // Burada talep gönderme işlemlerini yapabilirsiniz.
+    console.log("Talep oluşturuldu:", requestText, options);
+    alert("Talep oluşturuldu!");
   };
 
   return (
@@ -49,7 +53,7 @@ const RequestComponent = () => {
       <Card style={styles.card}>
         <Card.Title title="Create a Request" titleStyle={styles.cardTitle} />
         <Card.Content>
-          {imageUri && <Card.Cover source={{ uri: imageUri }} />}
+          {imageUri && <Card.Cover source={{ uri: imageUri }} resizeMode='contain'/>}
           <Button onPress={handleChoosePhoto} title="Upload Image" color={colors.primary} />
           <TextInput
             label="Request Text"
@@ -71,15 +75,19 @@ const RequestComponent = () => {
                 mode="outlined"
                 style={styles.optionInput}
               />
-              <IconButton
-                icon="delete"
-                onPress={() => removeOption(index)}
-                color={colors.error}
-                style={styles.deleteButton}
-              />
+              {index > 1 && (
+                <IconButton
+                  icon="delete"
+                  onPress={() => removeOption(index)}
+                  color={colors.error}
+                  style={styles.deleteButton}
+                />
+              )}
             </View>
           ))}
-          <Button disabled={options.length >= 5} onPress={addOption} title="Add Option" color={colors.primary} />
+          <Button disabled={options.length >= 5} onPress={addOption} title="Add Option" color={colors.primary} style={styles.button} />
+          <View style={styles.buttonSeparator} />
+          <Button onPress={handleSubmit} title="Talep Oluştur" color={colors.primary} style={styles.button} />
         </Card.Content>
       </Card>
     </ScrollView>
@@ -89,17 +97,19 @@ const RequestComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
     backgroundColor: colors.background,
-    justifyContent:"center"
   },
   card: {
+    width: '90%',
     marginBottom: 20,
   },
   cardTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
+    fontSize: 18,
+    fontWeight: 'normal',
+    color: colors.primary,
   },
   textInput: {
     marginBottom: 16,
@@ -115,6 +125,12 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: 'transparent',
+  },
+  button: {
+    marginBottom: 10,
+  },
+  buttonSeparator: {
+    height: 10,
   },
 });
 
