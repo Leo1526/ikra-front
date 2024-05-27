@@ -18,8 +18,34 @@ const SignUp = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const navigation = useNavigation();
 
-  const handleSignUp = () => {
-    console.log('Kayıt başarılı!');
+  const handleSignUp = async () => {
+    const userData = {
+      email: email,
+      firstname: name,
+      lastname: surname,
+      password: password
+    };
+
+    try {
+      const response = await fetch('http://192.168.0.24:8080/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (response.ok) {
+        console.log('Kayıt başarılı!');
+        navigation.navigate('sign-in'); // Navigate to sign-in screen after successful registration
+      } else {
+        console.log('Kayıt olma işlemi başarısız oldu.');
+        setSnackbarVisible(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setSnackbarVisible(true);
+    }
   };
 
   const schools = [
