@@ -216,8 +216,6 @@ const TransactionPage = () => {
             </ScrollView>
           </View>
         </Modal>
-
-
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

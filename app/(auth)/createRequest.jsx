@@ -51,12 +51,12 @@ const RequestComponent = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Card style={styles.card}>
-        <Card.Title title="Create a Request" titleStyle={styles.cardTitle} />
+        <Card.Title title="Talep Oluştur" titleStyle={styles.cardTitle} />
         <Card.Content>
           {imageUri && <Card.Cover source={{ uri: imageUri }} resizeMode='contain'/>}
-          <Button onPress={handleChoosePhoto} title="Upload Image" color={colors.primary} />
+          <Button onPress={handleChoosePhoto} title="Fotoğraf Yükle" color={colors.primary} />
           <TextInput
-            label="Request Text"
+            label="Talep Metni"
             value={requestText}
             onChangeText={text => setRequestText(text)}
             mode="outlined"
@@ -65,7 +65,7 @@ const RequestComponent = () => {
           {options.map((option, index) => (
             <View key={index} style={styles.optionContainer}>
               <TextInput
-                label={`Option ${index + 1}`}
+                label={`Seçenek ${index + 1}`}
                 value={option}
                 onChangeText={text => {
                   const newOptions = [...options];
@@ -85,7 +85,7 @@ const RequestComponent = () => {
               )}
             </View>
           ))}
-          <Button disabled={options.length >= 5} onPress={addOption} title="Add Option" color={colors.primary} style={styles.button} />
+          {options.length < 5 && <Button disabled={options.length >= 5} onPress={addOption} title="Seçenek Ekle" color={colors.primary} style={styles.button} />}
           <View style={styles.buttonSeparator} />
           <Button onPress={handleSubmit} title="Talep Oluştur" color={colors.primary} style={styles.button} />
         </Card.Content>

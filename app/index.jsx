@@ -11,6 +11,7 @@ const RootLayout = () => {
     <Link to="/transaction" style={styles.link}>Go to deneme</Link>
     <Link to="/finance" style={styles.link}>Go to finance</Link>
     <Link to="/createRequest" style={styles.link}>Go to request</Link>
+    <Link to="/all_Requests" style={styles.link}>Go to Request Page</Link>
     
   </View>
   )
