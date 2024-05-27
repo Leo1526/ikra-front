@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../design/themes';
+
+import { API_BASE_URL } from '../../constants/constants';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +28,7 @@ const SignUp = () => {
     };
 
     try {
-      const response = await fetch('http://192.168.0.24:8080/register', {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -55,106 +56,102 @@ const SignUp = () => {
   ];
 
   return (
-  <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style= {styles.safeArea} 
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.safeArea}
     >
-    
-    
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.appName}>Uygulama Adı</Text>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.appName}>Uygulama Adı</Text>
 
-        <RNPickerSelect
-          onValueChange={(value) => setUniversity(value)}
-          items={schools}
-          style={{
-            inputIOS: styles.input,
-            inputAndroid: styles.input,
-          }}
-          placeholder={{
-            label: 'Bir okul seçin...',
-            value: null,
-          }}
-          value={university}
-        />
+          <RNPickerSelect
+            onValueChange={(value) => setUniversity(value)}
+            items={schools}
+            style={{
+              inputIOS: styles.input,
+              inputAndroid: styles.input,
+            }}
+            placeholder={{
+              label: 'Bir okul seçin...',
+              value: null,
+            }}
+            value={university}
+          />
 
-        <TextInput
-          label="Email"
-          value={email}
-          onChangeText={text => setEmail(text)}
-          style={styles.input}
-          keyboardType="email-address"
-        />
-        <TextInput
-          label="İsim"
-          value={name}
-          onChangeText={text => setName(text)}
-          style={styles.input}
-        />
-        <TextInput
-          label="Soyisim"
-          value={surname}
-          onChangeText={text => setSurname(text)}
-          style={styles.input}
-        />
-        <TextInput
-          label="Öğrenci Numarası"
-          value={studentId}
-          onChangeText={text => setStudentId(text)}
-          style={styles.input}
-          keyboardType="numeric"
-        />
-        <TextInput
-          label="Parola"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry={!showPassword}
-          style={styles.input}
-          right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
-        />
-        <Button
-          mode="contained"
-          onPress={handleSignUp}
-          style={styles.button}
-          
-        >
-          Kayıt Ol
-        </Button>
-
-        <Snackbar
-          visible={snackbarVisible}
-          onDismiss={() => setSnackbarVisible(false)}
-          duration={3000}
-          action={{
-            label: 'Tamam',
-            onPress: () => setSnackbarVisible(false),
-          }}
-        >
-          Kayıt olma işlemi başarısız oldu.
-        </Snackbar>
-
-        <View style={styles.textContainer}>
-          <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+          <TextInput
+            label="Email"
+            value={email}
+            onChangeText={text => setEmail(text)}
+            style={styles.input}
+            keyboardType="email-address"
+          />
+          <TextInput
+            label="İsim"
+            value={name}
+            onChangeText={text => setName(text)}
+            style={styles.input}
+          />
+          <TextInput
+            label="Soyisim"
+            value={surname}
+            onChangeText={text => setSurname(text)}
+            style={styles.input}
+          />
+          <TextInput
+            label="Öğrenci Numarası"
+            value={studentId}
+            onChangeText={text => setStudentId(text)}
+            style={styles.input}
+            keyboardType="numeric"
+          />
+          <TextInput
+            label="Parola"
+            value={password}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry={!showPassword}
+            style={styles.input}
+            right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
+          />
           <Button
-            onPress={() => navigation.navigate('sign-in')}
-            labelStyle={styles.signupButtonText}
-            buttonColor={colors.primary}
+            mode="contained"
+            onPress={handleSignUp}
+            style={styles.button}
           >
-            Giriş Yap
+            Kayıt Ol
           </Button>
-        </View>
 
-        <Text style={styles.developerText}>Developed by Developer Team</Text>
-      </ScrollView>
-      
-    </SafeAreaView>
-  </KeyboardAvoidingView>
+          <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={3000}
+            action={{
+              label: 'Tamam',
+              onPress: () => setSnackbarVisible(false),
+            }}
+          >
+            Kayıt olma işlemi başarısız oldu.
+          </Snackbar>
+
+          <View style={styles.textContainer}>
+            <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+            <Button
+              onPress={() => navigation.navigate('sign-in')}
+              labelStyle={styles.signupButtonText}
+              buttonColor={colors.primary}
+            >
+              Giriş Yap
+            </Button>
+          </View>
+
+          <Text style={styles.developerText}>Developed by Developer Team</Text>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
