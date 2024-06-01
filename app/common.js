@@ -1,3 +1,7 @@
+// useApiQuery.js
+import { useState } from 'react';
+import axios from 'axios';
+
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
 
 export const errorInput = (ref) => {
@@ -7,9 +11,6 @@ export const errorInput = (ref) => {
         });
     }
 }
-// useApiQuery.js
-import { useState } from 'react';
-import axios from 'axios';
 
 // Varsayılan başarı işleyicisi
 const defaultHandleSuccess = (data) => {

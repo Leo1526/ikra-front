@@ -4,7 +4,7 @@ import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, text } from '../../design/themes';
 import {commonStyle} from "../../design/style";
-import * as common from "../../app/common";
+import * as common from "../common.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 

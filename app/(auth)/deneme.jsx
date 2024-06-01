@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Button, Text } from 'react-native';
 import LoadingScreen from '../../components/LoadingScreen';
-import * as Common from '../common';
+import * as Common from '../common.js';
 const SomeComponent = () => {
 
 
