@@ -1,9 +1,8 @@
 // SomeComponent.js
 import React from 'react';
 import { View, Button, Text } from 'react-native';
-import useApiQuery from '../../components/useApiQuery';
 import LoadingScreen from '../../components/LoadingScreen';
-
+import * as Common from '../common';
 const SomeComponent = () => {
 
 
@@ -15,7 +14,7 @@ const SomeComponent = () => {
     console.error('Custom error:', error);
   };
 
-  const { loading, error, fetchData } = useApiQuery({
+  const { loading, error, fetchData } = Common.useApiQuery({
     url: "https://your-api-url.com/data",
     method: "POST",
     data: { key: 'value' },
