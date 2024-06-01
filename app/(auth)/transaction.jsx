@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, ScrollView, Image, StyleSheet, Platform, KeyboardAvoidingView, Text, Alert, TouchableOpacity } from 'react-native';
 import { TextInput, Button, Modal, List, Checkbox } from 'react-native-paper'; // Modal ve List ekledik
-import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
+import { colors, fonts, text} from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as commonStyles from '../../design/style';
 const TransactionPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [recipientName, setRecipientName] = useState('');
@@ -195,17 +196,17 @@ const TransactionPage = () => {
             labelStyle={styles.checkboxLabel}
           />
 
-          <Button mode="contained" onPress={handleSendMoney} style={styles.button}>
+          <Button mode="contained" onPress={handleSendMoney} style={commonStyles.primaryButton}>
             Para Gönder
           </Button>
 
 
 
           {/* Modal */}
-          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+          <Modal style={{ height: '65%' }} visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
           <View style={styles.modalContent}>
           <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
-            <ScrollView style={{ height: '75%' }}>
+            <ScrollView style={{ height: '100%' }}>
               <List.Section>
                 {recipients.map((recipient) => (
                   <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
@@ -231,21 +232,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background, // SignIn'den alınan genel arka plan rengi
   },
   modalContent: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondaryBackground,
     padding: 10,
+    borderRadius: 10,
   },
   touchable: {
-    backgroundColor: colors.text,
-    borderColor: colors.secondary,
+    backgroundColor: colors.background,
+    borderColor: colors.text,
     borderWidth: 1, // Kenarlık kalınlığı
     borderColor: colors.primary, // Kenarlık rengi
-    borderRadius: 10
+    borderRadius: 10,
+    margin: 4,
   },
   
   subheader: {
+    marginTop: 0,
     fontSize: 18,
-    fontWeight: "normal",
-    color: colors.text,
+    fontWeight: "bold",
+    color: text.secondaryDark,
     marginBottom: 5,
     textAlign: "center"
   },
@@ -253,14 +257,14 @@ const styles = StyleSheet.create({
   input: {
     width: '90%',
     marginBottom: 16,
-    backgroundColor: colors.text, // SignIn'den alınan giriş alanı rengi
+    backgroundColor: colors.background, // SignIn'den alınan giriş alanı rengi
     borderRadius: 8,
   },
   button: {
     width: '90%',
     padding: 10,
     marginBottom: 16,
-    backgroundColor: colors.secondary, // SignIn'den alınan buton rengi
+    backgroundColor: colors.primary, // SignIn'den alınan buton rengi
   },
   savedReceiversButton: {
     width: '80%',
@@ -286,7 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   modal: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondaryBackground,
     margin: 40,
     borderRadius: 10,
 
@@ -296,7 +300,7 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 16, // Yazı boyutunu ayarlayabilirsiniz
-    color: colors.secondary,
+    color: text.secondaryDark,
     fontWeight : "normal"
   },
   checkbox: {

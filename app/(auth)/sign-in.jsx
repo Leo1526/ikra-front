@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { colors, fonts } from '../../design/themes';
+import { colors, fonts, text } from '../../design/themes';
+import {commonStyle} from "../../design/style";
+import * as common from "../../app/common";
 import { SafeAreaView } from 'react-native-safe-area-context';
+// import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
@@ -11,13 +15,54 @@ const SignIn = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorUsername, setErrorUsername] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
+  const passwordRef = useRef(null);
 
-  const handleLogin = () => {
-    if (username === 'admin' && password === 'admin123') {
-      console.log('Giriş başarılı!');
-    } else {
-      setSnackbarVisible(true);
+  const handleLogin = async  () => {
+    setErrorUsername(false)
+    setErrorPassword(false)
+    if (username.length < 8) {
+      setErrorUsername(true);
+    } 
+    if (password.length < 8) {
+      setErrorPassword(false)
     }
+    else {
+      const url = common.url + '/login';
+      const payload = {
+        email: username,
+        password: password
+      };
+  
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        if (response.ok) {
+          const jsonResponse = await response.json();
+          console.log("hey")
+          // setResponseMessage('Registration successful!');
+        } else {
+          console.log("hey2")
+          // setResponseMessage('Registration failed!');
+        }
+      } catch (error) {
+        console.log(error.message)
+        // setResponseMessage(`Error: ${error.message}`);
+      }
+    }
+
+    const handlePasswordChange = (text) => {
+      const numericText = text.replace(/[^0-9]/g, '');
+      setPassword(numericText);
+    };
+
   };
 
   return (
@@ -34,7 +79,7 @@ const SignIn = () => {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.appName}>Uygulama Adı</Text>
+          <Text style={styles.appName}>Hoşgeldiniz.</Text>
 
           <TextInput
             label="Kullanıcı Adı"
@@ -42,26 +87,53 @@ const SignIn = () => {
             onChangeText={text => setUsername(text)}
             selectionColor={colors.primary}
             activeUnderlineColor={colors.primary}
-            style={styles.input}
+            style={commonStyle.input}
+            labelStyle={commonStyle.input}
             theme={{ colors: { primary: 'blue' } }}
           />
-          
+          {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>}
           <TextInput
             label="Parola"
             value={password}
             onChangeText={text => setPassword(text)}
             secureTextEntry={!showPassword}
-            style={styles.input}
+            style={commonStyle.input}
             selectionColor={colors.primary}
             activeUnderlineColor={colors.primary}
+            ref={passwordRef}
             theme={{ colors: { primary: 'blue' } }}
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
           />
-          
+
+          {/* <SmoothPinCodeInput
+            codeLength={6}
+            placeholder={<View style={{
+              width: 10,
+              height: 10,
+              borderRadius: 25,
+              opacity: 0.3,
+              backgroundColor: 'black',
+            }}></View>}
+            mask={<View style={{
+              width: 10,
+              height: 10,
+              borderRadius: 25,
+              backgroundColor: 'black',
+            }}></View>}
+            maskDelay={1000}
+            password={!showPassword}
+            cellStyle={null}
+            cellStyleFocused={null}
+            value={code}
+            onTextChange={text => handlePasswordChange(text)}
+          /> */}
+
+          {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
           <Button
             mode="contained"
             onPress={handleLogin}
-            style={styles.button}
+            style={commonStyle.primaryButton}
+            labelStyle={commonStyle.primaryButton}
             buttonColor={colors.primary}
           >
             Giriş Yap
@@ -82,14 +154,13 @@ const SignIn = () => {
             <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
             <Button
               onPress={() => navigation.navigate('sign-up')}
-              labelStyle={styles.signupButtonText}
-              buttonColor={colors.primary}
+              labelStyle={styles.signupButton}
+              buttonColor={colors.secondary}
             >
               Kayıt Ol
             </Button>
+            
           </View>
-
-          <Text style={styles.developerText}>Developed by Developer Team</Text>
         </ScrollView>
       </SafeAreaView>  
     </KeyboardAvoidingView>
@@ -103,36 +174,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: colors.background, // Arka plan rengi
+    font: fonts.regular
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 200,
   },
   appName: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 16,
-    color: colors.text, // Uygulama adı rengi
+    color: "#555555", // Uygulama adı rengi
   },
   input: {
     width: '100%',
-    marginBottom: 16,
-    backgroundColor: 'white',
+    marginBottom: 8,
+    backgroundColor: '#F4F6F8',
     borderRadius: 8,
+    borderTopWidth: 0
   },
   button: {
     width: '100%',
-    backgroundColor: colors.secondary,
+    textAlign: 'center', 
+    backgroundColor: colors.primary,
     marginBottom: 16,
+    fontWeight: "bold",
+    fontSize: "16px",
+    letterSpacing: 2,
   },
-  
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
   signupButtonText: {
-    color: colors.text,
+    color: text.primaryDark,
+    fontWeight: 'bold',
+  },
+  signupButton: {
+    color: text.primaryLight,
     fontWeight: 'bold',
   },
   developerText: {

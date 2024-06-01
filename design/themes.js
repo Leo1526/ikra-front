@@ -1,14 +1,20 @@
 export const colors = {
-    primary: '#30475E',
-    secondary: '#F05454',
-    background: '#222831',
-    text: '#E8E8E8',
-    // Diğer renkler
-  };
+    primary: '#354D73',
+    secondary: '#FF6347',
+    background: '#F4F6F8',
+    secondaryBackground: "#E0E3E8",
+    text: "#222222"
+};
+
+export const text = {
+  primaryDark: '#222222',
+  primaryLight: '#FFFFFF',
+  secondaryDark: '#555555',
+  secondaryLight: "#CCCCCC"
+}
   
-  export const fonts = {
-    regular: 'Roboto-Regular',
-    bold: 'Roboto-Bold',
-    italic: 'Roboto-Italic',
-    // Diğer fontlar
-  };
+export const fonts = {
+  regular: 'Roboto-Regular',
+  bold: 'Roboto-Bold',
+  italic: 'Roboto-Italic',
+};
