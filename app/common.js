@@ -1,16 +1,16 @@
-// useApiQuery.js
-import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
+export const urlDev = "http://192.168.1.104:8080";
 
 export const errorInput = (ref) => {
-    if (ref && ref.current) {
-        ref.current.setNativeProps({
-          style: { borderColor: 'red' },
-        });
-    }
-}
+  if (ref && ref.current) {
+    ref.current.setNativeProps({
+      style: { borderColor: 'red' },
+    });
+  }
+};
 
 // Varsayılan başarı işleyicisi
 const defaultHandleSuccess = (data) => {
@@ -22,37 +22,57 @@ const defaultHandleFail = (error) => {
   console.error('Error fetching data:', error);
 };
 
-export const useApiQuery = ({
+export const ikraAxios = async ({
   url,
   method = 'GET',
   data = null,
   headers = {},
   onSuccess = defaultHandleSuccess,
-  onError = defaultHandleFail
+  onError = defaultHandleFail,
+  tokenRequired = true,
+  setLoading = null,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios({
-        url,
-        method,
-        data,
-        headers
-      });
-      setLoading(false);
-      onSuccess(response.data);  // Callback fonksiyonunu çağır
-      return response.data;
-    } catch (error) {
-      setError(error.message);
-      setLoading(false);
-      onError(error);  // Callback fonksiyonunu çağır
-      throw error;
+  if(setLoading) {
+    setLoading(true)
+  }
+  if (tokenRequired) {
+    const token = checkTokenExpiration()
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
     }
-  };
-
-  return { loading, error, fetchData };
+    else {
+      navigateToLoginPage();
+    }
+  }
+  try {
+    const response = await axios({
+      url,
+      method,
+      data,
+      headers
+    });
+    onSuccess(response.data);  // Callback fonksiyonunu çağır
+    return response.data;
+  } catch (error) {
+    onError(error);  // Callback fonksiyonunu çağır
+    throw error;
+  }
 };
+
+const checkTokenExpiration = async () => {
+  const token = await AsyncStorage.getItem('jwtToken');
+  const expireDate = await AsyncStorage.getItem('expireDate')
+  if (expireDate) {
+    const currentTime = Date.now() / 1000; // current time in seconds
+    if (decodedToken.exp < currentTime) {
+      navigateToLoginPage()
+    } else {
+      return token;
+    }
+  }
+};
+
+const navigateToLoginPage = () => {
+  alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
+  console.log("navigating login page")
+}

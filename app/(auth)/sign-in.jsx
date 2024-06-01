@@ -6,8 +6,9 @@ import { colors, fonts, text } from '../../design/themes';
 import {commonStyle} from "../../design/style";
 import * as common from "../common.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt_decode from 'jwt-decode';
+import axios from 'axios';
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
@@ -24,37 +25,42 @@ const SignIn = () => {
     setErrorPassword(false)
     if (username.length < 8) {
       setErrorUsername(true);
+      return
     } 
-    if (password.length < 8) {
+    if (password.length != 6) {
       setErrorPassword(false)
+      return;
     }
     else {
-      const url = common.url + '/login';
+      const url = common.urlDev + '/login';
       const payload = {
         email: username,
         password: password
       };
-  
       try {
-        const response = await fetch(url, {
-          method: 'POST',
+        const response = await axios.post(url, payload, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload),
         });
-  
-        if (response.ok) {
-          const jsonResponse = await response.json();
-          console.log("hey")
-          // setResponseMessage('Registration successful!');
+        const data = response.data;
+        if (data.status === "ERROR" || !data.body) {
+          console.log("error")
+            console.log(data)
+            data.messages.forEach(message => {
+              console.log(data.messages)
+              alert(message)
+            });
+            return;
         } else {
-          console.log("hey2")
-          // setResponseMessage('Registration failed!');
+          await AsyncStorage.setItem('jwtToken', jwt.token);
+          await AsyncStorage.setItem('expireDate', jwt.token);
+          console.log("tokens are set")
+          //TODO
+          //navigate to homepage
         }
       } catch (error) {
         console.log(error.message)
-        // setResponseMessage(`Error: ${error.message}`);
       }
     }
 

@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import React, { useState, useEffect  } from 'react';
+import { View, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform, Text, ActivityIndicator } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native';
-import { colors } from '../../design/themes';
-
+import { colors, text } from '../../design/themes';
+import { ikraAxios, urlDev, url } from '../common';
 import { API_BASE_URL } from '../../constants/constants';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [university, setUniversity] = useState('');
+  const [department, setDepartment] = useState('')
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [studentId, setStudentId] = useState('');
@@ -18,9 +19,77 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const navigation = useNavigation();
+  const [departmentSelectbox, setDepartmentSelectBox] = useState(true);
+  const [schools, setSchools] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  const [departments, setDepartments] = useState([])
+
+  const schoolSuccessHandler = (data) => {
+    var newSchools = []
+    console.log("başarılı")
+    const schoolsResponse = data.body
+    schoolsResponse.forEach(element => {
+      school = {
+        label: element.name,
+        value: element.id
+      }
+      newSchools.push(school)
+    });
+    setSchools(newSchools)
+    setLoading(false)
+  }
+
+  departmentSuccessHandler = (data) => {
+    var newDepartments = []
+    console.log("başarılı d")
+    const departmentsResponse = data.body
+    departmentsResponse.forEach(element => {
+      bolum = {
+        label: element.name,
+        value: element.id
+      }
+      newDepartments.push(bolum)
+    });
+    setDepartments(newDepartments)
+    setLoading(false)
+  }
+
+
+  const fetchDepartments = () => {
+    if (university) {
+      ikraAxios({
+        url: urlDev + '/universities/departments/all?universityId=' + university,
+        method: 'GET',
+        onSuccess: departmentSuccessHandler,
+        tokenRequired: false,
+        setLoading: setLoading
+      });
+    }
+  }
+
+  useEffect(() => {
+    const fetchSchools = () => {
+      ikraAxios({
+        url: urlDev + '/universities/all',
+        method: 'GET',
+        onSuccess: schoolSuccessHandler,
+        setLoading: setLoading,
+        onError: (error) => {
+          console.error('Error fetching schools:', error);
+          setLoading(false);
+        },
+        tokenRequired: false
+      });
+    };
+    fetchSchools();
+  }, []);
   const handleSignUp = async () => {
-    const userData = {
+    const url = urlDev + '/register';
+    const payload = {
+      universityId: university,
+      departmentId: department,
+      studentNo: studentId,
       email: email,
       firstname: name,
       lastname: surname,
@@ -28,20 +97,26 @@ const SignUp = () => {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/register`, {
-        method: 'POST',
+      ikraAxios({url: url, data: payload, 
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData)
+        onSuccess:handleRegisterSuccess,
+        onError:handleRegisterError,
+        setLoading: setLoading
       });
-
-      if (response.ok) {
-        console.log('Kayıt başarılı!');
-        navigation.navigate('sign-in'); // Navigate to sign-in screen after successful registration
+      const data = response.data;
+      if (data.status === "ERROR") {
+        console.log("error")
+          console.log(data)
+          data.messages.forEach(message => {
+            console.log(data.messages)
+            alert(message)
+          });
+          return;
       } else {
-        console.log('Kayıt olma işlemi başarısız oldu.');
-        setSnackbarVisible(true);
+        //TODO
+        //navigate to log in page
       }
     } catch (error) {
       console.error('Error:', error);
@@ -49,12 +124,14 @@ const SignUp = () => {
     }
   };
 
-  const schools = [
-    { label: 'Okul 1', value: 'Okul 1' },
-    { label: 'Okul 2', value: 'Okul 2' },
-    { label: 'Okul 3', value: 'Okul 3' },
-  ];
-
+  const handleSchoolSelect = (value) => {
+    if (!value) {
+      return
+    }
+    setUniversity(value)
+    fetchDepartments(value);
+  }
+ 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -70,19 +147,39 @@ const SignUp = () => {
           <Text style={styles.appName}>Uygulama Adı</Text>
 
           <RNPickerSelect
-            onValueChange={(value) => setUniversity(value)}
+            onValueChange={(value) => handleSchoolSelect(value)}
             items={schools}
             style={{
-              inputIOS: styles.input,
-              inputAndroid: styles.input,
+              inputIOS: styles.selectBoxInput,
+              inputAndroid: styles.selectBoxInput,
             }}
             placeholder={{
-              label: 'Bir okul seçin...',
+              label: 'Okul seçiniz.',
               value: null,
             }}
             value={university}
           />
 
+          <View>
+            {loading && (
+              <ActivityIndicator size="large"/>
+            )}
+          </View>
+
+          <RNPickerSelect
+            onValueChange={(value) => setDepartment(value)}
+            items={departments}
+            disabled={departments.length === 0}
+            style={{
+              inputIOS: styles.selectBoxInput,
+              inputAndroid: styles.selectBoxInput,
+            }}
+            placeholder={{
+              label: 'Departman seçiniz.',
+              value: null,
+            }}
+            value={department}
+          />
           <TextInput
             label="Email"
             value={email}
@@ -138,17 +235,15 @@ const SignUp = () => {
           </Snackbar>
 
           <View style={styles.textContainer}>
-            <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+            <Text style={styles.signUpText}>Hesabın var mı? {'\u00A0'}</Text>
             <Button
               onPress={() => navigation.navigate('sign-in')}
               labelStyle={styles.signupButtonText}
-              buttonColor={colors.primary}
+              buttonColor={colors.secondary}
             >
               Giriş Yap
             </Button>
           </View>
-
-          <Text style={styles.developerText}>Developed by Developer Team</Text>
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -177,13 +272,21 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     marginBottom: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
+    borderRadius: 8,
+    height: 50,
+  },
+  selectBoxInput: {
+    width: '100%',
+    marginBottom: 16,
+    marginLeft: 15,
+    backgroundColor: colors.background,
     borderRadius: 8,
     height: 50,
   },
   button: {
     width: '100%',
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     marginBottom: 16,
   },
   textContainer: {
@@ -192,7 +295,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signupButtonText: {
-    color: colors.text,
+    color: text.primaryLight,
+    fontWeight: 'bold',
+  },
+  signupText: {
+    color: text.primaryDark,
     fontWeight: 'bold',
   },
   developerText: {
