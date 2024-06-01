@@ -14,6 +14,7 @@ const RootLayout = () => {
     <Link to="/all_Requests" style={styles.link}>Go to Request Page</Link>
     <Link to="/dining" style={styles.link}>Go to Dining</Link>
     <Link to="/internship" style={styles.link}>Go to Internship</Link>
+    <Link to="/myCourses" style={styles.link}>Go to My Courses</Link>
     
   </View>
   )
