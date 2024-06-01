@@ -6,7 +6,7 @@ import { colors, fonts, text } from '../../design/themes';
 import {commonStyle} from "../../design/style";
 import * as common from "../../app/common";
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
 
 const SignIn = () => {
