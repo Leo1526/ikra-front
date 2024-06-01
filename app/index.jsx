@@ -7,11 +7,12 @@ const RootLayout = () => {
     <View style={styles.container}>
     <Text style={styles.text}>hacasasep</Text>
     <StatusBar style='auto' />
-    <Link to="/sign-in" style={styles.link}>Go to assa In</Link>
-    <Link to="/transaction" style={styles.link}>Go to deneme</Link>
+    <Link to="/sign-in" style={styles.link}>Go to Sign In</Link>
+    <Link to="/transaction" style={styles.link}>Go to Transaction</Link>
     <Link to="/finance" style={styles.link}>Go to finance</Link>
-    <Link to="/createRequest" style={styles.link}>Go to request</Link>
+    <Link to="/createRequest" style={styles.link}>Create request</Link>
     <Link to="/all_Requests" style={styles.link}>Go to Request Page</Link>
+    <Link to="/dining" style={styles.link}>Go to Dining</Link>
     
   </View>
   )
