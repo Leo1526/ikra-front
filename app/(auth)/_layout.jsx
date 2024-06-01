@@ -2,7 +2,6 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-
 const AuthLayout = () => {
   return (
     <>
@@ -31,6 +30,26 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+        <Stack.Screen 
+          name='createLostItem'
+          options={{
+            headerShown: false
+          }}
+        />
+
+        <Stack.Screen 
+          name='all_LostItems'
+          options={{
+            headerShown: false
+          }}
+        />
+          <Stack.Screen 
+          name='oneLostItem'
+          options={{
+            headerShown: false
+          }}
+        />
+
         <Stack.Screen 
           name='finance'
           options={{
