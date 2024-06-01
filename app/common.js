@@ -72,7 +72,7 @@ const checkTokenExpiration = async () => {
   }
 };
 
-const navigateToLoginPage = () => {
+export const navigateToLoginPage = () => {
   alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
   console.log("navigating login page")
 }
