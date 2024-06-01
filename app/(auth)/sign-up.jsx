@@ -25,24 +25,28 @@ const SignUp = () => {
   const [miniLoading, setMiniLoading] = useState(false);
   const [departments, setDepartments] = useState([])
 
+  const [mailExts, setMailExts] = useState([])
+  const [mailExtension, setMailExtension] = useState('')
+
   const schoolSuccessHandler = (data) => {
     var newSchools = []
-    console.log("başarılı")
+    var mails = []
     const schoolsResponse = data.body
     schoolsResponse.forEach(element => {
       school = {
         label: element.name,
-        value: element.id
+        value: element.id,
       }
       newSchools.push(school)
+      mails.push({id: element.id, mailExt: element.mailExt})
     });
+    setMailExts(mails)
     setSchools(newSchools)
     setLoading(false)
   }
 
   departmentSuccessHandler = (data) => {
     var newDepartments = []
-    console.log("başarılı d")
     const departmentsResponse = data.body
     departmentsResponse.forEach(element => {
       bolum = {
@@ -84,8 +88,25 @@ const SignUp = () => {
     };
     fetchSchools();
   }, []);
+
+  const handleRegisterSuccess = (data) => {
+    if (data.status === "SUCCESS") {
+      alert("Kayıt başarılı! Lütfen mail adresinizi kontrol edin.")
+      setLoading(false)
+      navigation.navigate('sign-in')
+      return
+    }
+    alert("Hata! " + data?.messages[0] ? data.messages[0] : "")
+    return;
+  }
+  const handleRegisterError = (data) => {
+    setLoading(false) 
+    console.log(data)
+    alert("Kayıt bilinmeyen hata oluştu!" + data?.messages[0] ? data.messages[0] : "")
+  }
   const handleSignUp = async () => {
     const url = urlDev + '/register';
+    console.log(url)
     const payload = {
       universityId: university,
       departmentId: department,
@@ -95,40 +116,77 @@ const SignUp = () => {
       lastname: surname,
       password: password
     };
-
+    if (validateSignUpForm(payload)) {
+      return false;
+    }
     try {
+      console.log("istek atılmak üzere")
       ikraAxios({url: url, data: payload, 
         headers: {
           'Content-Type': 'application/json',
         },
+        method: "POST",
+        tokenRequired: false,
         onSuccess:handleRegisterSuccess,
         onError:handleRegisterError,
         setLoading: setLoading
       });
-      const data = response.data;
-      if (data.status === "ERROR") {
-        console.log("error")
-          console.log(data)
-          data.messages.forEach(message => {
-            console.log(data.messages)
-            alert(message)
-          });
-          return;
-      } else {
-        //TODO
-        //navigate to log in page
-      }
     } catch (error) {
+      setLoading(false)
       console.error('Error:', error);
       setSnackbarVisible(true);
     }
   };
-
+  const validateSignUpForm = (form) => {
+    setLoading(false)
+    if (!form.universityId) {
+      alert("Lütfen üniversite seçiniz.")
+      return true
+    }
+    if (!form.departmentId) {
+      alert("Lütfen bölümünüzü seçiniz.")
+      return true
+    }
+    if (!form.studentNo) {
+      alert("Lütfen okul numaranızı giriniz.")
+      return true
+    }
+    if (!form.email) {
+      alert("Lütfen email adresinizi giriniz.")
+      return true
+    }
+    else {
+      const ext = form.email.slice(form.email.indexOf("@") + 1);
+      console.log(ext)
+      console.log(mailExtension)
+      if (mailExtension != ext) {
+        alert("Mail adresi uzantısı ve okul uyuşmuyor.")
+        return true
+      }
+    }
+    if (!form.firstname) {
+      alert("Lütfen adınızı giriniz.")
+      return true;
+    }
+    if (!form.lastname) {
+      alert("Lütfen soyadınızı giriniz.")
+      return true;
+    }
+    if (password < 8) {
+      alert("Parola en az 8 hane olabilir.")
+      return true;
+    }
+  }
   const handleSchoolSelect = (value) => {
     if (!value) {
       return
     }
     setUniversity(value)
+    mailExts.forEach(element => {
+      if (value==element.id) {
+        setMailExtension(element.mailExt)
+      }
+    })
     fetchDepartments(value);
   }
  
@@ -161,10 +219,6 @@ const SignUp = () => {
               }}
               value={university}
             />
-
-            <View>
-              
-            </View>
             {miniLoading ? (
               <ActivityIndicator />
             ) : (
