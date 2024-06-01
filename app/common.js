@@ -1,14 +1,17 @@
 import axios from 'axios';
 
-const handleSuccess = () {
+var showLoadScreen = false;
 
-}
-
-const errorSuccess = () {
+const handleSuccess = () => {
   
 }
 
-const axiosRequest = async ({ url, method = 'GET', data = null, headers = {}, onSuccess , onError }) => {
+const handleError = () => {
+
+}
+
+const axiosRequest = async ({ url, method = 'GET', data = null, headers = {}, loadScreen = false, onSuccess = handleSuccess, onError = handleError}) => {
+  console.log("çalış")
   try {
     const response = await axios({
       url,

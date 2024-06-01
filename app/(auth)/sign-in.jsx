@@ -1,12 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, text } from '../../design/themes';
 import {commonStyle} from "../../design/style";
-import * as common from "../../app/common";
+import axiosRequest from "../../app/common";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
 
 const SignIn = () => {
@@ -20,6 +19,8 @@ const SignIn = () => {
   const passwordRef = useRef(null);
 
   const handleLogin = async  () => {
+    console.log("evet ama")
+    axiosRequest({});
     setErrorUsername(false)
     setErrorPassword(false)
     if (username.length < 8) {
@@ -104,30 +105,6 @@ const SignIn = () => {
             theme={{ colors: { primary: 'blue' } }}
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
           />
-
-          {/* <SmoothPinCodeInput
-            codeLength={6}
-            placeholder={<View style={{
-              width: 10,
-              height: 10,
-              borderRadius: 25,
-              opacity: 0.3,
-              backgroundColor: 'black',
-            }}></View>}
-            mask={<View style={{
-              width: 10,
-              height: 10,
-              borderRadius: 25,
-              backgroundColor: 'black',
-            }}></View>}
-            maskDelay={1000}
-            password={!showPassword}
-            cellStyle={null}
-            cellStyleFocused={null}
-            value={code}
-            onTextChange={text => handlePasswordChange(text)}
-          /> */}
-
           {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
           <Button
             mode="contained"
