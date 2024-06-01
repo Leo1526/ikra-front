@@ -22,7 +22,7 @@ const SignUp = () => {
   const [departmentSelectbox, setDepartmentSelectBox] = useState(true);
   const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [miniLoading, setMiniLoading] = useState(false);
   const [departments, setDepartments] = useState([])
 
   const schoolSuccessHandler = (data) => {
@@ -52,7 +52,7 @@ const SignUp = () => {
       newDepartments.push(bolum)
     });
     setDepartments(newDepartments)
-    setLoading(false)
+    setMiniLoading(false)
   }
 
 
@@ -63,7 +63,7 @@ const SignUp = () => {
         method: 'GET',
         onSuccess: departmentSuccessHandler,
         tokenRequired: false,
-        setLoading: setLoading
+        setLoading: setMiniLoading
       });
     }
   }
@@ -139,111 +139,114 @@ const SignUp = () => {
     >
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
-          <Image
-            source={require('../../assets/images/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.appName}>Uygulama Adı</Text>
+          {loading ? (
+          <ActivityIndicator />
+          ) : (
+          <View style={styles.page}>
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <RNPickerSelect
+              onValueChange={(value) => handleSchoolSelect(value)}
+              items={schools}
+              style={{
+                inputIOS: styles.selectBoxInput,
+                inputAndroid: styles.selectBoxInput,
+              }}
+              placeholder={{
+                label: 'Okul seçiniz.',
+                value: null,
+              }}
+              value={university}
+            />
 
-          <RNPickerSelect
-            onValueChange={(value) => handleSchoolSelect(value)}
-            items={schools}
-            style={{
-              inputIOS: styles.selectBoxInput,
-              inputAndroid: styles.selectBoxInput,
-            }}
-            placeholder={{
-              label: 'Okul seçiniz.',
-              value: null,
-            }}
-            value={university}
-          />
-
-          <View>
-            {loading && (
-              <ActivityIndicator size="large"/>
-            )}
-          </View>
-
-          <RNPickerSelect
-            onValueChange={(value) => setDepartment(value)}
-            items={departments}
-            disabled={departments.length === 0}
-            style={{
-              inputIOS: styles.selectBoxInput,
-              inputAndroid: styles.selectBoxInput,
-            }}
-            placeholder={{
-              label: 'Departman seçiniz.',
-              value: null,
-            }}
-            value={department}
-          />
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={text => setEmail(text)}
-            style={styles.input}
-            keyboardType="email-address"
-          />
-          <TextInput
-            label="İsim"
-            value={name}
-            onChangeText={text => setName(text)}
-            style={styles.input}
-          />
-          <TextInput
-            label="Soyisim"
-            value={surname}
-            onChangeText={text => setSurname(text)}
-            style={styles.input}
-          />
-          <TextInput
-            label="Öğrenci Numarası"
-            value={studentId}
-            onChangeText={text => setStudentId(text)}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <TextInput
-            label="Parola"
-            value={password}
-            onChangeText={text => setPassword(text)}
-            secureTextEntry={!showPassword}
-            style={styles.input}
-            right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
-          />
-          <Button
-            mode="contained"
-            onPress={handleSignUp}
-            style={styles.button}
-          >
-            Kayıt Ol
-          </Button>
-
-          <Snackbar
-            visible={snackbarVisible}
-            onDismiss={() => setSnackbarVisible(false)}
-            duration={3000}
-            action={{
-              label: 'Tamam',
-              onPress: () => setSnackbarVisible(false),
-            }}
-          >
-            Kayıt olma işlemi başarısız oldu.
-          </Snackbar>
-
-          <View style={styles.textContainer}>
-            <Text style={styles.signUpText}>Hesabın var mı? {'\u00A0'}</Text>
+            <View>
+              
+            </View>
+            {miniLoading ? (
+              <ActivityIndicator />
+            ) : (
+            <RNPickerSelect
+              onValueChange={(value) => setDepartment(value)}
+              items={departments}
+              disabled={departments.length === 0}
+              style={{
+                inputIOS: styles.selectBoxInput,
+                inputAndroid: styles.selectBoxInput,
+              }}
+              placeholder={{
+                label: 'Departman seçiniz.',
+                value: null,
+              }}
+              value={department}
+            />)}
+            <TextInput
+              label="Email"
+              value={email}
+              onChangeText={text => setEmail(text)}
+              style={styles.input}
+              keyboardType="email-address"
+            />
+            <TextInput
+              label="İsim"
+              value={name}
+              onChangeText={text => setName(text)}
+              style={styles.input}
+            />
+            <TextInput
+              label="Soyisim"
+              value={surname}
+              onChangeText={text => setSurname(text)}
+              style={styles.input}
+            />
+            <TextInput
+              label="Öğrenci Numarası"
+              value={studentId}
+              onChangeText={text => setStudentId(text)}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+            <TextInput
+              label="Parola"
+              value={password}
+              onChangeText={text => setPassword(text)}
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
+            />
             <Button
-              onPress={() => navigation.navigate('sign-in')}
-              labelStyle={styles.signupButtonText}
-              buttonColor={colors.secondary}
+              mode="contained"
+              onPress={handleSignUp}
+              style={styles.button}
             >
-              Giriş Yap
+              Kayıt Ol
             </Button>
-          </View>
+
+            <Snackbar
+              visible={snackbarVisible}
+              onDismiss={() => setSnackbarVisible(false)}
+              duration={3000}
+              action={{
+                label: 'Tamam',
+                onPress: () => setSnackbarVisible(false),
+              }}
+            >
+              Kayıt olma işlemi başarısız oldu.
+            </Snackbar>
+
+            <View style={styles.textContainer}>
+              <Text style={styles.signUpText}>Hesabın var mı? {'\u00A0'}</Text>
+              <Button
+                onPress={() => navigation.navigate('sign-in')}
+                labelStyle={styles.signupButtonText}
+                buttonColor={colors.secondary}
+              >
+                Giriş Yap
+              </Button>
+            </View>
+          </View>)}
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -257,6 +260,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: colors.background,
+  },
+  page: {
+    width: "100%",
+    height: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
     width: 100,
