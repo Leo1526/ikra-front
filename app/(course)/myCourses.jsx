@@ -122,6 +122,11 @@ const MyCoursesScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Text style={styles.heading}>Derslerim</Text>
+
+      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.buttonText}>Ders Ekle</Text>
+      </TouchableOpacity>
+
       <FlatList
         data={myCourses}
         renderItem={({ item }) => (
@@ -136,9 +141,7 @@ const MyCoursesScreen = () => {
         ListEmptyComponent={<Text style={styles.emptyText}>Henüz ders eklemediniz.</Text>}
       />
 
-      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.buttonText}>Ders Ekle</Text>
-      </TouchableOpacity>
+      
 
       <Modal
         animationType="slide"
@@ -219,7 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 20,
   },
   removeButton: {
     padding: 10,
