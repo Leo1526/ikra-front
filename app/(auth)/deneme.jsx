@@ -15,17 +15,13 @@ const SomeComponent = () => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Below is the fetch button handled by ApiQuery:</Text>
-      <ApiQuery
-        url="https://your-api-url.com/data"
-        method="POST"
-        body={{ key: 'value' }}
-        headers={{ 'Content-Type': 'application/json' }}
-        onSuccess={handleSuccess}
-        onError={handleError}
-      />
-    </View>
+<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  <View style={{ width: '100%', alignItems: 'center' }}>
+    <Text>Below is the fetch button handled by ApiQuery:</Text>
+
+  </View>
+</View>
+
   );
 };
 

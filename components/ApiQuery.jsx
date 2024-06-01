@@ -30,12 +30,8 @@ const ApiQuery = ({ url, method = 'GET', body = null, headers = {}, onSuccess, o
 
   return (
     <View style={{ flex: 1 }}>
-      {loading ? (
+      {loading && (
         <LoadingScreen />
-      ) : (
-        <Text onPress={fetchData} style={{ padding: 10, backgroundColor: 'blue', color: 'white' }}>
-          Fetch Data
-        </Text>
       )}
     </View>
   );
