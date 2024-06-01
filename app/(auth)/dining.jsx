@@ -4,6 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../design/themes';
 
+import { Rating } from 'react-native-ratings';
+
+
 const initialMealList = [
   { id: 1, date: '24.05.2024', day: 'Cuma', mealType: 'Kahvaltı', calorie: 500, menu: ['Yumurta', 'Zeytin', 'Peynir', 'Domates'], averageRating: null, totalRating: null, countRating: null },
   { id: 2, date: '24.05.2024', day: 'Cuma', mealType: 'Öğle Yemeği', calorie: 966, menu: ['Domates Çorba', 'Etli Kuru Fasulye', 'Bulgur Pilav', 'Yoğurt'], averageRating: null, totalRating: null, countRating: null },
@@ -76,6 +79,7 @@ const DiningMenuScreen = () => {
     }
   };
 
+
   const resetRatings = async () => {
     const resetMealList = mealList.map(meal => ({
       ...meal,
@@ -93,8 +97,8 @@ const DiningMenuScreen = () => {
       console.error("Error resetting ratings", e);
     }
   };
-  
 
+  
   const handleRating = async (meal, rating) => {
     const updatedMealList = mealList.map(item => {
       if (item.id === meal.id) {
@@ -132,7 +136,7 @@ const DiningMenuScreen = () => {
       {item.menu.map((menuItem, index) => (
         <Text key={index} style={styles.menuItem}>{menuItem}</Text>
       ))}
-      <Text style={styles.rating}>Puan: {item.averageRating  ? item.averageRating : 'Değerlendirilmedi'} ({item.countRating ? item.countRating : 0})</Text>
+      <Text style={styles.rating}>Puan: {item.averageRating ? item.averageRating : 'Değerlendirilmedi'} ({item.countRating ? item.countRating : 0})</Text>
       <TouchableOpacity style={styles.ratingButton} onPress={() => openRatingModal(item)}>
         <Text style={styles.ratingButtonText}>Değerlendir</Text>
       </TouchableOpacity>
@@ -203,20 +207,12 @@ const DiningMenuScreen = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Yemek Değerlendir</Text>
             <Text style={styles.modalMealName}>{selectedMeal?.mealType} - {selectedMeal?.date}</Text>
-            <View style={styles.ratingOptions}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <TouchableOpacity
-                  key={value}
-                  style={[
-                    styles.ratingOption,
-                    rating === value && styles.selectedRatingOption
-                  ]}
-                  onPress={() => setRating(value)}
-                >
-                  <Text style={styles.ratingOptionText}>{value}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <Rating
+              startingValue={0}
+              showRating
+              onFinishRating={(rating) => setRating(rating)}
+              style={{ paddingVertical: 10 }}
+            />
             <View style={styles.buttonContainer}>
               <Button
                 title="Vazgeç"
@@ -228,7 +224,6 @@ const DiningMenuScreen = () => {
                 disabled={rating === 0}
               />
             </View>
-            
           </View>
         </View>
       </Modal>
@@ -341,23 +336,6 @@ const styles = StyleSheet.create({
   modalMealName: {
     fontSize: 16,
     marginBottom: 20,
-  },
-  ratingOptions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginBottom: 20,
-  },
-  ratingOption: {
-    padding: 10,
-    backgroundColor: colors.primary,
-    borderRadius: 5,
-  },
-  selectedRatingOption: {
-    backgroundColor: colors.secondary,
-  },
-  ratingOptionText: {
-    color: colors.text,
   },
   buttonContainer: {
     flexDirection: 'row',

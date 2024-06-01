@@ -111,28 +111,6 @@ const SignIn = () => {
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
           />
 
-          {/* <SmoothPinCodeInput
-            codeLength={6}
-            placeholder={<View style={{
-              width: 10,
-              height: 10,
-              borderRadius: 25,
-              opacity: 0.3,
-              backgroundColor: 'black',
-            }}></View>}
-            mask={<View style={{
-              width: 10,
-              height: 10,
-              borderRadius: 25,
-              backgroundColor: 'black',
-            }}></View>}
-            maskDelay={1000}
-            password={!showPassword}
-            cellStyle={null}
-            cellStyleFocused={null}
-            value={code}
-            onTextChange={text => handlePasswordChange(text)}
-          /> */}
 
           {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
           <Button

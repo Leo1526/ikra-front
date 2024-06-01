@@ -36,6 +36,8 @@ const RootLayout = () => {
       false }} />
       <Stack.Screen name='(tabs)' options={{headerShown:
       false }} />
+      <Stack.Screen name='(course)' options={{headerShown:
+      false }} />
     </Stack>
   )
 }
