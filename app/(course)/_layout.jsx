@@ -1,9 +1,8 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Stack } from 'expo-router'
-import { StatusBar } from 'expo-status-bar'
+import React from 'react';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
-const AuthLayout = () => {
+const CourseLayout = () => {
   return (
     <>
       <Stack>
@@ -13,12 +12,17 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+        <Stack.Screen 
+          name='courseAttendance'
+          options={{
+            headerShown: false
+          }}
+        />
       </Stack>
     
-      <StatusBar backgroundColor='#161622'
-      style='light' />
+      <StatusBar backgroundColor='#161622' style='light' />
     </>
-  )
-}
+  );
+};
 
-export default AuthLayout
+export default CourseLayout;

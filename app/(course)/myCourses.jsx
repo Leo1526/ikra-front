@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const availableCourses = [
   { code: 'CS101', name: 'Computer Science 101' },
@@ -32,11 +33,13 @@ const MyCoursesScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredCourses, setFilteredCourses] = useState(availableCourses);
   const [selectedCourses, setSelectedCourses] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchCourses = async () => {
       const storedCourses = await loadCoursesFromStorage();
       setMyCourses(storedCourses);
+      filterAvailableCourses(storedCourses);
     };
 
     fetchCourses();
@@ -64,7 +67,7 @@ const MyCoursesScreen = () => {
   const handleSearch = (text) => {
     setSearchText(text);
     if (text === '') {
-      filterAvailableCourses();
+      filterAvailableCourses(myCourses);
     } else {
       const filtered = availableCourses.filter(course =>
         course.code.toLowerCase().includes(text.toLowerCase())
@@ -73,9 +76,9 @@ const MyCoursesScreen = () => {
     }
   };
 
-  const filterAvailableCourses = () => {
+  const filterAvailableCourses = (currentCourses) => {
     const filtered = availableCourses.filter(course => 
-      !myCourses.some(myCourse => myCourse.code === course.code)
+      !currentCourses.some(myCourse => myCourse.code === course.code)
     );
     setFilteredCourses(filtered);
   };
@@ -94,6 +97,7 @@ const MyCoursesScreen = () => {
     setMyCourses(updatedCourses);
     await saveCoursesToStorage(updatedCourses);
     setSelectedCourses([]);
+    filterAvailableCourses(updatedCourses);
     setModalVisible(false);
   };
 
@@ -107,41 +111,65 @@ const MyCoursesScreen = () => {
           const updatedCourses = myCourses.filter(item => item.code !== course.code);
           setMyCourses(updatedCourses);
           await saveCoursesToStorage(updatedCourses);
-          filterAvailableCourses();
+          await resetAttendance(course.code);
+          filterAvailableCourses(updatedCourses);
         }}
       ]
     );
   };
 
+  const resetAttendance = async (courseCode) => {
+    try {
+      const storedAttendance = await loadAttendanceFromStorage();
+      delete storedAttendance[courseCode];
+      const jsonValue = JSON.stringify(storedAttendance);
+      await AsyncStorage.setItem('@attendance_list', jsonValue);
+    } catch (e) {
+      console.error("Error resetting attendance", e);
+    }
+  };
+
+  const loadAttendanceFromStorage = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@attendance_list');
+      return jsonValue != null ? JSON.parse(jsonValue) : {};
+    } catch (e) {
+      console.error("Error loading attendance from storage", e);
+      return {};
+    }
+  };
+
   const handleCloseModal = () => {
     setModalVisible(false);
     setSearchText('');
-    filterAvailableCourses();
+    filterAvailableCourses(myCourses);
+  };
+
+  const navigateToAttendance = (course) => {
+    navigation.navigate('courseAttendance', { course });
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <Text style={styles.heading}>Derslerim</Text>
 
-      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity style={styles.addButton} onPress={() => { setModalVisible(true); filterAvailableCourses(myCourses); }}>
         <Text style={styles.buttonText}>Ders Ekle</Text>
       </TouchableOpacity>
 
       <FlatList
         data={myCourses}
         renderItem={({ item }) => (
-          <View style={styles.courseContainer}>
+          <TouchableOpacity style={styles.courseContainer} onPress={() => navigateToAttendance(item)}>
             <Text style={styles.courseText}>{item.code} - {item.name}</Text>
             <TouchableOpacity style={styles.removeButton} onPress={() => removeCourse(item)}>
               <Text style={styles.buttonText}>Sil</Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
         keyExtractor={item => item.code}
         ListEmptyComponent={<Text style={styles.emptyText}>Henüz ders eklemediniz.</Text>}
       />
-
-      
 
       <Modal
         animationType="slide"
