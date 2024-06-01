@@ -1,27 +1,46 @@
 // SomeComponent.js
 import React from 'react';
-import { View, Text } from 'react-native';
-import ApiQuery from '../../components/ApiQuery';
+import { View, Button, Text } from 'react-native';
+import useApiQuery from '../../components/useApiQuery';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const SomeComponent = () => {
-  const handleSuccess = (data) => {
-    console.log('Data received:', data);
-    // Burada alınan veriyi bir state'e kaydedebilir veya başka bir işlem yapabilirsiniz.
+
+
+  const handleSuccess = data => {
+    console.log('Custom success:', data);
   };
 
-  const handleError = (error) => {
-    console.error('API error:', error);
-    // Burada hata ile ilgili bir uyarı gösterebilir veya başka bir işlem yapabilirsiniz.
+  const handleError = error => {
+    console.error('Custom error:', error);
+  };
+
+  const { loading, error, fetchData } = useApiQuery({
+    url: "https://your-api-url.com/data",
+    method: "POST",
+    data: { key: 'value' },
+    headers: { 'Content-Type': 'application/json' },
+    onSuccess: handleSuccess,
+    onError: handleError
+  });
+
+  const handleSubmit = async () => {
+    try {
+      await fetchData();
+    } catch (err) {
+      console.error('Error while fetching:', err);
+    }
   };
 
   return (
-<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  <View style={{ width: '100%', alignItems: 'center' }}>
-    <Text>Below is the fetch button handled by ApiQuery:</Text>
-
-  </View>
-</View>
-
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <Button title="Fetch Data" onPress={handleSubmit} />
+      )}
+      {error && <Text>Error: {error}</Text>}
+    </View>
   );
 };
 
