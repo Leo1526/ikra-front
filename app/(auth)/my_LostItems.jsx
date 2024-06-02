@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, StatusBar, Modal } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Platform,StatusBar, Modal,KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Title, FAB, Button } from 'react-native-paper';
+import { Card, Title, FAB, Button, TextInput } from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import { colors } from '../../design/themes';
 
 const LostItemsPage = () => {
   const [lostItems, setLostItems] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [foundModalVisible, setFoundModalVisible] = useState(false);
   const [filterCategory, setFilterCategory] = useState(null);
-  const [temporaryFilterCategory, setTemporaryFilterCategory] = useState('all');
+  const [description, setDescription] = useState('');
+  const [isIDCategory, setIsIDCategory] = useState(false);
+  const [foundItem, setFoundItem] = useState(null);
+  const [editItem, setEditItem] = useState(null);
+  const [idNumber, setIdNumber] = useState(''); 
+
 
   const sampleLostItems = [
     {
@@ -17,38 +23,49 @@ const LostItemsPage = () => {
       title: "Siyah Cüzdan",
       description: "Siyah deri cüzdan, içerisinde kimlik ve kredi kartları var.",
       imageUrl: "https://example.com/image1.png",
-      isIDCategory: false
+      isIDCategory: false,
+      idNumber: ""
     },
     {
       id: 2,
       title: "Mavi Kimlik Kartı",
       description: "Mavi renkli yeni tip kimlik kartı. İsim: Ahmet Yılmaz.",
       imageUrl: "https://example.com/image2.png",
-      isIDCategory: true
+      isIDCategory: true,
+      idNumber: "123456"
+
     },
     {
       id: 3,
       title: "Kırmızı Anahtarlık",
       description: "Kırmızı anahtarlık, üzerinde 4 farklı anahtar bulunmaktadır.",
       imageUrl: "https://example.com/image3.png",
-      isIDCategory: false
+      isIDCategory: false,
+      idNumber: ""
+
     },
     {
       id: 4,
       title: "Gümüş Saat",
       description: "Gümüş renkli el saati, üzerinde küçük bir kazıma var.",
       imageUrl: "https://example.com/image4.png",
-      isIDCategory: false
+      isIDCategory: false,
+      idNumber: ""
     },
     {
       id: 5,
       title: "Yeşil Kitap",
       description: "Yeşil kapaklı bir kitap, 'Felsefenin Kısa Tarihi' yazıyor.",
       imageUrl: "https://example.com/image5.png",
-      isIDCategory: false
+      isIDCategory: false,
+      idNumber: ""
     }
   ];
 
+
+  const handleSubmit = () => {
+    console.log("Kayıp Eşya Kaydedildi:", description, isIDCategory);
+  }
 
   useEffect(() => {
     // API'den kayıp eşyaları çekmek için kullanılabilir.
@@ -56,17 +73,21 @@ const LostItemsPage = () => {
     setLostItems(sampleLostItems);
   }, []);
 
-  const filteredItems = lostItems.filter(item => {
-    if (filterCategory === 'all') return true;
-    return item.isIDCategory === (filterCategory === 'id');
-  });
 
-  const applyFilter = () => {
-    setFilterCategory(temporaryFilterCategory);
-    setModalVisible(false);
-  };
+
+  const itemFound = () => {
+    setFoundModalVisible(false);
+  }
+
+  const itemEdit = () => {
+    setEditModalVisible(false);
+  }
 
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    style={styles.safeArea}
+  >
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
@@ -74,18 +95,113 @@ const LostItemsPage = () => {
           <Text style={styles.heading}>Tüm İşlemler</Text>
         </View>
         <ScrollView style={styles.scrollView}>
-          {filteredItems.map((item) => (
+          {lostItems.map((item) => (
             <Card key={item.id} style={styles.itemCard}>
               {item.imageUrl && <Card.Cover source={{ uri: item.imageUrl }} style={styles.itemImage} resizeMode='contain' />}
               <Card.Content>
                 <Title style={styles.itemDescription}>{item.description}</Title>
               </Card.Content>
+              <View style={styles.buttonContainer}>
+
+                <Button
+                  mode="contained"
+                  onPress={() => { setEditItem(item); setEditModalVisible(true); setDescription(item.description), setIsIDCategory(item.isIDCategory); setIdNumber(item.idNumber)}}
+                  style={[styles.statusButton, styles.lostButton]}
+                >
+                  Düzenle
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={() => { setFoundItem(item); setFoundModalVisible(true); }}
+                  style={[styles.statusButton, styles.foundButton]}
+                >
+                  Bulundu
+                </Button>
+              </View>
             </Card>
           ))}
         </ScrollView>
+        <Modal
+          visible={editModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setEditModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeading}>Kayıp Eşya Düzenle</Text>
+              <TextInput
+                label="Eşya Tanımı"
+                value={description}
+                onChangeText={setDescription}
+                mode="outlined"
+                multiline
+                maxLength={100}
+                numberOfLines={2}
+                style={styles.textInput}
+                right={<TextInput.Affix text={`${description.length}/100`} />}
+              />
+
+              <View style={styles.pickerContainer}>
+                <Text style={styles.pickerLabel}>Kategori Seçiniz</Text>
+                <RNPickerSelect
+                  value= {isIDCategory}
+                  onValueChange={(value) => setIsIDCategory(value)}
+                  items={[
+                    { label: 'ID', value: true },
+                    { label: 'Diğer', value: false },
+                  ]}
+                  style={pickerSelectStyles}
+                />
+              </View>
+
+              {isIDCategory && (
+                <TextInput
+                  label="Kimlik Bilgisi"
+                  value={idNumber}
+                  onChangeText={setIdNumber}
+                  mode="outlined"
+                  style={styles.textInput}
+                />
+              )}
+
+              <View style={styles.buttonContainer}>
+                <Button onPress={handleSubmit} mode="contained" style={styles.reportButton}>
+                  Bildir
+                </Button>
+
+              </View>
+
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={foundModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setFoundModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeading}>Bulundu olarak işaretleyeceksiniz. Bu işlem geri alınamaz</Text>
+
+              <Button
+                mode="contained"
+                onPress={() => { itemFound() }}
+              >
+                Bulundu
+              </Button>
+
+
+            </View>
+          </View>
+        </Modal>
 
       </View>
     </SafeAreaView>
+    </KeyboardAvoidingView>
+
   );
 };
 // Stiller için güncellenmiş bölüm
@@ -113,7 +229,23 @@ const styles = StyleSheet.create({
     elevation: 3,
     alignSelf: 'center', // Her kartı kendi içinde merkezle
   },
-
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  modalHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10
+  },
   itemImage: {
     height: 200,
     backgroundColor: colors.text,
@@ -140,6 +272,21 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly', // Butonlar arasında eşit boşluk bırak
+    padding: 10,
+  },
+  statusButton: {
+    flex: 1, // Her iki buton da eşit genişlikte olacak
+    marginHorizontal: 5, // Butonlar arasında boşluk
+  },
+  foundButton: {
+    backgroundColor: 'green', // Bulundu butonu için yeşil renk
+  },
+  lostButton: {
+    backgroundColor: 'red', // Kayıp butonu için kırmızı renk
   },
 
 });
