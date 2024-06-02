@@ -2,18 +2,14 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { colors, fonts, text } from '../../design/themes';
-import {commonStyle} from "../../design/style";
+import { colors, fonts, text } from '../../design/themes.js';
+import {commonStyle} from "../../design/style.js";
 import * as common from "../common.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const SignIn = ({ route }) => {
-  const { user } = route.params;
-  if (user) {
-    setUsername(user)
-  }
+const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);

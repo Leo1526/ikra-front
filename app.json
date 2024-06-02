@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "new_tutorial",
-    "slug": "new_tutorial",
+    "name": "ikra-front",
+    "displayName": "hacep",
+    "slug": "hacep",
     "scheme":"aora",
     "version": "1.0.0",
     "orientation": "portrait",

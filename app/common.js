@@ -59,9 +59,8 @@ export const ikraAxios = async ({
   }
 };
 
-const checkTokenExpiration = async () => {
+export const checkTokenExpiration = async () => {
   const token = await AsyncStorage.getItem('jwtToken');
-  
   const expireDate = await AsyncStorage.getItem('expireDate')
   if (expireDate) {
     const currentTime = Date.now() / 1000; // current time in seconds
@@ -75,7 +74,7 @@ const checkTokenExpiration = async () => {
 
 export const navigateToLoginPage = async (expired = false) => {
   var email = await AsyncStorage.getItem('username');
-  navigation.navigate('sign-in', {});
+  // navigation.navigate('sign-in', {});
   if (expired) {
     alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
   }
