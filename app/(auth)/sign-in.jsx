@@ -9,7 +9,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const SignIn = () => {
+const SignIn = ({ route }) => {
+  const { user } = route.params;
+  if (user) {
+    setUsername(user)
+  }
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -26,8 +30,8 @@ const SignIn = () => {
       setErrorUsername(true);
       return
     } 
-    if (password.length != 6) {
-      setErrorPassword(false)
+    if (password.length < 8) {
+      setErrorPassword(true)
       return;
     }
     else {
@@ -59,6 +63,7 @@ const SignIn = () => {
           //navigate to homepage
         }
       } catch (error) {
+        console.log(error)
         console.log(error.message)
       }
     }
@@ -109,8 +114,6 @@ const SignIn = () => {
             theme={{ colors: { primary: 'blue' } }}
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
           />
-
-
           {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
           <Button
             mode="contained"

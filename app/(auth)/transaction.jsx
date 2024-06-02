@@ -52,9 +52,9 @@ const TransactionPage = () => {
   const fetchRecipientName = async () => {
     console.log("onedit");
     if(accountNumber == ""){
-        setRecipientDisplayName("");
-        setRecipientName("");
-        return;
+      setRecipientDisplayName("");
+      setRecipientName("");
+      return;
     }
 
     console.log("request öncesi");
@@ -77,23 +77,23 @@ const TransactionPage = () => {
 
   const handleSendMoney = async () => {
     if(accountNumber == ""){
-        Alert.alert("Hata", "Lütfen hesap numarasını giriniz.");
-        return;
+      Alert.alert("Hata", "Lütfen hesap numarasını giriniz.");
+      return;
     }
-    else if(amount == ""){
-        Alert.alert("Hata", "Lütfen yollamak istediğiniz miktarı giriniz.");
-        return;
-      }
+    else if (amount == "") {
+      Alert.alert("Hata", "Lütfen yollamak istediğiniz miktarı giriniz.");
+      return;
+    }
     else if (parseFloat(amount) <= 0) {
-        Alert.alert("Hata", "Lütfen sıfırdan büyük bir miktar giriniz.");
-        return;
-      }
-      
+      Alert.alert("Hata", "Lütfen sıfırdan büyük bir miktar giriniz.");
+      return;
+    }
+
 
     if (enteredName.toLowerCase() === recipientName.toLowerCase()) {
       makeTxRequest();
     } else {
-    Alert.alert("Yanlış isim", "Girilen isim hesap sahibiyle uyuşmuyor, lütfen kontrol edin.");
+      Alert.alert("Yanlış isim", "Girilen isim hesap sahibiyle uyuşmuyor, lütfen kontrol edin.");
     }
   };
 
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 4,
   },
-  
+
   subheader: {
     marginTop: 0,
     fontSize: 18,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: "center"
   },
-  
+
   input: {
     width: '90%',
     marginBottom: 16,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 16, // Yazı boyutunu ayarlayabilirsiniz
     color: text.secondaryDark,
-    fontWeight : "normal"
+    fontWeight: "normal"
   },
   checkbox: {
     alignSelf: 'flex-start',
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
   },
-  
+
 });
 
 export default TransactionPage;

@@ -41,7 +41,7 @@ export const ikraAxios = async ({
       headers.Authorization = `Bearer ${token}`;
     }
     else {
-      navigateToLoginPage();
+      navigateToLoginPage(expired=true);
     }
   }
   try {
@@ -61,18 +61,22 @@ export const ikraAxios = async ({
 
 const checkTokenExpiration = async () => {
   const token = await AsyncStorage.getItem('jwtToken');
+  
   const expireDate = await AsyncStorage.getItem('expireDate')
   if (expireDate) {
     const currentTime = Date.now() / 1000; // current time in seconds
     if (expireDate < currentTime) {
-      navigateToLoginPage()
+      navigateToLoginPage(expired = true)
     } else {
       return token;
     }
   }
 };
 
-export const navigateToLoginPage = () => {
-  alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
-  console.log("navigating login page")
+export const navigateToLoginPage = async (expired = false) => {
+  var email = await AsyncStorage.getItem('username');
+  navigation.navigate('sign-in', {});
+  if (expired) {
+    alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
+  }
 }
