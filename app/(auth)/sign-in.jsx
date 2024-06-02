@@ -53,7 +53,7 @@ const SignIn = () => {
             return;
         } else {
           await AsyncStorage.setItem('jwtToken', data.body.token);
-          await AsyncStorage.setItem('expireDate', data.body.token);
+          await AsyncStorage.setItem('expireDate', data.body.expireDate);
           console.log("tokens are set")
           //TODO
           //navigate to homepage

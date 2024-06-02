@@ -105,14 +105,14 @@ const LostItemsPage = () => {
 
                 <Button
                   mode="contained"
-                  onPress={() => { setEditItem(item); setEditModalVisible(true); setIsIDCategory(item.isIDCategory); setIdNumber(item.idNumber)}}
+                  onPress={() => { setEditItem(item); setEditModalVisible(true); setDescription(item.description), setIsIDCategory(item.isIDCategory); setIdNumber(item.idNumber)}}
                   style={[styles.statusButton, styles.lostButton]}
                 >
                   Düzenle
                 </Button>
                 <Button
                   mode="contained"
-                  onPress={() => { setFoundItem(item); setFoundModalVisible(true); setDescription(item.description)}}
+                  onPress={() => { setFoundItem(item); setFoundModalVisible(true); }}
                   style={[styles.statusButton, styles.foundButton]}
                 >
                   Bulundu
@@ -145,7 +145,7 @@ const LostItemsPage = () => {
               <View style={styles.pickerContainer}>
                 <Text style={styles.pickerLabel}>Kategori Seçiniz</Text>
                 <RNPickerSelect
-                value= {isIDCategory}
+                  value= {isIDCategory}
                   onValueChange={(value) => setIsIDCategory(value)}
                   items={[
                     { label: 'ID', value: true },

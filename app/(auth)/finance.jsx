@@ -1,95 +1,100 @@
-import React from 'react';
-import { View,ScrollView, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { colors } from '../../design/themes';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TransactionItem from '../../components/TransactionItem';
 import { Link } from '@react-navigation/native';
-
+import { colors } from '../../design/themes';
+import { urlDev, ikraAxios } from '../common';
 
 const FinanceScreen = () => {
   const navigation = useNavigation();
+  const [cardBalance, setCardBalance] = useState(0);
+  const [transactions, setTransactions] = useState([]);
 
-  // Example card balance and transactions
-  const cardBalance = 1000;
-  const transactions = [
-    { id: '1', date: '01.05.2023', type: 'Kira', amount: -100, description: 'Kira ödemesi', sender: 'Ben', recipient: 'Kira Şirketi' },
-    { id: '2', date: '15.05.2023', type: 'Maaş', amount: 200, description: 'Maaş', sender: 'İşveren', recipient: 'Ben' },
-    { id: '3', date: '20.05.2023', type: 'Diğer', amount: -50, description: 'Hediye', sender: 'Ben', recipient: 'Arkadaş' },
-    { id: '4', date: '22.05.2023', type: 'Diğer', amount: 150, description: 'Alacak', sender: 'Arkadaş', recipient: 'Ben' },
-    { id: '5', date: '25.05.2023', type: 'Yemek', amount: -70, description: 'Market alışverişi', sender: 'Ben', recipient: 'Market' },
-    { id: '6', date: '02.06.2023', type: 'Diğer', amount: -150, description: 'Elektrik Faturası', sender: 'Ben', recipient: 'Enerji Şirketi' },
-    { id: '7', date: '05.06.2023', type: 'Transfer', amount: 300, description: 'Freelance İş', sender: 'Müşteri', recipient: 'Ben' },
-    { id: '8', date: '07.06.2023', type: 'Diğer', amount: -45, description: 'Kitap Satın Alma', sender: 'Ben', recipient: 'Kitapçı' },
-    { id: '9', date: '10.06.2023', type: 'Eğlence', amount: -30, description: 'Sinema', sender: 'Ben', recipient: 'Sinema' },
-    { id: '10', date: '12.06.2023', type: 'Diğer', amount: 90, description: 'Hediye', sender: 'Anne', recipient: 'Ben' }
-  ];
+  useEffect(() => {
+    ikraAxios({
+      url: urlDev + '/wallets',
+      onSuccess: (data) => {
+        setCardBalance(data.balance);
+        console.log(data);
+      },
+      onError: (error) => {
+        console.error('Error fetching wallet data:', error);
+      },
+    });
 
-  const lastTenTransactions = transactions.slice(-10);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.transaction}>
-      <Text style={styles.transactionText}>
-        {item.recipient}: {item.amount} TL - {item.date}
-      </Text>
-    </View>
-  );
+    ikraAxios({
+      url: urlDev + '/transactions/byPage?page=0&size=5',
+      onSuccess: (data) => {
+        //console.log(data);
+        setTransactions(data.body);
+        console.log(transactions);
+      },
+      onError: (error) => {
+        console.error('Error fetching transactions data: ', error);
+      },
+    })
+  }, []);
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.centerView}>
-        <View style={styles.balanceContainer}>
-          <Text style={styles.balanceHeading}>Kart Bakiyesi</Text>
-          <View style={styles.balanceAmountContainer}>
-            <Text style={styles.currencySymbol}>TL</Text>
-            <Text style={styles.balanceAmount}>{cardBalance}</Text>
+      <View style={styles.container}>
+        <View style={styles.centerView}>
+          <View style={styles.balanceContainer}>
+            <Text style={styles.balanceHeading}>Kart Bakiyesi</Text>
+            <View style={styles.balanceAmountContainer}>
+              <Text style={styles.currencySymbol}>₺</Text>
+              <Text style={styles.balanceAmount}>{cardBalance}</Text>
+            </View>
           </View>
         </View>
-      </View>
-      
-      <View style={styles.transactionsContainer}>
-        <View style= {styles.rightEnd}>
-        <Text style={styles.transactionsHeading}>Geçmiş İşlemler
-        </Text>
-        <View style={styles.rightEnd}>
-          <Link to="/all_transactions"
+
+        <View style={styles.transactionsContainer}>
+          <View style={styles.rightEnd}>
+            <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
+            <Link to="/all_transactions">
+              <Text style={styles.link}>Tümünü gör</Text>
+            </Link>
+          </View>
+          {transactions.length === 0 ? (
+            <View style={styles.noTransactionsContainer}>
+              <Text style={styles.noTransactionsText}>Henüz hiçbir işlem yapmadınız.</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={transactions}
+              renderItem={({ item }) => (
+                <TransactionItem
+                  txTime={item.txTime}
+                  description={item.description}
+                  sender={item.sender}
+                  receiver={item.receiver}
+                  amount={item.amount}
+                  currencySymbol="₺"
+                  change={item.change}
+                />
+              )}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{ paddingBottom: 20 }}
+            />
+          )}
+        </View>
+
+        <View style={styles.centerView}>
+          <Button
+            onPress={() => navigation.navigate('transaction')}
+            style={styles.button}
+            labelStyle={styles.buttonText}
+            buttonColor={colors.secondary}
           >
-            <Text style= {styles.link}>Tümünü gör</Text>
-          </Link>
+            Para Transferi
+          </Button>
         </View>
-        
-        </View>
-        <View style={{ maxHeight: '80%' }}>
-    <FlatList
-      data={lastTenTransactions}
-      renderItem={({ item }) => (
-        <TransactionItem
-          date={item.date}
-          description={item.description}
-          type={item.type}
-          sender={item.sender}
-          recipient={item.recipient}
-          amount={item.amount}
-        />
-      )}
-      keyExtractor={item => item.id}
-    />
-  </View>
-
       </View>
-
-      <View style= {styles.centerView}>
-        <Button
-          onPress={() => navigation.navigate('transaction')}
-          style={styles.button}
-          labelStyle={styles.buttonText}
-          buttonColor={colors.secondary}
-        >
-          Para Transferi
-        </Button>
-      </View>
-
     </SafeAreaView>
   );
 };
@@ -98,15 +103,18 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
-    justifyContent: 'center'
+  },
+  container: {
+    flex: 1,
   },
   centerView: {
-    justifyContent:'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 16,
   },
   balanceContainer: {
-    backgroundColor: colors.text,
-    borderRadius: 8,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 20,
     alignItems: 'center',
@@ -115,7 +123,7 @@ const styles = StyleSheet.create({
   balanceHeading: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.background,
+    color: colors.text,
   },
   balanceAmountContainer: {
     flexDirection: 'row',
@@ -123,22 +131,23 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   currencySymbol: {
-    fontSize: 20,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: colors.background,
+    color: colors.text,
   },
   balanceAmount: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: colors.background,
+    color: colors.text,
     marginLeft: 5,
   },
   transactionsContainer: {
+    flex: 1,
     backgroundColor: colors.background,
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
-    maxHeight: '70%',
+    justifyContent: 'center', // Center content vertically
   },
   transactionsHeading: {
     fontSize: 20,
@@ -146,8 +155,14 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: 10,
   },
-  transactionsList: {
-    marginTop: 10,
+  noTransactionsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noTransactionsText: {
+    fontSize: 18,
+    color: colors.text,
   },
   transaction: {
     backgroundColor: colors.text,
@@ -166,7 +181,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.text,
     fontWeight: 'bold',
-    alignItems: 'baseline'
+    fontSize: 16
   },
   link: {
     color: colors.secondary,
@@ -176,8 +191,8 @@ const styles = StyleSheet.create({
   rightEnd: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center'
   }
-
 });
 
 export default FinanceScreen;
