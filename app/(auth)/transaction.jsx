@@ -17,7 +17,7 @@ const TransactionPage = () => {
   const recipients = [
     { accountNumber: '21945872', name: 'Salih Bakkal' },
     { accountNumber: '12345678', name: 'Ahmet Market' },
-    { accountNumber: '98765432', name: 'Ayşe Restoran' },    
+    { accountNumber: '98765432', name: 'Ayşe Restoran' },
     { accountNumber: '11111111', name: 'New Recipient 1' },
     { accountNumber: '22222222', name: 'New Recipient 2' },
     { accountNumber: '33333333', name: 'New Recipient 3' },
@@ -56,19 +56,19 @@ const TransactionPage = () => {
     const nameParts = fetchedName.split(' ');
     const maskedName = nameParts.map((part, index) => {
 
-        const firstLetter = part.charAt(0);
+      const firstLetter = part.charAt(0);
         const otherLetters = "*".repeat(part.length-1);
-        return firstLetter + otherLetters + ' ';
-      
+      return firstLetter + otherLetters + ' ';
+
     }).join(' ');
     return maskedName;
   }
 
   const fetchRecipientName = async () => {
     if(accountNumber == ""){
-        setRecipientDisplayName("");
-        setRecipientName("");
-        return;
+      setRecipientDisplayName("");
+      setRecipientName("");
+      return;
     }
 
     // Bu fonksiyon backend'e hesap numarasıyla sorgu atacak
@@ -83,24 +83,24 @@ const TransactionPage = () => {
 
   const handleSendMoney = async () => {
     if(accountNumber == ""){
-        Alert.alert("Hata", "Lütfen hesap numarasını giriniz.");
-        return;
+      Alert.alert("Hata", "Lütfen hesap numarasını giriniz.");
+      return;
     }
-    else if(amount == ""){
-        Alert.alert("Hata", "Lütfen yollamak istediğiniz miktarı giriniz.");
-        return;
-      }
+    else if (amount == "") {
+      Alert.alert("Hata", "Lütfen yollamak istediğiniz miktarı giriniz.");
+      return;
+    }
     else if (parseFloat(amount) <= 0) {
-        Alert.alert("Hata", "Lütfen sıfırdan büyük bir miktar giriniz.");
-        return;
-      }
-      
+      Alert.alert("Hata", "Lütfen sıfırdan büyük bir miktar giriniz.");
+      return;
+    }
+
 
     if (enteredName.toLowerCase() === recipientName.toLowerCase()) {
-    // Burada backend'e para gönderme isteği atılacak
-    Alert.alert("Başarılı", "Para gönderme işlemi başarılı.");
+      // Burada backend'e para gönderme isteği atılacak
+      Alert.alert("Başarılı", "Para gönderme işlemi başarılı.");
     } else {
-    Alert.alert("Yanlış isim", "Girilen isim hesap sahibiyle uyuşmuyor, lütfen kontrol edin.");
+      Alert.alert("Yanlış isim", "Girilen isim hesap sahibiyle uyuşmuyor, lütfen kontrol edin.");
     }
 
 
@@ -133,14 +133,14 @@ const TransactionPage = () => {
 
           {/* Kayıtlı alıcıları göstermek için buton */}
           <Button
-        mode="outlined"
-        onPress={showModal}
-        style={styles.savedReceiversButton}
-        contentStyle={styles.buttonContent} // İçerik stilini belirtmek için contentStyle kullanıyoruz
-        labelStyle={styles.buttonLabel} // Etiketin stilini belirtmek için labelStyle kullanıyoruz
-      >
-        Kayıtlı Alıcıları Göster
-      </Button>
+            mode="outlined"
+            onPress={showModal}
+            style={styles.savedReceiversButton}
+            contentStyle={styles.buttonContent} // İçerik stilini belirtmek için contentStyle kullanıyoruz
+            labelStyle={styles.buttonLabel} // Etiketin stilini belirtmek için labelStyle kullanıyoruz
+          >
+            Kayıtlı Alıcıları Göster
+          </Button>
 
 
           <TextInput
@@ -204,19 +204,19 @@ const TransactionPage = () => {
 
           {/* Modal */}
           <Modal style={{ height: '65%' }} visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
-          <View style={styles.modalContent}>
-          <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
-            <ScrollView style={{ height: '100%' }}>
-              <List.Section>
-                {recipients.map((recipient) => (
-                  <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
-                    <List.Item title={`${recipient.accountNumber} - ${recipient.name}`} />
-                  </TouchableOpacity>
-                ))}
-              </List.Section>
-            </ScrollView>
-          </View>
-        </Modal>
+            <View style={styles.modalContent}>
+              <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
+              <ScrollView style={{ height: '100%' }}>
+                <List.Section>
+                  {recipients.map((recipient) => (
+                    <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
+                      <List.Item title={`${recipient.accountNumber} - ${recipient.name}`} />
+                    </TouchableOpacity>
+                  ))}
+                </List.Section>
+              </ScrollView>
+            </View>
+          </Modal>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 4,
   },
-  
+
   subheader: {
     marginTop: 0,
     fontSize: 18,
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: "center"
   },
-  
+
   input: {
     width: '90%',
     marginBottom: 16,
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 16, // Yazı boyutunu ayarlayabilirsiniz
     color: text.secondaryDark,
-    fontWeight : "normal"
+    fontWeight: "normal"
   },
   checkbox: {
     alignSelf: 'flex-start',
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
   },
-  
+
 });
 
 export default TransactionPage;
