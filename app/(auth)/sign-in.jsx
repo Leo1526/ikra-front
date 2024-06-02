@@ -7,7 +7,6 @@ import {commonStyle} from "../../design/style";
 import * as common from "../common.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 
 const SignIn = () => {
@@ -53,8 +52,8 @@ const SignIn = () => {
             });
             return;
         } else {
-          await AsyncStorage.setItem('jwtToken', jwt.token);
-          await AsyncStorage.setItem('expireDate', jwt.token);
+          await AsyncStorage.setItem('jwtToken', data.body.token);
+          await AsyncStorage.setItem('expireDate', data.body.expireDate);
           console.log("tokens are set")
           //TODO
           //navigate to homepage

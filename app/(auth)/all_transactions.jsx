@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../design/themes';
 import { TextInput, Modal, Button } from 'react-native-paper';
 import TransactionItem from '../../components/TransactionItem';
 import RNPickerSelect from 'react-native-picker-select';
+import { urlDev, ikraAxios } from '../common';
+
 
 const AllTransactionsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterKeyword, setFilterKeyword] = useState('');
   const [transactionType, setTransactionType] = useState('Tümü');
   const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [page, setPage] = useState(0);
 
-  const transactions = [
-    { id: '1', date: '01.05.2023', type: 'Kira', amount: -100, description: 'Kira ödemesi', sender: 'Ben', recipient: 'Kira Şirketi' },
-    { id: '2', date: '15.05.2023', type: 'Maaş', amount: 200, description: 'Maaş', sender: 'İşveren', recipient: 'Ben' },
-    { id: '3', date: '20.05.2023', type: 'Diğer', amount: -50, description: 'Hediye', sender: 'Ben', recipient: 'Arkadaş' },
-    { id: '4', date: '22.05.2023', type: 'Diğer', amount: 150, description: 'Alacak', sender: 'Arkadaş', recipient: 'Ben' },
-    { id: '5', date: '25.05.2023', type: 'Yemek', amount: -70, description: 'Market alışverişi', sender: 'Ben', recipient: 'Market' },
-    { id: '6', date: '02.06.2023', type: 'Diğer', amount: -150, description: 'Elektrik Faturası', sender: 'Ben', recipient: 'Enerji Şirketi' },
-    { id: '7', date: '05.06.2023', type: 'Transfer', amount: 300, description: 'Freelance İş', sender: 'Müşteri', recipient: 'Ben' },
-    { id: '8', date: '07.06.2023', type: 'Diğer', amount: -45, description: 'Kitap Satın Alma', sender: 'Ben', recipient: 'Kitapçı' },
-    { id: '9', date: '10.06.2023', type: 'Eğlence', amount: -30, description: 'Sinema', sender: 'Ben', recipient: 'Sinema' },
-    { id: '10', date: '12.06.2023', type: 'Diğer', amount: 90, description: 'Hediye', sender: 'Anne', recipient: 'Ben' }
-  ];
+
+  useEffect(() => {
+    handleGetTransactions();
+  }, []);
   
+  const handleGetTransactions = () => {
+    ikraAxios({
+      url: urlDev + '/transactions/byPage?page=0&size=10',
+      onSuccess: (data) => {
+        setPage(page + 1);
+        setTransactions(data.body);
+        console.log(transactions);
+      },
+      onError: (error) => {
+        console.error('Error fetching transactions data: ', error);
+      },
+    })
+  }
 
   const applyFilter = () => {
     let filtered = transactions;
@@ -92,12 +101,13 @@ const AllTransactionsScreen = () => {
           data={filteredTransactions.length > 0 ? filteredTransactions : transactions}
           renderItem={({ item }) => (
             <TransactionItem
-              date={item.date}
+              txTime={item.txTime}
               description={item.description}
-              type={item.type}
               sender={item.sender}
-              recipient={item.recipient}
+              receiver={item.receiver}
               amount={item.amount}
+              currencySymbol="₺"
+              change={item.change}
             />
           )}
           keyExtractor={item => item.id}

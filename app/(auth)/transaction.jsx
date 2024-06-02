@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Image, StyleSheet, Platform, KeyboardAvoidingView, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Image, StyleSheet, Platform, KeyboardAvoidingView, Text, Alert, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput, Button, Modal, List, Checkbox } from 'react-native-paper'; // Modal ve List ekledik
 import { colors, fonts, text} from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as commonStyles from '../../design/style';
+import { ikraAxios } from '../common';
+import { urlDev, url } from '../common';
+
 const TransactionPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [recipientName, setRecipientName] = useState('');
@@ -13,28 +16,9 @@ const TransactionPage = () => {
   const [recipientDisplayName, setRecipientDisplayName] = useState('');
   const [visible, setVisible] = useState(false); // Modal görünürlüğü için state ekledik
   const [sendToRecipients, setSendToRecipients] = useState(false); // Kayıtlı alıcılara gönder seçeneği
-  // Örnek kayıtlı alıcılar
-  const recipients = [
-    { accountNumber: '21945872', name: 'Salih Bakkal' },
-    { accountNumber: '12345678', name: 'Ahmet Market' },
-    { accountNumber: '98765432', name: 'Ayşe Restoran' },    
-    { accountNumber: '11111111', name: 'New Recipient 1' },
-    { accountNumber: '22222222', name: 'New Recipient 2' },
-    { accountNumber: '33333333', name: 'New Recipient 3' },
-    { accountNumber: '44444444', name: 'New Recipient 4' },
-    { accountNumber: '55555555', name: 'New Recipient 5' },
-    { accountNumber: '66666666', name: 'New Recipient 6' },
-    { accountNumber: '77777777', name: 'New Recipient 7' },
-    { accountNumber: '88888888', name: 'New Recipient 8' },
-    { accountNumber: '99999999', name: 'New Recipient 9' },
-    { accountNumber: '10101010', name: 'New Recipient 10' },
-    { accountNumber: '12121212', name: 'New Recipient 11' },
-    { accountNumber: '13131313', name: 'New Recipient 12' },
-    { accountNumber: '14141414', name: 'New Recipient 13' },
-    { accountNumber: '15151515', name: 'New Recipient 14' },
-    { accountNumber: '16161616', name: 'New Recipient 15' }
-
-  ];
+  const [fetchedName, setFetchedName] = useState("");
+  const [recipients, setRecipients] = useState([]);
+  
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -51,34 +35,44 @@ const TransactionPage = () => {
     hideModal(); // Modalı kapat
   };
 
-  const nameMasker = (name) =>{
-    const fetchedName = name; // Backend'den gelen isim
-    const nameParts = fetchedName.split(' ');
-    const maskedName = nameParts.map((part, index) => {
-
+  const nameMasker = (name) => {
+    const nameParts = name.split(' ');
+    const maskedName = nameParts.map((part) => {
+      if (part.length > 1) {
         const firstLetter = part.charAt(0);
-        const otherLetters = "*".repeat(part.length-1);
-        return firstLetter + otherLetters + ' ';
-      
+        const otherLetters = "*".repeat(part.length - 1);
+        return firstLetter + otherLetters;
+      } else {
+        return part; // for single character parts, do not mask
+      }
     }).join(' ');
     return maskedName;
-  }
+  };
 
   const fetchRecipientName = async () => {
+    console.log("onedit");
     if(accountNumber == ""){
         setRecipientDisplayName("");
         setRecipientName("");
         return;
     }
 
-    // Bu fonksiyon backend'e hesap numarasıyla sorgu atacak
-    // Örnek olarak statik bir isim döndürelim
-    const fetchedName = "Salih Bakkal"; // Backend'den gelen isim
-    const maskedName = nameMasker(fetchedName);
+    console.log("request öncesi");
+    await ikraAxios({
+      url: urlDev + '/users/nameByStudentId?studentId=' + accountNumber,
+      onSuccess: (data) => {
+        const usersName = `${data.body.firstName} ${data.body.lastName}`;
+        const maskedName = nameMasker(usersName);
+        setRecipientDisplayName(maskedName);
+        setRecipientName(usersName);
+      },
+      onError: (error) => {
+        console.error('Error fetching transactions data: ', error);
+      },
+    });
 
-
-    setRecipientDisplayName(maskedName);
-    setRecipientName(fetchedName);
+    console.log("request sonrası");
+  
   };
 
   const handleSendMoney = async () => {
@@ -97,27 +91,58 @@ const TransactionPage = () => {
       
 
     if (enteredName.toLowerCase() === recipientName.toLowerCase()) {
-    // Burada backend'e para gönderme isteği atılacak
-    Alert.alert("Başarılı", "Para gönderme işlemi başarılı.");
+      makeTxRequest();
     } else {
     Alert.alert("Yanlış isim", "Girilen isim hesap sahibiyle uyuşmuyor, lütfen kontrol edin.");
     }
-
-
-
-    if (sendToRecipients) {
-      // Kayıtlı alıcılara gönder seçeneği seçili ise backend'e sorgu atılacak
-      // Burada işlemin gerçekleştirileceği fonksiyonu çağırabilirsiniz
-      console.log('Backend\'e sorgu atılıyor...');
-    } else {
-      // Kayıtlı alıcılara gönder seçeneği seçili değilse normal işlem yapılacak
-      // Burada işlemin gerçekleştirileceği fonksiyonu çağırabilirsiniz
-      console.log('Normal işlem gerçekleştiriliyor...');
-    }
   };
+
+  const makeTxRequest = async () => {
+    ikraAxios({
+      url: urlDev + '/transactions',
+      method: 'POST',
+      data: {
+        "receiver" : accountNumber,
+        "amount" : amount,
+        "description" : description,
+        "txType" : "WITH_STUDENT_NO",
+        "saveUser": sendToRecipients
+      },
+      onSuccess: (data) => {
+        console.log(data);
+        if (data.status == "ERROR"){
+          Alert.alert("Bakiye yetersiz!");
+        } else {
+          Alert.alert("Para gönderme işlemi başarılı!");
+        }
+        
+        
+      },
+      onError: (error) => {
+        console.error('Error executing transaction: ', error);
+      },
+    })
+  };
+
+  const getSavedUsers = async () => {
+    ikraAxios({
+      url: urlDev + '/savedUser',
+      method: 'GET',
+      onSuccess: (data) => {
+        console.log(data);
+        setRecipients(data.body);
+        setVisible(true);
+      },
+      onError: (error) => {
+        console.error('Error fetching saved user data: ', error);
+      },
+    })
+  }
+
   // Diğer fonksiyonlar ve JSX içeriği buraya gelecek
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.safeArea}
@@ -134,7 +159,7 @@ const TransactionPage = () => {
           {/* Kayıtlı alıcıları göstermek için buton */}
           <Button
         mode="outlined"
-        onPress={showModal}
+        onPress={getSavedUsers}
         style={styles.savedReceiversButton}
         contentStyle={styles.buttonContent} // İçerik stilini belirtmek için contentStyle kullanıyoruz
         labelStyle={styles.buttonLabel} // Etiketin stilini belirtmek için labelStyle kullanıyoruz
@@ -144,7 +169,7 @@ const TransactionPage = () => {
 
 
           <TextInput
-            label="Hesap Numarası"
+            label="Öğrenci Numarası"
             value={accountNumber}
             onChangeText={(text) => {
               const filteredText = text.replace(/[^0-9]/g, '');
@@ -209,8 +234,8 @@ const TransactionPage = () => {
             <ScrollView style={{ height: '100%' }}>
               <List.Section>
                 {recipients.map((recipient) => (
-                  <TouchableOpacity key={recipient.accountNumber} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
-                    <List.Item title={`${recipient.accountNumber} - ${recipient.name}`} />
+                  <TouchableOpacity key={recipient.studentId} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
+                    <List.Item title={`${recipient.studentId} - ${recipient.name}`} />
                   </TouchableOpacity>
                 ))}
               </List.Section>
@@ -220,6 +245,7 @@ const TransactionPage = () => {
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
