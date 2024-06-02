@@ -13,6 +13,18 @@ const AuthLayout = () => {
           }}
         />
         <Stack.Screen
+          name='courses'
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen
+          name='deneme1'
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen
           name='sign-in'
           options={{
             headerShown: false
@@ -55,6 +67,13 @@ const AuthLayout = () => {
             headerShown: false
           }}
         />
+        <Stack.Screen
+          name='profile'
+          options={{
+            headerShown: false
+          }}
+        />
+
 
         <Stack.Screen
           name='finance'
