@@ -1,4 +1,4 @@
-import { colors } from '../design/themes';
+import { colors, text } from '../design/themes';
 
 export const commonStyle = {
   input: {
@@ -16,18 +16,29 @@ export const commonStyle = {
     padding: 2,
     backgroundColor: colors.primary,
     marginBottom: 16,
-    fontWeight: 'bold',
+    borderRadius: 16
+  },
+  primaryButtonLabel: {
+    color: text.primaryLight,
+    fontWeight: 'light',
     fontSize: 16,
     letterSpacing: 2,
+    padding:4
   },
   secondaryButton: {
-    width: '100%',
     textAlign: 'center',
-    backgroundColor: colors.secondary,
-    marginBottom: 16,
-    fontWeight: 'bold',
+    backgroundColor: colors.background,
+    borderRadius: 10,
     fontSize: 16,
     letterSpacing: 2,
+    colors: colors.primary,
+    fontWeight: '500',
+    borderColor: colors.primary,
+    borderWidth: 1,
+  },
+  secondaryButtonLabel: {
+    color: colors.primary,
+    fontWeight: '500'
   },
   errorText: {
     marginBottom: 8,

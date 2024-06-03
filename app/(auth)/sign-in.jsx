@@ -90,6 +90,7 @@ const SignIn = ({ route }) => {
             resizeMode="contain"
           />
           <Text style={styles.appName}>Hoşgeldiniz.</Text>
+          <View style={styles.form}>
 
           <TextInput
             label="Kullanıcı Adı"
@@ -100,7 +101,7 @@ const SignIn = ({ route }) => {
             style={commonStyle.input}
             labelStyle={commonStyle.input}
             theme={{ colors: { primary: 'blue' } }}
-          />
+            />
           {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>}
           <TextInput
             label="Parola"
@@ -113,15 +114,14 @@ const SignIn = ({ route }) => {
             ref={passwordRef}
             theme={{ colors: { primary: 'blue' } }}
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
-          />
+            />
           {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
           <Button
             mode="contained"
             onPress={handleLogin}
             style={commonStyle.primaryButton}
-            labelStyle={commonStyle.primaryButton}
-            buttonColor={colors.primary}
-          >
+            labelStyle={commonStyle.primaryButtonLabel}
+            >
             Giriş Yap
           </Button>
           <Snackbar
@@ -140,12 +140,12 @@ const SignIn = ({ route }) => {
             <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
             <Button
               onPress={() => navigation.navigate('sign-up')}
-              labelStyle={styles.signupButton}
-              buttonColor={colors.secondary}
-            >
+              labelStyle={commonStyle.secondaryButtonLabel}
+              style={commonStyle.secondaryButton}
+              >
               Kayıt Ol
             </Button>
-            
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>  
@@ -156,19 +156,24 @@ const SignIn = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 16,
     backgroundColor: colors.background, // Arka plan rengi
     font: fonts.regular
+  },
+  form: {
+    marginTop: 60,
+    width: '100%',
   },
   logo: {
     width: 200,
     height: 200,
   },
   appName: {
-    fontSize: 24,
+    fontSize: 20,
     marginBottom: 16,
+    
     color: "#555555", // Uygulama adı rengi
   },
   input: {
@@ -190,16 +195,18 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
   },
   signupButtonText: {
     color: text.primaryDark,
-    fontWeight: 'bold',
+    fontWeight: 'light',
   },
   signupButton: {
     color: text.primaryLight,
-    fontWeight: 'bold',
+    fontWeight: '300',
   },
+
   developerText: {
     position: 'absolute',
     bottom: 10,
