@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet , View} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,21 +12,39 @@ import Settings from './app/(screens)/settings';
 import DepartmentAnnouncement from './app/(anno)/depAnno';
 import FinanceScreen from './app/(screens)/finance';
 import Profile from './app/(tabs)/profile'; 
-import {colors} from './design/themes'
+import {colors,text,} from './design/themes'
+import settingsLogo from './assets/icons/settings.png'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const CustomHeader = ({ navigation }) => {
+const SettingsIcon = () => (
+  <Image
+    source={settingsLogo}
+    style={{ width: 24, height: 24 }}
+  />
+);
+
+const CustomHeader = ({ navigation, title }) => {
   return (
     <Appbar.Header style={styles.header}>
-      <Appbar.Content title="" />
-      <Image
-        source={require('./assets/images/logo-text.png')} 
-        style={{ width: 40, height: 40 }}
-        resizeMode="contain"
-      />
-      <Appbar.Action icon="cog" onPress={() => navigation.navigate('settings')} />
+      <View style={styles.leftContainer}>
+        <Image
+          source={require('./assets/images/logo-text.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+      <View style={styles.centerContainer}>
+        <Appbar.Content
+          title={title}
+          titleStyle={styles.title}
+          style={{ justifyContent: 'center', alignItems: 'center' }}
+        />
+      </View>
+      <View style={styles.rightContainer}>
+        <Appbar.Action icon={() => <SettingsIcon />} onPress={() => navigation.navigate('settings')} />
+      </View>
     </Appbar.Header>
   );
 };
@@ -34,9 +52,25 @@ const CustomHeader = ({ navigation }) => {
 const HomeStack = () => {
   return (
     <Stack.Navigator
-      screenOptions={{
-        header: (props) => <CustomHeader {...props} />,
-      }}
+      screenOptions={({ route }) => ({
+        header: (props) => {
+          let title;
+          switch (route.name) {
+            case 'home':
+              title = 'Anasayfa';
+              break;
+            case 'settings':
+              title = 'Ayarlar';
+              break;
+            case 'depAnno':
+              title = 'Duyurular';
+              break;
+            default:
+              title = '';
+          }
+          return <CustomHeader {...props} title={title} />;
+        },
+      })}
     >
       <Stack.Screen name="home" component={Home} />
       <Stack.Screen name="settings" component={Settings} />
@@ -45,9 +79,10 @@ const HomeStack = () => {
   );
 };
 
+
 const BottomTabNavigator = () => {
   return (
-    <Tab.Navigator initialRouteName='HomeStack' >
+    <Tab.Navigator initialRouteName='HomeStack'>
       <Tab.Screen
         name="finance"
         component={FinanceScreen}
@@ -55,13 +90,14 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="credit-card" color={color} size={size} />
           ),
+          header: (props) => <CustomHeader {...props} title="Kartım" />,
         }}
       />
       <Tab.Screen
         name="HomeStack"
         component={HomeStack}
         options={{
-          headerShown:false,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" color={color} size={size} />
           ),
@@ -74,11 +110,13 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" color={color} size={size} />
           ),
+          header: (props) => <CustomHeader {...props} title="Profil" />,
         }}
       />
     </Tab.Navigator>
   );
 };
+
 
 const AuthStack = () => {
   return (
@@ -113,13 +151,43 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  header: {
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderBottomColor: colors.primary,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    height: 52,
+  },
+  leftContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
   logo: {
-    width: 40,
+    width: 100,
     height: 40,
   },
-  header: {
-    backgroundColor: colors.primary,
-  }
+  title: {
+    textAlign: 'center',
+    color: '#FFFFFF',
+    letterSpacing: 1,
+  },
 });
+
+
+
 
 export default App;
