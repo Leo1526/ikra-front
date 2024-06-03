@@ -4,18 +4,42 @@ import Swiper from 'react-native-swiper';
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { ikraAxios, urlDev, url } from '../common';
 
-
 const Home = ({ navigation }) => {
   const [announcementImages, setAnnouncementImages] = useState([])
 
   const announcementSuccessHandler = (data) => {
-    if (data.status === 'SUCCESS' || data.body) {
-      console.log(data.body)
+    if (data.status === 'SUCCESS') {
+      let announcements = []
+      let announcementResponse = data.body;
+      announcementResponse.forEach(response => {
+        console.log("inside")
+        let obj;
+        let title = response.title
+        if (title.length > 37) {
+          title = title.slice(0,34)
+          title += "..."
+        }
+        console.log(title)
+        if (response.image) {
+          obj = {
+            base64: response.image,
+            id: response.id,
+            title: title
+          }
+        }
+        else {
+          obj = {
+            id: response.id,
+            title: title
+          }
+        }
+        announcements.push(obj)
+      });
+      setAnnouncementImages(announcements);
+      console.log("setted")
     }
   }
-  console.log("buradasın")
   useEffect(() => { 
-    console.log("buradasın")
     const fetchAnnouncements = () => {
       ikraAxios({
         url: urlDev + '/announcement/all',
@@ -33,13 +57,12 @@ const Home = ({ navigation }) => {
 
 
   const handleAnnouncementClick = (id) => {
-    // Navigate to the respective announcement page
+    console.log(id)
     // navigation.navigate('Announcement', { id });
   };
 
   return (
     <ScrollView style={styles.container}>
-      {/* Sliding Announcement Photos */}
       <View style={styles.sliderContainer}>
         <Swiper
           autoplay
@@ -50,7 +73,15 @@ const Home = ({ navigation }) => {
         >
           {announcementImages.map((image, index) => (
             <TouchableOpacity key={index} onPress={() => handleAnnouncementClick(image.id)}>
-              <Image source={{ uri: image.url }} style={styles.image} />
+              <View>
+                <Image 
+                  source={image.base64 ? { uri: image.base64 } : require('../../assets/images/placeholder.png')} 
+                  style={styles.image} 
+                />
+                <View style={styles.textContainer}>
+                  <Text style={styles.titleText}>{image.title}</Text>
+                </View>
+              </View>
             </TouchableOpacity>
           ))}
         </Swiper>
@@ -128,6 +159,22 @@ const styles = StyleSheet.create({
   },
   activeDotStyle: {
     backgroundColor: '#FF6347',
+  },
+  textContainer: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 0,
+  },
+  titleText: {
+    left: 2,
+    textTransform: 'uppercase',
+    right:2,
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'thin',
   },
   balanceContainer: {
     margin: 20,
