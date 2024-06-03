@@ -1,10 +1,20 @@
-import React, { useState, useEffect  } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import Swiper from 'react-native-swiper';
-import { Card, Title, Paragraph } from 'react-native-paper';
+import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { ikraAxios, urlDev, url } from '../common';
+import Carousel from 'react-native-reanimated-carousel';
+import { colors, text } from '../../design/themes';
+
 
 const Home = ({ navigation }) => {
+  const [balance, setBalance] = useState(0.0)
+  const [name, setName] = useState('')
+  const [studentId, setStudentId] = useState(0)
+
+  const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height;
+
   const [announcementImages, setAnnouncementImages] = useState([])
 
   const announcementSuccessHandler = (data) => {
@@ -12,17 +22,15 @@ const Home = ({ navigation }) => {
       let announcements = []
       let announcementResponse = data.body;
       announcementResponse.forEach(response => {
-        console.log("inside")
         let obj;
         let title = response.title
         if (title.length > 37) {
           title = title.slice(0,34)
           title += "..."
         }
-        console.log(title)
         if (response.image) {
           obj = {
-            base64: response.image,
+            base64: "data:" + response.mimeType + ";base64," + response.image,
             id: response.id,
             title: title
           }
@@ -36,8 +44,17 @@ const Home = ({ navigation }) => {
         announcements.push(obj)
       });
       setAnnouncementImages(announcements);
-      console.log("setted")
     }
+  }
+
+  const handleCardSuccess = (data) => {
+    if (data.status === 'SUCCESS') {
+      setBalance(data.body.balance)
+      setName(data.body.name)
+      setStudentId(data.body.studentId)
+      return
+    }
+    setName("Cüzdan verileriniz getirilirken hata oluştu.")
   }
   useEffect(() => { 
     const fetchAnnouncements = () => {
@@ -53,48 +70,85 @@ const Home = ({ navigation }) => {
       });
     };
     fetchAnnouncements();
+
+    const fetchCard = () => {
+      ikraAxios({
+        url: urlDev + '/wallets',
+        method: 'GET',
+        onSuccess: handleCardSuccess,
+        onError: () => {
+          setLoading(false);
+          alert("Ana sayfa için duyurular getirilirken hata oluştu!" + error?.message? error.message : "Bilinmeyen")
+        },
+        tokenRequired: true,
+      })
+    }
+    fetchCard();
   }, []);
 
 
   const handleAnnouncementClick = (id) => {
     console.log(id)
-    // navigation.navigate('Announcement', { id });
   };
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const renderItem = ({ item }) => (
+    <View
+      onTouchStart={() => setIsDragging(false)}
+      onTouchMove={() => setIsDragging(true)}
+      onTouchEnd={() => {
+        if (!isDragging) {
+          handleAnnouncementClick(item.id);
+        }
+      }}
+    >
+      <View>
+        <Image 
+          source={item.base64 ? { uri: item.base64 } : require('../../assets/images/placeholder.png')} 
+          style={styles.image} 
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.titleText}>{item.title}</Text>
+        </View>
+      </View>
+    </View>
+  );
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.sliderContainer}>
-        <Swiper
-          autoplay
+        <Carousel
+          data={announcementImages}
+          renderItem={renderItem}
+          width={width}
+          height={height*0.25}
+          autoPlay
           loop
+          autoPlayInterval = {100000}
+          onSnapToItem={null}
+          scrollAnimationDuration={1000}
           dotStyle={styles.dotStyle}
           activeDotStyle={styles.activeDotStyle}
-          onIndexChanged={(index) => handleAnnouncementClick(announcementImages[index].id)}
-        >
-          {announcementImages.map((image, index) => (
-            <TouchableOpacity key={index} onPress={() => handleAnnouncementClick(image.id)}>
-              <View>
-                <Image 
-                  source={image.base64 ? { uri: image.base64 } : require('../../assets/images/placeholder.png')} 
-                  style={styles.image} 
-                />
-                <View style={styles.textContainer}>
-                  <Text style={styles.titleText}>{image.title}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </Swiper>
+        />
       </View>
 
       {/* Card Balance Display */}
       <View style={styles.balanceContainer}>
-        <Card>
-          <Card.Content>
-            <Title>Card Balance</Title>
-            <Paragraph>100 TL</Paragraph>
-          </Card.Content>
-        </Card>
+        <View style={styles.infoContainer}>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.studentNo}>{studentId}</Text>
+          <Text style={styles.balanceLabel}>Bakiye</Text>
+          <Text style={styles.balance}>{balance} TL</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={null}>
+            PAYLAŞ
+          </Button>
+          <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={() => console.log('Tümü')}>
+            TÜMÜ
+          </Button>
+        </View>
       </View>
 
       {/* Navigation Icon Buttons */}
@@ -140,19 +194,18 @@ const Home = ({ navigation }) => {
   );
 };
 
-const { width } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6F8',
+    backgroundColor: colors.background,
   },
   sliderContainer: {
+    borderRadius: 5,
     height: 200,
   },
   image: {
-    width: width,
     height: 200,
+    resizeMode: 'contain'
   },
   dotStyle: {
     backgroundColor: '#90A4AE',
@@ -177,7 +230,51 @@ const styles = StyleSheet.create({
     fontWeight: 'thin',
   },
   balanceContainer: {
-    margin: 20,
+    margin: 15,
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    borderWidth: 2,
+    borderRadius: 10,
+    backgroundColor: colors.background,
+    borderColor: colors.primary
+  },
+  infoContainer: {
+    margin: 10,
+    flex:3,
+  },
+  name: {
+    color: colors.primary, 
+    fontWeight: '500',// White text color
+    fontSize: 20,
+  },
+  studentNo: {
+    color: colors.secondary, // Light gray text color
+    fontSize: 14,
+    marginBottom: 24,
+  },
+  balanceLabel: {
+    color: text.primaryDark, // Gray text color
+    fontSize: 14,
+  },
+  balance: {
+    color: colors.primary, // White text color
+    fontSize: 28,
+  },
+  buttonContainer: {
+    flex:1,
+    marginRight: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+  },
+  button: {
+    color: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 6,
+  },
+  buttonLabel: {
+    color: colors.primary,
   },
   iconContainer: {
     paddingHorizontal: 10,
