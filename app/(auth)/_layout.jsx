@@ -13,7 +13,20 @@ const AuthLayout = () => {
           }}
         />
         <Stack.Screen
+          name='commentsPage'
+          options={{
+            headerShown: false
+          }}
+        />
+
+        <Stack.Screen
           name='courses'
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen
+          name='one_course'
           options={{
             headerShown: false
           }}
