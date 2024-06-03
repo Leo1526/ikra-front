@@ -38,11 +38,10 @@ const RootLayout = () => {
       false }} />
       <Stack.Screen name='(course)' options={{headerShown:
       false }} />
-      <Stack.Screen name='(anno)' options={{headerShown:
-      false }} />
+      <Stack.Screen name='(anno)' options={{headerShown:false }} />
+      <Stack.Screen name='(screens)' options={{headerShown:false }} />
     </Stack>
   )
 }
 
 export default RootLayout
-

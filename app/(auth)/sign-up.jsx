@@ -82,6 +82,7 @@ const SignUp = () => {
         onError: (error) => {
           console.error('Error fetching schools:', error);
           setLoading(false);
+          alert("Okulları getirilirken hata oluştu!")
         },
         tokenRequired: false
       });

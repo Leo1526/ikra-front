@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
-export const urlDev = "http://192.168.1.16:8080";
+export const urlDev = "http://192.168.1.104:8080";
 
 export const errorInput = (ref) => {
   if (ref && ref.current) {
@@ -49,7 +49,8 @@ export const ikraAxios = async ({
       url,
       method,
       data,
-      headers
+      headers,
+      timeout: 10000
     });
     onSuccess(response.data);  // Callback fonksiyonunu çağır
     return response.data;
@@ -59,7 +60,7 @@ export const ikraAxios = async ({
   }
 };
 
-const checkTokenExpiration = async () => {
+export const checkTokenExpiration = async () => {
   const token = await AsyncStorage.getItem('jwtToken');
   
   const expireDate = await AsyncStorage.getItem('expireDate')
