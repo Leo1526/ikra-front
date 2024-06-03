@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { Image, StyleSheet , View} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator  } from '@react-navigation/drawer';
+
 import { Appbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Assuming you're using MaterialCommunityIcons
 import SignIn from './app/(auth)/sign-in';
 import SignUp from './app/(auth)/sign-up';
 import Home from './app/(screens)/home';
+
+import { useNavigation } from '@react-navigation/native'; 
+
 import Settings from './app/(screens)/settings';
 import DepartmentAnnouncement from './app/(anno)/depAnno';
 import FinanceScreen from './app/(screens)/finance';
@@ -17,6 +22,7 @@ import settingsLogo from './assets/icons/settings.png'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 const SettingsIcon = () => (
   <Image
@@ -25,7 +31,7 @@ const SettingsIcon = () => (
   />
 );
 
-const CustomHeader = ({ navigation, title }) => {
+const CustomHeader = ({navigation, title }) => {
   return (
     <Appbar.Header style={styles.header}>
       <View style={styles.leftContainer}>
@@ -43,26 +49,29 @@ const CustomHeader = ({ navigation, title }) => {
         />
       </View>
       <View style={styles.rightContainer}>
-        <Appbar.Action icon={() => <SettingsIcon />} onPress={() => navigation.navigate('settings')} />
+        <Appbar.Action icon={() => <SettingsIcon />} onPress={() => 
+          { navigation.dispatch(DrawerActions.toggleDrawer())}} />
       </View>
     </Appbar.Header>
   );
 };
 
+
 const HomeStack = () => {
   return (
     <Stack.Navigator
-      screenOptions={({ route }) => ({
-        header: (props) => {
-          let title;
-          switch (route.name) {
-            case 'home':
-              title = 'Anasayfa';
-              break;
+    initialRouteName='home'
+    screenOptions={({ route }) => ({
+      header: (props) => {
+        let title;
+        switch (route.name) {
+          case 'home':
+            title = 'Anasayfa';
+            break;
             case 'settings':
               title = 'Ayarlar';
               break;
-            case 'depAnno':
+              case 'depAnno':
               title = 'Duyurular';
               break;
             default:
@@ -73,12 +82,21 @@ const HomeStack = () => {
       })}
     >
       <Stack.Screen name="home" component={Home} />
-      <Stack.Screen name="settings" component={Settings} />
       <Stack.Screen name="depAnno" component={DepartmentAnnouncement} />
     </Stack.Navigator>
   );
 };
 
+const DrawerNavigator = () => { 
+  return (
+    <Drawer.Navigator 
+      drawerContent={props => <Settings {...props} />}
+      initialRouteName="BottomTabNavigator" drawerPosition="right" 
+      screenOptions={{ headerShown: false, drawerPosition:"right"}}>
+      <Drawer.Screen name="BottomTabNavigator" component={BottomTabNavigator} /> 
+    </Drawer.Navigator>
+  );
+};
 
 const BottomTabNavigator = () => {
   return (
@@ -142,11 +160,15 @@ const AuthStack = () => {
 const App = () => {
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="AuthStack" component={AuthStack} />
-        <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
+      <Stack.Navigator>
+        <Stack.Screen name="AuthStack" component={AuthStack} options={{gestureEnabled: false, headerShown: false}}/>
+        <Stack.Screen
+          name="DrawerNavigator"
+          component={DrawerNavigator}
+          options={{headerShown: false, gestureEnabled: false,}}
+        />
       </Stack.Navigator>
-    </NavigationContainer>
+  </NavigationContainer>
   );
 };
 
@@ -186,8 +208,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
-
-
 
 
 export default App;

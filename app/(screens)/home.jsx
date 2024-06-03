@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect  } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Card, Title, Paragraph } from 'react-native-paper';
+import { ikraAxios, urlDev, url } from '../common';
+
 
 const Home = ({ navigation }) => {
-  const announcementImages = [
-    {
-      url: 'https://www.bmw.com.tr/content/dam/bmw/common/all-models/m-series/m2-coupe/2022/Navigation/bmw-m-series-m2-coupe-lci-modelfinder.png',
-      id: '1',
-    },
-    {
-      url: 'https://cdn.motor1.com/images/mgl/NGOMej/s1/4x3/bmw-i5-edrive40-2023.webp',
-      id: '2',
-    },
-  ];
+  const [announcementImages, setAnnouncementImages] = useState([])
+
+  const announcementSuccessHandler = (data) => {
+    if (data.status === 'SUCCESS' || data.body) {
+      console.log(data.body)
+    }
+  }
+  console.log("buradasın")
+  useEffect(() => { 
+    console.log("buradasın")
+    const fetchAnnouncements = () => {
+      ikraAxios({
+        url: urlDev + '/announcement/all',
+        method: 'GET',
+        onSuccess: announcementSuccessHandler,
+        onError: (error) => {
+          setLoading(false);
+          alert("Ana sayfa için duyurular getirilirken hata oluştu!" + error?.message? error.message : "Bilinmeyen")
+        },
+        tokenRequired: true
+      });
+    };
+    fetchAnnouncements();
+  }, []);
+
 
   const handleAnnouncementClick = (id) => {
     // Navigate to the respective announcement page
