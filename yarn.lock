@@ -3419,9 +3419,9 @@ expo-linking@~6.3.1:
     expo-constants "~16.0.0"
     invariant "^2.2.4"
 
-expo-location@~17.0.1:
+expo-location@^17.0.1:
   version "17.0.1"
-  resolved "https://registry.npmjs.org/expo-location/-/expo-location-17.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-17.0.1.tgz#3bdbf91066f1a40ec3468dc1807f3e106473f74c"
   integrity sha512-m+OzotzlAXO3ZZ1uqW5GC25nXW868zN+ROyBA1V4VF6jGay1ZEs4URPglCVUDzZby2F5wt24cMzqDKw2IX6nRw==
 
 expo-modules-autolinking@1.11.1:
@@ -6137,17 +6137,17 @@ react-native-elements@^3.4.3:
     react-native-ratings "8.0.4"
     react-native-size-matters "^0.3.1"
 
+react-native-geolocation-service@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.1.tgz"
+  integrity sha512-LTXPtPNmrdhx+yeWG47sAaCgQc3nG1z+HLLHlhK/5YfOgfLcAb9HAkhREPjQKPZOUx8pKZMIpdGFUGfJYtimXQ==
+
 react-native-gifted-charts@^1.4.10:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/react-native-gifted-charts/-/react-native-gifted-charts-1.4.10.tgz#14bf600b7a4ffa566c2a5062f8f8bb08c9fd47f1"
   integrity sha512-9zJbvn4Fp38wgVUF5QVtQJUMRqCVzYXp0knW4IuPJ25BsetganwaXC36F26J9XuhJqtu6KWvWQgKshvIj2N/JA==
   dependencies:
     gifted-charts-core "^0.1.4"
-
-react-native-geolocation-service@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.1.tgz"
-  integrity sha512-LTXPtPNmrdhx+yeWG47sAaCgQc3nG1z+HLLHlhK/5YfOgfLcAb9HAkhREPjQKPZOUx8pKZMIpdGFUGfJYtimXQ==
 
 react-native-helmet-async@2.0.4:
   version "2.0.4"
