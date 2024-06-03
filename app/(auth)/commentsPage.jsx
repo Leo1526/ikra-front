@@ -299,6 +299,7 @@ const Comment = ({ item }) => {
 const ITEMS_PER_PAGE = 10;
 
 const CommentsPage = () => {
+    //************use params ile ders id çekilecek*********************
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
