@@ -3790,6 +3790,11 @@ expo-linking@*, expo-linking@~6.3.1:
     expo-constants "~16.0.0"
     invariant "^2.2.4"
 
+expo-location@~17.0.1:
+  version "17.0.1"
+  resolved "https://registry.npmjs.org/expo-location/-/expo-location-17.0.1.tgz"
+  integrity sha512-m+OzotzlAXO3ZZ1uqW5GC25nXW868zN+ROyBA1V4VF6jGay1ZEs4URPglCVUDzZby2F5wt24cMzqDKw2IX6nRw==
+
 expo-modules-autolinking@>=0.8.1, expo-modules-autolinking@1.11.1:
   version "1.11.1"
   resolved "https://registry.npmjs.org/expo-modules-autolinking/-/expo-modules-autolinking-1.11.1.tgz"
@@ -6294,6 +6299,11 @@ react-is@^18.1.0:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.3.1.tgz"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
+
+react-native-geolocation-service@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.1.tgz"
+  integrity sha512-LTXPtPNmrdhx+yeWG47sAaCgQc3nG1z+HLLHlhK/5YfOgfLcAb9HAkhREPjQKPZOUx8pKZMIpdGFUGfJYtimXQ==
 
 react-native-helmet-async@2.0.4:
   version "2.0.4"
