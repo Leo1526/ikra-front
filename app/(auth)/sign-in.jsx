@@ -54,7 +54,7 @@ const SignIn = ({navigation}) => {
         } else {
           await AsyncStorage.setItem('jwtToken', data.body.token);
           await AsyncStorage.setItem('expireDate', data.body.expireDate);
-          navigation.navigate("home")
+          navigation.navigate("BottomTabNavigator")
         }
       } catch (error) {
         console.log(error)
