@@ -12,16 +12,17 @@ import Settings from './app/(screens)/settings';
 import DepartmentAnnouncement from './app/(anno)/depAnno';
 import FinanceScreen from './app/(screens)/finance';
 import Profile from './app/(tabs)/profile'; 
+import {colors} from './design/themes'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const CustomHeader = ({ navigation }) => {
   return (
-    <Appbar.Header>
+    <Appbar.Header style={styles.header}>
       <Appbar.Content title="" />
       <Image
-        source={require('./assets/images/logo.png')} 
+        source={require('./assets/images/logo-text.png')} 
         style={{ width: 40, height: 40 }}
         resizeMode="contain"
       />
@@ -116,6 +117,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
+  header: {
+    backgroundColor: colors.primary,
+  }
 });
 
 export default App;
