@@ -5,7 +5,7 @@ import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { ikraAxios, urlDev, url } from '../common';
 import Carousel from 'react-native-reanimated-carousel';
 import { colors, text } from '../../design/themes';
-
+import * as Clipboard from 'expo-clipboard';
 
 const Home = ({ navigation }) => {
   const [balance, setBalance] = useState(0.0)
@@ -91,8 +91,10 @@ const Home = ({ navigation }) => {
     console.log(id)
   };
 
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(studentId);
+  };
   const [isDragging, setIsDragging] = useState(false);
-
   const renderItem = ({ item }) => (
     <View
       onTouchStart={() => setIsDragging(false)}
@@ -142,16 +144,15 @@ const Home = ({ navigation }) => {
           <Text style={styles.balance}>{balance} TL</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={null}>
+          <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
             PAYLAŞ
           </Button>
-          <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={() => console.log('Tümü')}>
+          <Button labelStyle={styles.buttonLabel} style={styles.button} >
             TÜMÜ
           </Button>
         </View>
       </View>
 
-      {/* Navigation Icon Buttons */}
       <View style={styles.iconContainer}>
         <View style={styles.iconRow}>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page1')}>
