@@ -20,6 +20,8 @@ const RootLayout = () => {
     <Link to="/my_LostItems" style={styles.link}>Go to My Lost Item Page</Link>
     <Link to="/deneme" style={styles.link}>Go to deneme Page</Link>
     <Link to="/commAnno" style={styles.link}>Go to Community Anno</Link>
+    <Link to="/createIntern" style={styles.link}>Create Internship</Link>
+    
     
   </View>
   )

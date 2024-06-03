@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../../design/themes'; 
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../../design/themes";
 import { images } from "../../constants";
 
-import { urlDev, ikraAxios } from '../common';
+import { urlDev, ikraAxios } from "../common";
 
 const PAGE_SIZE = 10;
 
@@ -14,27 +21,22 @@ const InternshipScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        const response = await ikraAxios({
-          url: urlDev + '/jobs/jobAdvertsByDepartmentId',
-          onSuccess: (data) => {
-          },
-          onError: (error) => {
-            console.error('Error fetching jobs data:', error);
-          },
-        });
-    
-        console.log(response);  // API'den dönen tüm veriyi konsola yazdır
-        setInternshipListings(response.body);
-        
-      
+      const response = await ikraAxios({
+        url: urlDev + "/jobs/jobAdvertsByDepartmentId",
+        onSuccess: (data) => {},
+        onError: (error) => {
+          console.error("Error fetching jobs data:", error);
+        },
+      });
+
+      console.log(response); // API'den dönen tüm veriyi konsola yazdır
+      setInternshipListings(response.body);
     };
 
     fetchData();
+
+    
   }, []);
-
-
-
-   
 
   const totalPages = Math.ceil(internshipListings.length / PAGE_SIZE);
   const startIndex = (currentPage - 1) * PAGE_SIZE;
@@ -43,14 +45,23 @@ const InternshipScreen = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.internshipContainer}>
-      <Image source={images.logo} style={styles.companyLogo} />
+      <Image source={images.intern} style={styles.companyPhoto} />
       <View>
-        <Text style={styles.internshipDepartment}>{item.companyName}</Text>
-        <Text style={styles.internshipCompany}>{item.companyWebsite}</Text>
+        <Text style={styles.companyName}>{item.companyName}</Text>
+        <Text style={styles.internshipTitle}>{item.name}</Text>
         <Text style={styles.internshipDescription}>{item.description}</Text>
-        <Text style={styles.internshipContact}>İletişim: {item.applicationLink}</Text>
-        <Text style={styles.internshipAddress}>Adres: {item.name}</Text>
-        <Text style={styles.internshipDeadline}>Son Başvuru Tarihi: {item.applicationDeadline}</Text>
+        <Text style={styles.internshipDescription}>
+          <Text style={styles.labelStyle}>Website: </Text>
+          {item.companyWebsite}
+        </Text>
+        <Text style={styles.internshipDescription}>
+          <Text style={styles.labelStyle}>Başvuru linki: </Text>
+          {item.applicationLink}
+        </Text>
+        <Text style={styles.internshipDescription}>
+          <Text style={styles.labelStyle}>Son başvuru tarihi: </Text>
+          {item.applicationDeadline}
+        </Text>
       </View>
     </View>
   );
@@ -67,11 +78,26 @@ const InternshipScreen = () => {
       }
     } else {
       if (currentPage <= 3) {
-        pages.push(1, 2, 3, 4, '...', totalPages);
+        pages.push(1, 2, 3, 4, "...", totalPages);
       } else if (currentPage >= totalPages - 2) {
-        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+        pages.push(
+          1,
+          "...",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
       } else {
-        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+        pages.push(
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPages
+        );
       }
     }
 
@@ -82,9 +108,9 @@ const InternshipScreen = () => {
             key={index}
             style={[
               styles.pageButton,
-              currentPage === page && styles.activePageButton
+              currentPage === page && styles.activePageButton,
             ]}
-            onPress={() => page !== '...' && handlePageChange(page)}
+            onPress={() => page !== "..." && handlePageChange(page)}
           >
             <Text style={styles.pageButtonText}>{page}</Text>
           </TouchableOpacity>
@@ -110,66 +136,57 @@ const InternshipScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.secondaryBackground,
     padding: 20,
   },
   heading: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
     color: colors.text,
-    textAlign: 'center',
+    textAlign: "center",
   },
   list: {
     paddingBottom: 20,
   },
   internshipContainer: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.background,
     padding: 20,
     borderRadius: 8,
     marginBottom: 20,
   },
-  companyLogo: {
-    width: 150,
-    height: 64,
+  companyPhoto: {
+    width: 300,
+    height: 150,
     alignSelf: "center",
-    resizeMode: "contain"
+    resizeMode: "contain",
+    marginBottom: 20,
   },
-  internshipDepartment: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  companyName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
     color: colors.secondary,
   },
-  internshipCompany: {
+  internshipTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: colors.text,
+    color: colors.primary,
   },
   internshipDescription: {
     fontSize: 14,
     marginBottom: 10,
     color: colors.text,
   },
-  internshipContact: {
-    fontSize: 14,
-    marginBottom: 10,
-    color: colors.text,
-  },
-  internshipAddress: {
-    fontSize: 14,
-    marginBottom: 10,
-    color: colors.text,
-  },
-  internshipDeadline: {
-    fontSize: 14,
-    color: colors.text,
+  labelStyle: {
+    fontWeight: 'bold',
+    color: colors.primary, 
   },
   paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
   },
   pageButton: {
     margin: 5,
