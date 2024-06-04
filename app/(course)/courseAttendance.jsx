@@ -87,7 +87,6 @@ const CourseAttendanceScreen = () => {
   };
 
   const handleSelectInstructor = (value) => {
-    setSelectedInstructorId(value);
     fetchAttendanceLog(value);
   };
 
