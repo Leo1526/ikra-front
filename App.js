@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, StyleSheet , View} from 'react-native';
+import { Image, StyleSheet , View, TouchableOpacity} from 'react-native';
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -31,13 +31,14 @@ import CommentsPage from './app/(screens)/commentsPage';
 import MyCoursesScreen from './app/(course)/myCourses';
 import CourseAttendanceScreen from './app/(course)/courseAttendance';
 
-import DepartmentAnnouncement from './app/(anno)/departmentAnnouncements';
-import CommunityAnnouncement from './app/(anno)/communityAnnouncements';
-import createAnnouncementScreen from './app/(anno)/createAnnouncement';
-
+import SchoolAnnouncementScreen from './app/(anno)/schoolAnnouncements'
+import CommunityAnnouncementScreen from './app/(anno)/communityAnnouncements';
+import DepartmentAnnouncementScreen from './app/(anno)/departmentAnnouncements';
+import CreateAnnouncementScreen from './app/(anno)/createAnnouncement';
 
 import {colors,text,} from './design/themes'
 import settingsLogo from './assets/icons/settings.png'
+import { HeaderBackButton } from '@react-navigation/elements';
 
 const Stack = createNativeStackNavigator();
 const AnnStack = createNativeStackNavigator();
@@ -82,15 +83,59 @@ const CustomHeader = ({navigation, title }) => {
   );
 };
 
+const AnnouncementHeader = ({navigation, title }) => {
+  return (
+    <Appbar.Header style={styles.announcementHeader}>
+      <View style={styles.leftContainerAnn}>
+        <TouchableOpacity onPress={() => navigation.navigate('schoolAnnouncements')}>
+          <Image
+            source={require('./assets/icons/school-dark.png')}
+            style={styles.icon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.centerContainerAnn}>
+      <TouchableOpacity onPress={() => navigation.navigate('departmentAnnouncements')}>
+        <Image
+          source={require('./assets/icons/department.png')}
+          style={styles.icon}
+          resizeMode="contain"
+          />
+      </TouchableOpacity>
+      </View>
+      <View style={styles.rightContainerAnn}>
+        <TouchableOpacity onPress={() => navigation.navigate('communityAnnouncements')}>
+          <Image
+              source={require('./assets/icons/community-announcement.png')}
+              style={styles.logo}
+              resizeMode="contain"
+              />
+        </TouchableOpacity>
+      </View>
+    </Appbar.Header>
+  );
+};
+
 const AnnouncementStack = () => {
   return (
-    <AnnStack.Navigator screenOptions={{ headerShown: false}}>
-      <AnnStack.Screen name ='departmentAnnouncements' component={DepartmentAnnouncement}/>
-      <AnnStack.Screen name ='communityAnnouncements' component={CommunityAnnouncement}/>
-      <AnnStack.Screen name ='createAnnouncement' component={DepartmentAnnouncement}/>
+    <AnnStack.Navigator
+    screenOptions={({ route } ) => ({
+      header: (props) => {
+        let title;
+        switch (route.name) {
+          }
+          return <AnnouncementHeader {...props} />;
+        },
+      })}
+    >
+      <AnnStack.Screen name='schoolAnnouncements' component={SchoolAnnouncementScreen} />
+      <AnnStack.Screen name='departmentAnnouncements' component={DepartmentAnnouncementScreen} />
+      <AnnStack.Screen name='communityAnnouncements' component={CommunityAnnouncementScreen} />
+      <AnnStack.Screen name='createAnnouncement' component={CreateAnnouncementScreen} />
     </AnnStack.Navigator>
-  )
-}
+  );
+};
 
 const FinStack = () => {
   return (
@@ -152,7 +197,7 @@ const HomeStack = () => {
           case 'settings':
             title = 'Ayarlar';
             break;
-          case 'depAnno':
+          case 'announcements':
             title = 'Duyurular';
             break;
           case 'finance':
@@ -181,7 +226,7 @@ const HomeStack = () => {
       <Stack.Screen name='finance' component={FinStack}/>
       <Stack.Screen name='courses' component= {CourseStack}/>
       <Stack.Screen name='internship' component={InternshipScreen}/>
-      <Stack.Screen name='announcements' component={AnnouncementStack}/>
+      <Stack.Screen name='announcements' component={AnnouncementStack} />
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
       <Stack.Screen name='lostItems' component={LostItemsPage}/>
       <Stack.Screen name='requests' component={RequestStack}/>
@@ -297,7 +342,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 36,
   },
+  announcementHeader: {
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: colors.secondaryBackground,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    height: 42,
+    position:'absolute',
+    top: 0,
+  },
   leftContainer: {
+    height: "100%",
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
@@ -315,6 +372,25 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginBottom: 5,
   },
+  leftContainerAnn: {
+    height: "100%",
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  centerContainerAnn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  rightContainerAnn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
   logo: {
     width: 100,
     height: 40,
@@ -323,6 +399,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#FFFFFF',
     letterSpacing: 1,
+  },
+  icon: { 
+    width: 24, 
+    height: 24,
+    marginHorizontal: 10,
   },
 });
 

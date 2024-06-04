@@ -44,7 +44,9 @@ const Home = ({ navigation }) => {
         announcements.push(obj)
       });
       setAnnouncementImages(announcements);
+      return 
     }
+    alert("Hata oluştu: " + data.messages[0])
   }
 
   const handleCardSuccess = (data) => {

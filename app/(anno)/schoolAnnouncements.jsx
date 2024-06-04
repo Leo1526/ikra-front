@@ -14,7 +14,9 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from '../common';
 
-const CommunityAnnouncementScreen = ({navigation}) => {
+const SchoolAnnouncementScreen = ({navigation}) => {
+    const [firstIteration, setFirstIteration] = useState(true);
+    const [noData, setNoData] = useState(false);
     const [announcements, setAnnouncements] = useState([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -31,9 +33,15 @@ const CommunityAnnouncementScreen = ({navigation}) => {
         }
         try {
           await ikraAxios({
-            url: `${urlDev}/announcement/community?page=${page}&size=${size}`,
+            url: `${urlDev}/announcement/school?page=${page}&size=${size}`,
             onSuccess: (data) => {
+                setFirstIteration(false)
                 if (data.status === 'SUCCESS') {
+                    if (firstIteration) {
+                        if (!data.body.length) {
+                            setNoData(true)
+                        }
+                    }
                     setAnnouncements((prevAnnouncements) => [...prevAnnouncements, ...data.body]);
                     setPage((prevPage) => prevPage + 1);
                     setLastDataLength(data.body.length)
@@ -85,30 +93,32 @@ const CommunityAnnouncementScreen = ({navigation}) => {
 
 
     return (
-      <SafeAreaView style={styles.container}>
-      {announcements.length === 0 ? (
-          <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
-      ) : (
-          <FlatList
-              data={announcements}
-              renderItem={renderAnnouncementItem}
-              keyExtractor={(item) => item.id.toString()}
-              onEndReached={fetchAnnouncements}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={loading && <Text>Loading...</Text>}
-          />
-      )}
-  </SafeAreaView>
+        <SafeAreaView style={styles.container}>
+            {announcements.length === 0 ? (
+                <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
+            ) : (
+                <FlatList
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    style={{ flex: 1 }}
+                    data={announcements}
+                    renderItem={renderAnnouncementItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    onEndReached={fetchAnnouncements}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={loading && <Text>Loading...</Text>}
+                />
+            )}
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-  noAnnouncementsText: {
-    fontSize: 18,
-    color: '#555',
-    textAlign: 'center',
-    marginTop: 20,
-  },
+    noAnnouncementsText: {
+        fontSize: 18,
+        color: '#555',
+        textAlign: 'center',
+        marginTop: 20,
+      },
     container: {
         flex: 1,
         backgroundColor: colors.background,
@@ -164,4 +174,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default CommunityAnnouncementScreen;
+export default SchoolAnnouncementScreen;
