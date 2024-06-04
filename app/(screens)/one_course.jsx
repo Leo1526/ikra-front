@@ -9,42 +9,6 @@ import RNPickerSelect from 'react-native-picker-select';
 import { TextInput, Button } from 'react-native-paper';
 import * as myStyle from "../../design/style"
 
-const exampleCourseResponse = {
-  id: 1,
-  departmentId: 1,
-  universityId: 1,
-  name: "Fundamentals of Artificial Intelligence",
-  courseCode: "BBM405",
-  website: "www.example.com",
-  instructors: ["Dr. Ali Veli", "Prof. Dr. Ayşe Yılmaz"],
-  courseStatResponse: {
-    gradeMap: {
-      A1: 10,
-      A2: 15,
-      A3: 12,
-      B1: 22,
-      B2: 30,
-      B3: 28,
-      C1: 20,
-      C2: 25,
-      C3: 18,
-      D: 8,
-      F: 5,
-    },
-    difficultyAvg: 7.4,
-    qualityAvg: 8.9,
-    hours: {
-      FIFTEEN_TWENTY: 10,
-      TEN_FIFTEEN: 20,
-      ZERO_FIVE: 5,
-      TWENTY_TWENTYFIVE: 8,
-      FIVE_TEN: 15,
-      TWENTYFIVE_THIRTY: 12
-    }
-  },
-  idate: null
-};
-
 const gradeValueMap = {
   A1: 4.0,
   A2: 3.75,
@@ -80,7 +44,7 @@ const qualityDescriptions = [
   "Efsane!"
 ];
 
-const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDifficulty = 1 }) => {
+const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDifficulty = 1, navigation }) => {
   const route = useRoute();
   const { course } = route.params;
   const [courseDetails, setCourseDetails] = useState(null);
@@ -564,7 +528,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
           )}
           <View style={styles.rightEnd}>
             <Text style={styles.transactionsHeading}>Yorumlar</Text>
-            <Button onPress={() => navigation.navigate('allTransactions')}>
+            <Button onPress={() => navigation.navigate('commentsPage', course)}>
               <Text style={styles.link}>Tümünü gör</Text>
             </Button>
           </View>

@@ -4,9 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ikraAxios, urlDev } from '../common';
-import { colors } from '../../design/themes';
 
-const MyCoursesScreen = () => {
+const MyCoursesScreen = ({navigate}) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -106,7 +105,7 @@ const MyCoursesScreen = () => {
   };
 
   const navigateToAttendance = (course) => {
-    navigation.navigate('courseAttendance', { course });
+    navigation.navigate('attendances', { course });
   };
 
   return (

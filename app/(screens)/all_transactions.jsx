@@ -93,9 +93,6 @@ const AllTransactionsScreen = ({navigation}) => {
       <View style={styles.container}>
         <View style= {{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={styles.heading}>Tüm İşlemler</Text>
-        <Button style={styles.filterButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.filterButtonText}>Filtrele</Text>
-        </Button>
         </View>
         <FlatList
           data={filteredTransactions.length > 0 ? filteredTransactions : transactions}

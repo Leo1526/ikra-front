@@ -8,6 +8,7 @@ const RequestsPage = ({navigation}) => {
   const [requests, setRequests] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [noMoreComments, setNoMoreComments] = useState(false);
   const size = 5;
 
   useEffect(() => {
@@ -15,6 +16,7 @@ const RequestsPage = ({navigation}) => {
   }, []);
 
   const fetchProposals = async () => {
+    if(noMoreComments) return;
     if (loading) return;
 
     setLoading(true);
@@ -22,6 +24,9 @@ const RequestsPage = ({navigation}) => {
       await ikraAxios({
         url: `${urlDev}/proposals/universityId?page=${page}&size=${size}`,
         onSuccess: (data) => {
+          if(data.body.length === 0){
+            setNoMoreComments(true);
+          }
           setRequests((prevRequests) => [...prevRequests, ...data.body]);
           setPage((prevPage) => prevPage + 1);
         },
