@@ -33,9 +33,9 @@ const CourseAttendanceScreen = () => {
   }, []);
 
   const fetchLocation = async () => {
-    let location = await Location.getCurrentPositionAsync({});
-    setLatitude(location.coords.latitude);
-    setLongitude(location.coords.longitude);
+    //let location = await Location.getCurrentPositionAsync({});
+    //setLatitude(location.coords.latitude);
+    //setLongitude(location.coords.longitude);
     console.log(location.coords.latitude);
     console.log(location.coords.longitude);
   };
