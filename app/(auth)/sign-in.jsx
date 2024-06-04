@@ -9,11 +9,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const SignIn = ({ route }) => {
-  const { user } = route.params;
-  if (user) {
-    setUsername(user)
-  }
+const SignIn = () => {
+  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -30,7 +27,7 @@ const SignIn = ({ route }) => {
       setErrorUsername(true);
       return
     } 
-    if (password.length < 8) {
+    if (password.length < 2) {
       setErrorPassword(true)
       return;
     }
