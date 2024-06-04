@@ -26,7 +26,7 @@ const SignIn = ({navigation}) => {
       setErrorUsername(true);
       return
     } 
-    if (password.length < 8) {
+    if (password.length < 2) {
       setErrorPassword(true)
       return;
     }
