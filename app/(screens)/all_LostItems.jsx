@@ -1,68 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, StatusBar ,Modal} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Title, FAB, Button, TextInput} from 'react-native-paper';
-import RNPickerSelect from 'react-native-picker-select';
-import { colors } from '../../design/themes';
+import React, { useState, useEffect } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  StatusBar,
+  Modal,
+  TouchableOpacity,
+  Image
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, Title, Button, TextInput, Divider } from "react-native-paper";
+import RNPickerSelect from "react-native-picker-select";
+import { colors } from "../../design/themes";
+import { ikraAxios, urlDev } from "../common";
 
-const LostItemsPage = () => {
+import { MaterialIcons } from '@expo/vector-icons'; // Kamera ikonu için
+
+
+const LostItemsPage = ({navigation}) => {
+
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [claimLostItemId, setClaimLostItemId] = useState(0);
-  const [contactInfo, setContactInfo] = useState('');
-  const [description, setDescription] = useState('');
+  const [contactInfo, setContactInfo] = useState("");
+  const [claimDescription, setClaimDescription] = useState("");
   const [lostItems, setLostItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [filterCategory, setFilterCategory] = useState(null);
-  const [temporaryFilterCategory, setTemporaryFilterCategory] = useState('all');
-
-  const sampleLostItems = [
-    {
-      id: 1,
-      title: "Siyah Cüzdan",
-      description: "Siyah deri cüzdan, içerisinde kimlik ve kredi kartları var.",
-      imageUrl: "https://example.com/image1.png",
-      isIDCategory: false
-    },
-    {
-      id: 2,
-      title: "Mavi Kimlik Kartı",
-      description: "Mavi renkli yeni tip kimlik kartı. İsim: Ahmet Yılmaz.",
-      imageUrl: "https://example.com/image2.png",
-      isIDCategory: true
-    },
-    {
-      id: 3,
-      title: "Kırmızı Anahtarlık",
-      description: "Kırmızı anahtarlık, üzerinde 4 farklı anahtar bulunmaktadır.",
-      imageUrl: "https://example.com/image3.png",
-      isIDCategory: false
-    },
-    {
-      id: 4,
-      title: "Gümüş Saat",
-      description: "Gümüş renkli el saati, üzerinde küçük bir kazıma var.",
-      imageUrl: "https://example.com/image4.png",
-      isIDCategory: false
-    },
-    {
-      id: 5,
-      title: "Yeşil Kitap",
-      description: "Yeşil kapaklı bir kitap, 'Felsefenin Kısa Tarihi' yazıyor.",
-      imageUrl: "https://example.com/image5.png",
-      isIDCategory: false
-    }
-  ];
-
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [temporaryFilterCategory, setTemporaryFilterCategory] = useState("all");
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const size = 5;
 
   useEffect(() => {
-    // API'den kayıp eşyaları çekmek için kullanılabilir.
-    // Şimdilik statik veri kullanıyoruz.
-    setLostItems(sampleLostItems);
+    fetchLostItems();
+    console.log('sayfaya girdi')
   }, []);
 
-  const filteredItems = lostItems.filter(item => {
-    if (filterCategory === 'all') return true;
-    return item.isIDCategory === (filterCategory === 'id');
+  const fetchLostItems = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      await ikraAxios({
+        url: `${urlDev}/lostAndFound/get-all?page=${page}&size=${size}`,
+        onSuccess: (data) => {
+          setLostItems((prevLostItems) => [...prevLostItems, ...data.body]);
+          setPage((prevPage) => prevPage + 1);
+        },
+        onError: (error) => {
+          console.error("Error fetching lost items data:", error);
+        },
+      });
+    } catch (error) {
+      console.error("Error in fetchLostItems:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredItems = lostItems.filter((item) => {
+    if (filterCategory === "all") return true;
+    return item.lostAndFoundType === filterCategory;
   });
 
   const applyFilter = () => {
@@ -71,47 +70,106 @@ const LostItemsPage = () => {
   };
 
   const claimButton = (id) => {
-    setClaimLostItemId(id)
+    setClaimLostItemId(id);
     setClaimModalVisible(true);
-  }
+  };
 
-  const sendClaim = () => {
-    console.log('Claim submitted:', contactInfo, description);
+  const sendClaim = async () => {
+    if (!contactInfo || !claimDescription) {
+      return;
+    }
+    try {
+      await ikraAxios({
+        url:
+          urlDev +
+          "/claim?claimedItemId=" +
+          claimLostItemId +
+          "&contactInfo=" +
+          contactInfo +
+          "&description=" +
+          claimDescription,
+        method: "POST",
+        onSuccess: (response) => {
+          console.log("claim başarıyla oluşturuldu:", response);
+          setClaimLostItemId("");
+          setContactInfo("");
+          setClaimDescription("");
+        },
+        onError: (error) => {
+          console.error("Kayıp ilanı oluşturulamadı:", error);
+        },
+      });
+    } catch (e) {
+      console.error("Error creating lost and found announcement", e);
+    }
 
-
-    " back end request"
+    console.log("Claim submitted:", claimLostItemId, contactInfo, claimDescription);
     setClaimModalVisible(false);
+  };
 
-  }
+  const renderLostItem = ({ item, index }) => (
+    <View key={item.id} style={styles.itemCard}>
+      {item.file && (
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: `data:${item.file.mimeType};base64,${item.file.bytes}` }}
+            style={styles.requestImage}
+            resizeMode="contain"
+          />
+        </View>
+      )}
+      <View style={styles.itemContent}>
+        <Text style={styles.itemDescription}>{item.description}</Text>
+        {item.lostAndFoundType === "ID_KNOWN" && (
+          <Text style={styles.itemOwnerInfo}>
+            Kime ait: {item.ownerInfo}
+          </Text>
+        )}
+        {item.claims === "ID_KNOWN" && (
+          <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
+        )}
+      </View>
+      <Button
+        mode="contained"
+        onPress={() => claimButton(item.id)}
+        style={styles.claimButton}
+      >
+        Bu eşya bana ait
+      </Button>
+      {index < lostItems.length - 1 && <Divider style={styles.divider} />}
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.heading}>Tüm İşlemler</Text>
-          <Button style={styles.filterButton} onPress={() => setModalVisible(true)}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          
+          <Text style={styles.heading}>Kayıp Eşya İlanları</Text>
+          <Button
+            style={styles.filterButton}
+            onPress={() => setModalVisible(true)}
+          >
             <Text style={styles.filterButtonText}>Filtrele</Text>
           </Button>
+          
         </View>
-        <ScrollView style={styles.scrollView}>
-          {filteredItems.map((item) => (
-            <Card key={item.id} style={styles.itemCard}>
-              {item.imageUrl && <Card.Cover source={{ uri: item.imageUrl }} style={styles.itemImage} resizeMode='contain' />}
-              <Card.Content>
-                <Title style={styles.itemDescription}>{item.description}</Title>
-              </Card.Content>
-              <Button
-                mode="contained"
-                onPress={() => claimButton(item.id)}
-                style={styles.claimButton}
-              >
-                Bu eşya bana ait
-              </Button>
-            </Card>
-          ))}
-        </ScrollView>
-
+        <Button
+            mode="contained"
+            onPress={() => navigation.navigate('my_LostItems')}
+            style={styles.myItemsButton}
+          >
+            <MaterialIcons name="inbox" size={30} color={colors.primary} />
+          </Button>
+        <FlatList
+          data={filteredItems}
+          renderItem={renderLostItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.list}
+          onEndReached={fetchLostItems}
+          onEndReachedThreshold={0.5}
+        />
         <Modal
           visible={modalVisible}
           animationType="slide"
@@ -125,12 +183,11 @@ const LostItemsPage = () => {
               <RNPickerSelect
                 onValueChange={setTemporaryFilterCategory}
                 items={[
-                  { label: 'Kimlik', value: 'id' },
-                  { label: 'Kimlik Değil', value: 'notId' },
-                  { label: 'Tümü', value: 'all' },
+                  { label: "Kimlik", value: "ID_KNOWN" },
+                  { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
+                  { label: "Tümü", value: "all" },
                 ]}
                 style={pickerSelectStyles}
-                placeholder={{ label: 'Tümü', value: "all" }}
               />
               <Button
                 mode="contained"
@@ -143,13 +200,13 @@ const LostItemsPage = () => {
             </View>
           </View>
         </Modal>
+
         <Modal
           visible={claimModalVisible}
           onDismiss={() => setClaimModalVisible(false)}
           onRequestClose={() => setClaimModalVisible(false)}
           contentContainerStyle={styles.modalContainer}
           transparent={true}
-
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
@@ -164,78 +221,86 @@ const LostItemsPage = () => {
               <Text style={styles.modalHeading}>Açıklama Giriniz</Text>
               <TextInput
                 label="Açıklama"
-                value={description}
-                onChangeText={setDescription}
+                value={claimDescription}
+                onChangeText={setClaimDescription}
                 mode="outlined"
-                multiline={true}
-                numberOfLines={4}
                 style={styles.input}
               />
-              <Button
-                mode="contained"
-                onPress={() => {
-                  sendClaim();
-                }}
-                style={styles.button}
-              >
-                Gönder
-              </Button>
+
+              <View style={styles.buttonContainer}>
+                <Button
+                  onPress={() => setClaimModalVisible(false)}
+                  mode="outlined"
+                  style={styles.cancelButton}
+                >
+                  Vazgeç
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={sendClaim}
+                  disabled={!contactInfo || !claimDescription}
+                >
+                  Gönder
+                </Button>
+              </View>
             </View>
           </View>
         </Modal>
-
       </View>
     </SafeAreaView>
-
   );
 };
-// Stiller için güncellenmiş bölüm
-// Stiller için güncellenmiş bölüm
+
 const styles = StyleSheet.create({
-  fab: {
-    position: 'absolute', // Pozisyonu sabit yap
-    margin: 16, // Tüm kenarlardan 16 birim boşluk bırak
-    right: 0, // Sağ kenardan sıfır birim uzaklıkta
-    bottom: 0, // Alt kenardan sıfır birim uzaklıkta
-    backgroundColor: colors.primary, // Arka plan rengini ayarla
-  },
   container: {
     flex: 1,
     padding: 16,
   },
-  scrollView: {
-    width: '100%', // ScrollView genişliğini tam olarak ayarla
-    flex: 1,
+  list: {
+    width: "100%",
     paddingBottom: 30,
   },
   itemCard: {
-    width: '90%', // Kart genişliğini ekranın %90'ına ayarla
+    width: "90%",
     marginBottom: 10,
     elevation: 3,
-    alignSelf: 'center', // Her kartı kendi içinde merkezle
+    alignSelf: "center",
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
   },
   itemImage: {
     height: 200,
-    backgroundColor: colors.text,
+    width: '100%',
+  },
+  itemContent: {
+    paddingBottom: 10,
   },
   itemDescription: {
     fontSize: 18,
     marginBottom: 8,
   },
+  itemOwnerInfo: {
+    fontSize: 16,
+    color: colors.text,
+    marginTop: 4,
+    fontWeight: "bold",
+  },
   filterButton: {
     backgroundColor: colors.secondary,
     borderRadius: 8,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   filterButtonText: {
     color: colors.text,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   heading: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
-    marginRight: 10, // Sağ taraftaki metin ve buton arasında boşluk
+    marginRight: 10,
   },
   safeArea: {
     flex: 1,
@@ -243,47 +308,90 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalHeading: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   claimButton: {
-    backgroundColor: colors.primary,  // Butonun arka plan rengi
-    paddingVertical: 8,              // Dikey padding değeri
-    paddingHorizontal: 16,           // Yatay padding değeri
-    marginVertical: 8,               // Üst ve alt boşluk değeri
-    borderRadius: 20,                // Butonun köşe yuvarlaklığı, daha oval hale getirir
-    width: '80%',                    // Butonun genişliği kart genişliği ile aynı olur
-    justifyContent: 'center',        // İçeriklerin merkezlenmesi
+    backgroundColor: colors.primary,
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 20,
+    justifyContent: "center",
     alignSelf: "center",
   },
   inputHeading: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     marginBottom: 5,
   },
   button: {
-    backgroundColor: '#FF6347',  // Arka plan rengi
-    paddingVertical: 8,          // Dikey padding
-    marginVertical:5,
-    paddingHorizontal: 20,       // Yatay padding
-    borderRadius: 5,             // Köşe yuvarlaklığı
+    backgroundColor: "#FF6347",
+    paddingVertical: 8,
+    marginVertical: 5,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   buttonLabel: {
-    color: '#FFFFFF',            // Yazı rengi
-    fontSize: 16,                // Yazı boyutu
-  }
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+  loadMoreButton: {
+    backgroundColor: colors.background,
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignSelf: "center",
+    padding: 10,
+  },
+  loadMoreButtonText: {
+    color: colors.primary,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    padding: 10,
+  },
+  cancelButton: {
+    borderColor: colors.primary,
+    borderWidth: 1,
+  },
+  input: {
+    marginBottom: 16,
+  },
+  divider: {
+    marginVertical: 10,
+    backgroundColor: colors.text,
+  },
+  requestImage: {
+    height: 200,
+    width: '100%',
+  },
+  myItemsButton: {
+    backgroundColor: colors.secondary,
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignSelf: "flex-start",
+    alignItems: 'center'
+
+  },
 });
 
 const pickerSelectStyles = StyleSheet.create({
@@ -292,10 +400,10 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    color: "black",
+    paddingRight: 30,
     marginBottom: 15,
   },
   inputAndroid: {
@@ -303,10 +411,10 @@ const pickerSelectStyles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 0.5,
-    borderColor: 'purple',
+    borderColor: "purple",
     borderRadius: 8,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    color: "black",
+    paddingRight: 30,
     marginBottom: 15,
   },
 });

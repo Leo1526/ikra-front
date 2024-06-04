@@ -1,319 +1,485 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, Platform,StatusBar, Modal,KeyboardAvoidingView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Title, FAB, Button, TextInput } from 'react-native-paper';
-import RNPickerSelect from 'react-native-picker-select';
-import { colors } from '../../design/themes';
+import React, { useState, useEffect } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  Platform,
+  StatusBar,
+  Modal,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, Title, Button, TextInput, IconButton, Divider } from "react-native-paper";
+import { colors } from "../../design/themes";
+import { ikraAxios, urlDev } from "../common";
 
-const LostItemsPage = () => {
+
+import { MaterialIcons } from '@expo/vector-icons'; // Kamera ikonu için
+import { useNavigation } from '@react-navigation/native';
+
+
+const MyLostItemsPage = ({navigation}) => {
+
+  
   const [lostItems, setLostItems] = useState([]);
+  const [displayItems, setDisplayItems] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [foundModalVisible, setFoundModalVisible] = useState(false);
-  const [filterCategory, setFilterCategory] = useState(null);
-  const [description, setDescription] = useState('');
-  const [isIDCategory, setIsIDCategory] = useState(false);
+  const [claimsModalVisible, setClaimsModalVisible] = useState(false);
+  const [selectedClaims, setSelectedClaims] = useState([]);
+  const [description, setDescription] = useState("");
+  const [ownerInfo, setOwnerInfo] = useState("");
+  const [lostAndFoundType, setLostAndFoundType] = useState("");
   const [foundItem, setFoundItem] = useState(null);
   const [editItem, setEditItem] = useState(null);
-  const [idNumber, setIdNumber] = useState(''); 
-
-
-  const sampleLostItems = [
-    {
-      id: 1,
-      title: "Siyah Cüzdan",
-      description: "Siyah deri cüzdan, içerisinde kimlik ve kredi kartları var.",
-      imageUrl: "https://example.com/image1.png",
-      isIDCategory: false,
-      idNumber: ""
-    },
-    {
-      id: 2,
-      title: "Mavi Kimlik Kartı",
-      description: "Mavi renkli yeni tip kimlik kartı. İsim: Ahmet Yılmaz.",
-      imageUrl: "https://example.com/image2.png",
-      isIDCategory: true,
-      idNumber: "123456"
-
-    },
-    {
-      id: 3,
-      title: "Kırmızı Anahtarlık",
-      description: "Kırmızı anahtarlık, üzerinde 4 farklı anahtar bulunmaktadır.",
-      imageUrl: "https://example.com/image3.png",
-      isIDCategory: false,
-      idNumber: ""
-
-    },
-    {
-      id: 4,
-      title: "Gümüş Saat",
-      description: "Gümüş renkli el saati, üzerinde küçük bir kazıma var.",
-      imageUrl: "https://example.com/image4.png",
-      isIDCategory: false,
-      idNumber: ""
-    },
-    {
-      id: 5,
-      title: "Yeşil Kitap",
-      description: "Yeşil kapaklı bir kitap, 'Felsefenin Kısa Tarihi' yazıyor.",
-      imageUrl: "https://example.com/image5.png",
-      isIDCategory: false,
-      idNumber: ""
-    }
-  ];
-
-
-  const handleSubmit = () => {
-    console.log("Kayıp Eşya Kaydedildi:", description, isIDCategory);
-  }
+  const [idNumber, setIdNumber] = useState("");
 
   useEffect(() => {
-    // API'den kayıp eşyaları çekmek için kullanılabilir.
-    // Şimdilik statik veri kullanıyoruz.
-    setLostItems(sampleLostItems);
+    fetchLostItems();
   }, []);
 
+  const fetchLostItems = async () => {
+    try {
+      const response = await ikraAxios({
+        url: `${urlDev}/lostAndFound/by-user?page=0&size=100`,
+        onSuccess: (data) => {
+          setLostItems(data.body);
+          setDisplayItems(data.body.slice(0, 5));
+        },
+        onError: (error) => {
+          console.error("Error fetching lost items data:", error);
+        },
+      });
+    } catch (error) {
+      console.error("Error in fetchLostItems:", error);
+    }
+  };
 
+  const handleShowAll = () => {
+    setDisplayItems(lostItems);
+  };
 
-  const itemFound = () => {
+  const handleUpdate = async () => {
+    try {
+      const response = await ikraAxios({
+        url: `${urlDev}/lostAndFound/update?lostAndFoundId=${editItem.id}&lostAndFoundType=${lostAndFoundType}&ownerInfo=${ownerInfo}&description=${description}`,
+        method: "PUT",
+        onSuccess: (data) => {
+          fetchLostItems();
+          setEditModalVisible(false);
+        },
+        onError: (error) => {
+          console.error("Error updating lost item:", error);
+        },
+      });
+    } catch (error) {
+      console.error("Error in handleUpdate:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await ikraAxios({
+        url: `${urlDev}/lostAndFound?lostAndFoundId=${foundItem.id}`,
+        method: "DELETE",
+        onSuccess: (data) => {
+          fetchLostItems();
+        },
+        onError: (error) => {
+          console.error("Error deleting lost item:", error);
+        },
+      });
+    } catch (error) {
+      console.error("Error in handleDelete:", error);
+    }
     setFoundModalVisible(false);
-  }
+  };
 
-  const itemEdit = () => {
-    setEditModalVisible(false);
-  }
+  const handleClaimsIconPress = (claims) => {
+    setSelectedClaims(claims);
+    setClaimsModalVisible(true);
+  };
+
+  const renderItem = ({ item, index }) => (
+    <View key={item.id} style={styles.itemCard}>
+      {item.file && (
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: `data:${item.file.mimeType};base64,${item.file.bytes}` }}
+            style={styles.itemImage}
+            resizeMode="contain"
+          />
+        </View>
+      )}
+      <Card.Content>
+        {item.claims.length > 0 && (
+          <View style={styles.notificationContainer}>
+            <IconButton
+              icon="bell"
+              color={colors.primary}
+              size={25}
+              onPress={() => handleClaimsIconPress(item.claims)}
+            />
+            <Text style={styles.claimCount}>({item.claims.length})</Text>
+          </View>
+        )}
+        <Title style={styles.itemDescription}>{item.description}</Title>
+        {item.lostAndFoundType === "ID_KNOWN" && (
+          <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
+        )}
+      </Card.Content>
+      <View style={styles.buttonContainer}>
+        <Button
+          mode="contained"
+          onPress={() => {
+            setEditItem(item);
+            setEditModalVisible(true);
+            setDescription(item.description);
+            setLostAndFoundType(item.lostAndFoundType);
+            setOwnerInfo(item.ownerInfo);
+          }}
+          style={[styles.statusButton, styles.lostButton]}
+        >
+          Düzenle
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => {
+            setFoundItem(item);
+            setFoundModalVisible(true);
+          }}
+          style={[styles.statusButton, styles.foundButton]}
+        >
+          Bulundu
+        </Button>
+      </View>
+      {index < lostItems.length - 1 && <Divider style={styles.divider} />}
+    </View>
+  );
 
   return (
     <KeyboardAvoidingView
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    style={styles.safeArea}
-  >
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.heading}>Tüm İşlemler</Text>
-        </View>
-        <ScrollView style={styles.scrollView}>
-          {lostItems.map((item) => (
-            <Card key={item.id} style={styles.itemCard}>
-              {item.imageUrl && <Card.Cover source={{ uri: item.imageUrl }} style={styles.itemImage} resizeMode='contain' />}
-              <Card.Content>
-                <Title style={styles.itemDescription}>{item.description}</Title>
-              </Card.Content>
-              <View style={styles.buttonContainer}>
-
-                <Button
-                  mode="contained"
-                  onPress={() => { setEditItem(item); setEditModalVisible(true); setDescription(item.description), setIsIDCategory(item.isIDCategory); setIdNumber(item.idNumber)}}
-                  style={[styles.statusButton, styles.lostButton]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.safeArea}
+    >
+      <SafeAreaView style={styles.safeArea}>
+          <Button
+            mode="contained"
+            onPress={() => navigation.navigate('createLostItem')}
+            style={styles.myItemsButton}
+          >
+            <MaterialIcons name="inbox" size={30} color={colors.primary} />
+          </Button>
+        <View style={styles.container}>
+          <StatusBar barStyle="dark-content" />
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.heading}>Benim Kayıp Eşya İlanlarım</Text>
+          </View>
+          <FlatList
+            data={displayItems}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.scrollView}
+            ListFooterComponent={() =>
+              displayItems.length < lostItems.length && (
+                <TouchableOpacity
+                  style={styles.loadMoreButton}
+                  onPress={handleShowAll}
                 >
-                  Düzenle
-                </Button>
-                <Button
-                  mode="contained"
-                  onPress={() => { setFoundItem(item); setFoundModalVisible(true); }}
-                  style={[styles.statusButton, styles.foundButton]}
-                >
-                  Bulundu
-                </Button>
-              </View>
-            </Card>
-          ))}
-        </ScrollView>
-        <Modal
-          visible={editModalVisible}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setEditModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>Kayıp Eşya Düzenle</Text>
-              <TextInput
-                label="Eşya Tanımı"
-                value={description}
-                onChangeText={setDescription}
-                mode="outlined"
-                multiline
-                maxLength={100}
-                numberOfLines={2}
-                style={styles.textInput}
-                right={<TextInput.Affix text={`${description.length}/100`} />}
-              />
-
-              <View style={styles.pickerContainer}>
-                <Text style={styles.pickerLabel}>Kategori Seçiniz</Text>
-                <RNPickerSelect
-                  value= {isIDCategory}
-                  onValueChange={(value) => setIsIDCategory(value)}
-                  items={[
-                    { label: 'ID', value: true },
-                    { label: 'Diğer', value: false },
-                  ]}
-                  style={pickerSelectStyles}
-                />
-              </View>
-
-              {isIDCategory && (
+                  <Text style={styles.loadMoreButtonText}>Tümünü Gör...</Text>
+                </TouchableOpacity>
+              )
+            }
+          />
+          <Modal
+            visible={editModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setEditModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalHeading}>Kayıp Eşya Düzenle</Text>
                 <TextInput
-                  label="Kimlik Bilgisi"
-                  value={idNumber}
-                  onChangeText={setIdNumber}
+                  label="Eşya Tanımı"
+                  value={description}
+                  onChangeText={setDescription}
                   mode="outlined"
+                  multiline
+                  maxLength={100}
+                  numberOfLines={2}
                   style={styles.textInput}
+                  right={<TextInput.Affix text={`${description.length}/100`} />}
                 />
-              )}
 
-              <View style={styles.buttonContainer}>
-                <Button onPress={handleSubmit} mode="contained" style={styles.reportButton}>
-                  Bildir
-                </Button>
+                {lostAndFoundType === "ID_KNOWN" && (
+                  <TextInput
+                    label="Kimlik Bilgisi"
+                    value={ownerInfo}
+                    onChangeText={setOwnerInfo}
+                    mode="outlined"
+                    style={styles.textInput}
+                  />
+                )}
 
+                <View style={styles.buttonContainer}>
+                  <Button
+                    onPress={() => setEditModalVisible(false)}
+                    mode="outlined"
+                    style={styles.cancelButton}
+                  >
+                    Vazgeç
+                  </Button>
+                  <Button
+                    onPress={handleUpdate}
+                    mode="contained"
+                    style={styles.reportButton}
+                  >
+                    Bildir
+                  </Button>
+                </View>
               </View>
-
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        <Modal
-          visible={foundModalVisible}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setFoundModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>Bulundu olarak işaretleyeceksiniz. Bu işlem geri alınamaz</Text>
+          <Modal
+            visible={foundModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setFoundModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalHeading}>
+                  Eşya bulundu olarak işaretlenecek ve ilan silinecek. Bu işlem
+                  geri alınamaz emin misiniz?
+                </Text>
 
-              <Button
-                mode="contained"
-                onPress={() => { itemFound() }}
-              >
-                Bulundu
-              </Button>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    onPress={() => setFoundModalVisible(false)}
+                    mode="outlined"
+                    style={styles.cancelButton}
+                  >
+                    Vazgeç
+                  </Button>
 
-
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      handleDelete();
+                    }}
+                  >
+                    Evet
+                  </Button>
+                </View>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-      </View>
-    </SafeAreaView>
+          <Modal
+            visible={claimsModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setClaimsModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={[styles.modalHeading, styles.centeredHeading]}>Talepler</Text>
+                {selectedClaims.map((claim) => (
+                  <View key={claim.id} style={styles.claimItem}>
+                    <Text style={styles.claimLabel}>İletişim:</Text>
+                    <Text style={styles.claimInfo}>{claim.contactInfo}</Text>
+                    <Text style={styles.claimLabel}>Açıklama:</Text>
+                    <Text style={styles.claimInfo}>{claim.description}</Text>
+                  </View>
+                ))}
+                <Button
+                  onPress={() => setClaimsModalVisible(false)}
+                  mode="contained"
+                  style={styles.closeButton}
+                >
+                  Kapat
+                </Button>
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
-
   );
 };
-// Stiller için güncellenmiş bölüm
-// Stiller için güncellenmiş bölüm
+
 const styles = StyleSheet.create({
   fab: {
-    position: 'absolute', // Pozisyonu sabit yap
-    margin: 16, // Tüm kenarlardan 16 birim boşluk bırak
-    right: 0, // Sağ kenardan sıfır birim uzaklıkta
-    bottom: 0, // Alt kenardan sıfır birim uzaklıkta
-    backgroundColor: colors.primary, // Arka plan rengini ayarla
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.primary,
   },
   container: {
     flex: 1,
     padding: 16,
   },
   scrollView: {
-    width: '100%', // ScrollView genişliğini tam olarak ayarla
-    flex: 1,
+    width: "100%",
     paddingBottom: 30,
   },
   itemCard: {
-    width: '90%', // Kart genişliğini ekranın %90'ına ayarla
+    width: "90%",
     marginBottom: 10,
     elevation: 3,
-    alignSelf: 'center', // Her kartı kendi içinde merkezle
+    alignSelf: "center",
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalHeading: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  centeredHeading: {
+    textAlign: 'center',
   },
   itemImage: {
     height: 200,
-    backgroundColor: colors.text,
+    width: '100%',
   },
   itemDescription: {
     fontSize: 18,
     marginBottom: 8,
   },
+  itemOwnerInfo: {
+    fontSize: 16,
+    color: colors.text,
+    marginTop: 4,
+    fontWeight: "bold",
+  },
   filterButton: {
     backgroundColor: colors.secondary,
     borderRadius: 8,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   filterButtonText: {
     color: colors.text,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   heading: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
-    marginRight: 10, // Sağ taraftaki metin ve buton arasında boşluk
+    marginRight: 10,
+    marginBottom: 10,
   },
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly', // Butonlar arasında eşit boşluk bırak
+    flexDirection: "row",
+    justifyContent: "space-evenly",
     padding: 10,
   },
   statusButton: {
-    flex: 1, // Her iki buton da eşit genişlikte olacak
-    marginHorizontal: 5, // Butonlar arasında boşluk
+    flex: 1,
+    marginHorizontal: 5,
   },
   foundButton: {
-    backgroundColor: 'green', // Bulundu butonu için yeşil renk
+    backgroundColor: "green",
   },
   lostButton: {
-    backgroundColor: 'red', // Kayıp butonu için kırmızı renk
+    backgroundColor: "red",
   },
-
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
+  textInput: {
+    marginBottom: 16,
+  },
+  Container: {
+    width: "100%",
+    marginBottom: 16,
+  },
+  
+  loadMoreButton: {
+    backgroundColor: colors.background,
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignSelf: "center",
+    padding: 10,
+  },
+  loadMoreButtonText: {
+    color: colors.primary,
     fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+    fontWeight: "bold",
+  },
+  cancelButton: {
+    borderColor: colors.primary,
+    borderWidth: 1,
+  },
+  closeButton: {
+    marginTop: 10,
+  },
+  claimItem: {
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-    marginBottom: 15,
+    borderRadius: 5,
+    padding: 10,
   },
-  inputAndroid: {
+  claimLabel: {
     fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-    marginBottom: 15,
+    fontWeight: 'bold',
+  },
+  claimInfo: {
+    fontSize: 16,
+  },
+  notificationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 'auto',
+  },
+  claimCount: {
+    marginLeft: 5,
+    fontSize: 16,
+    color: colors.primary,
+  },
+  divider: {
+    marginVertical: 10,
+    backgroundColor: colors.text,
+  },
+
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  myItemsButton: {
+    backgroundColor: colors.secondary,
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignSelf: "flex-start",
+    alignItems: 'center'
+
   },
 });
 
-export default LostItemsPage;
+
+
+export default MyLostItemsPage;

@@ -19,7 +19,9 @@ import InternshipScreen from './app/(screens)/internship';
 import FinanceScreen from './app/(screens)/finance';
 import AllTransactionsScreen from './app/(screens)/all_transactions';
 import TransactionPage from './app/(screens)/transaction';
-import LostItemsPage from './app/(screens)/all_LostItems'
+import LostItemsPage from './app/(screens)/all_LostItems';
+import MyLostItemsPage from './app/(screens)/my_LostItems';
+import createLostPage from './app/(screens)/createLostItem';
 import DiningMenuScreen from './app/(screens)/dining'
 import RequestsPage from './app/(screens)/all_Requests';
 import RequestComponent from './app/(screens)/createRequest';
@@ -46,6 +48,8 @@ const FinanceStack = createNativeStackNavigator();
 const ReqStack = createNativeStackNavigator();
 const AllCoursesStack = createNativeStackNavigator();
 const AttendanceStack = createNativeStackNavigator();
+const LostItemsStack = createNativeStackNavigator();
+
 
 const SettingsIcon = () => (
   <Image
@@ -124,9 +128,18 @@ const AttStack = () => {
     <AttendanceStack.Navigator screenOptions={{ headerShown: false}}>
       <AttendanceStack.Screen name ='myCourses' component={MyCoursesScreen}/>
       <AttendanceStack.Screen name ='attendances' component={CourseAttendanceScreen}/>
-    
     </AttendanceStack.Navigator>
   )
+}
+
+const LostStack = () => {
+  <LostItemsStack.Navigator 
+    initialRouteName='all_LostItems'
+    screenOptions={{ headerShown: false}}>
+    <LostItemsStack.Screen name ='all_LostItems' component={LostItemsPage}/>
+    <LostItemsStack.Screen name ='myLostItems' component={MyLostItemsPage}/>
+    <LostItemsStack.Screen name ='createLostItem' component={createLostPage}/>
+  </LostItemsStack.Navigator>
 }
 
 const HomeStack = () => {
@@ -174,9 +187,9 @@ const HomeStack = () => {
       <Stack.Screen name='internship' component={InternshipScreen}/>
       <Stack.Screen name='announcements' component={AnnouncementStack}/>
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
-      <Stack.Screen name='lostItems' component={LostItemsPage}/>
+      <Stack.Screen name='lostItems' component={LostStack}/>
       <Stack.Screen name='requests' component={RequestStack}/>
-      <Stack.Screen name='myCourses' component={AttStack}/>      
+      <Stack.Screen name='myCourses' component={AttStack}/> 
     </Stack.Navigator>
   );
 };
