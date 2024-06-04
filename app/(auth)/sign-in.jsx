@@ -36,8 +36,6 @@ const SignIn = ({navigation}) => {
         password: password
       };
       try {
-        console.log(url)
-        console.log(payload)
         const response = await axios.post(url, payload, {
           headers: {
             'Content-Type': 'application/json',
