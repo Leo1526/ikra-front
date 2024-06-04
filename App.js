@@ -4,7 +4,7 @@ import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator  } from '@react-navigation/drawer';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Appbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Assuming you're using MaterialCommunityIcons
 import SignIn from './app/(auth)/sign-in';
@@ -209,7 +209,7 @@ const HomeStack = () => {
             title='Stajlar'
             break;
           case 'lostItems':
-            title='Kayıp Eşya Listesi'
+            title='Kayıp Eşya'
             break;
           case 'dining':
             title='Yemek Listesi'
@@ -310,16 +310,16 @@ const AuthStack = () => {
 
 const App = () => {
   return (
-    <NavigationContainer independent={true} ref={navigationRef} >
-      <Stack.Navigator >
-        <Stack.Screen name="AuthStack" component={AuthStack} options={{gestureEnabled: false, headerShown: false}}/>
-        <Stack.Screen 
-          name="DrawerNavigator"
-          component={DrawerNavigator}
-          options={{headerShown: false, gestureEnabled: false,}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer independent={true} ref={navigationRef} >
+        <Stack.Navigator >
+          <Stack.Screen name="AuthStack" component={AuthStack} options={{gestureEnabled: false, headerShown: false}}/>
+          <Stack.Screen 
+            name="DrawerNavigator"
+            component={DrawerNavigator}
+            options={{headerShown: false, gestureEnabled: false,}}
+            />
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 };
 

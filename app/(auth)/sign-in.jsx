@@ -75,8 +75,8 @@ const SignIn = ({navigation}) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.safeArea} 
       >
-
       <SafeAreaView style={styles.safeArea}>
+
         <ScrollView contentContainerStyle={styles.container}>
           <Image
             source={require('../../assets/images/logo.png')}
@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flexGrow: 1,
+    flex:1,
     backgroundColor: colors.background
   }
 });
