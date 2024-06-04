@@ -9,15 +9,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const SignIn = ({ route }) => {
-  const { user } = route.params;
-  if (user) {
-    setUsername(user)
-  }
+const SignIn = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [errorUsername, setErrorUsername] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
@@ -30,7 +26,7 @@ const SignIn = ({ route }) => {
       setErrorUsername(true);
       return
     } 
-    if (password.length < 8) {
+    if (password.length < 2) {
       setErrorPassword(true)
       return;
     }
@@ -58,13 +54,10 @@ const SignIn = ({ route }) => {
         } else {
           await AsyncStorage.setItem('jwtToken', data.body.token);
           await AsyncStorage.setItem('expireDate', data.body.expireDate);
-          console.log("tokens are set")
-          //TODO
-          //navigate to homepage
+          navigation.navigate("DrawerNavigator")
         }
       } catch (error) {
-        console.log(error)
-        console.log(error.message)
+        alert("Bağlantı hatası! " + error.message)
       }
     }
 

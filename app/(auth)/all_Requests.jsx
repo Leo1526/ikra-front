@@ -1,106 +1,127 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, StatusBar } from 'react-native';
-import { Card, Title } from 'react-native-paper';
+import { FlatList, StyleSheet, View, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
+import { Divider } from 'react-native-paper';
 import { colors } from '../../design/themes';
+import { ikraAxios, urlDev } from '../common';
+import { useNavigation } from '@react-navigation/native';
 
-const RequestsPage = ({ navigation }) => {
+
+const RequestsPage = () => {
+  const navigation = useNavigation();
   const [requests, setRequests] = useState([]);
-
-  
-  const sampleRequests = [
-    {
-      id: 1,
-      imageUrl: "https://example.com/image1.png",
-      requestText: "Hangi kahve türünü tercih edersiniz?",
-      options: [
-        { text: "Türk Kahvesi", percentage: 50 },
-        { text: "Filtre Kahve", percentage: 30 },
-        { text: "Espresso", percentage: 15 },
-        { text: "Cappuccino", percentage: 5 }
-      ]
-    },
-    {
-      id: 2,
-      imageUrl: null,
-      requestText: "En sevdiğiniz mevsim hangisidir?",
-      options: [
-        { text: "İlkbahar", percentage: 25 },
-        { text: "Yaz", percentage: 50 },
-        { text: "Sonbahar", percentage: 20 },
-        { text: "Kış", percentage: 5 }
-      ]
-    },
-    {
-      id: 3,
-      imageUrl: "https://example.com/image3.png",
-      requestText: "Hangi sporu yapmayı en çok seversiniz?",
-      options: [
-        { text: "Futbol", percentage: 40 },
-        { text: "Basketbol", percentage: 25 },
-        { text: "Yüzme", percentage: 20 },
-        { text: "Tenis", percentage: 10 },
-        { text: "Voleybol", percentage: 5 }
-      ]
-    }
-  ];
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const size = 5;
 
   useEffect(() => {
-    // API'den talepleri çekmek için kullanılabilir.
-    // Şimdilik statik veri kullanıyoruz.
-    setRequests(sampleRequests.map(request => ({
-      ...request,
-      showResults: false,  // Tüm şıkların sonuçlarını gösterme kontrolü
-    })));
+    fetchProposals();
   }, []);
 
-  const handleOptionPress = (requestId, optionIndex) => {
-    setRequests(currentRequests =>
-      currentRequests.map(request => {
-        if (request.id === requestId) {
-          request.showResults =  true;
-          return {
-            ...request,
-            options: request.options.map((option, index) => {
-              if (index === optionIndex) {
-                return { ...option, selected: true };
-              }
-              return { ...option, selected: false };
-            })
-          };
-        }
-        return request;
-      })
-    );
+  const fetchProposals = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      await ikraAxios({
+        url: `${urlDev}/proposals/universityId?page=${page}&size=${size}`,
+        onSuccess: (data) => {
+          setRequests((prevRequests) => [...prevRequests, ...data.body]);
+          setPage((prevPage) => prevPage + 1);
+        },
+        onError: (error) => {
+          console.error('Error fetching meal data:', error);
+        },
+      });
+    } catch (error) {
+      console.error('Error in fetchProposals:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOptionPress = async (requestId, optionId) => {
+    try {
+      const newRequest = await fetchCreateVote(optionId);
+      if (newRequest.body != null) {
+        setRequests(prevRequests =>
+          prevRequests.map(request =>
+            request.id == newRequest.body.id ? newRequest.body : request
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error handling option press:', error);
+    }
+  };
+
+  const fetchCreateVote = async (optionId) => {
+    try {
+      const response = await ikraAxios({
+        url: `${urlDev}/proposalVotes?optionId=${optionId}`,
+        method: 'POST',
+        onSuccess: (data) => {
+          return data.body;
+        },
+        onError: (error) => {
+          console.error('Error creating vote:', error);
+        },
+      });
+      return response;
+    } catch (error) {
+      console.error('Error in fetchCreateVote:', error);
+    }
+  };
+
+  const renderRequestItem = ({ item, index }) => (
+    <View key={item.id} style={styles.requestCard}>
+      {item.image && (
+        <View style={styles.imageContainer}>
+          <Image source={require('../../assets/images/cards.png')} style={styles.requestImage} resizeMode="contain" />
+        </View>
+      )}
+      <View style={styles.requestContent}>
+        <Text style={styles.requestText}>{item.proposal}</Text>
+        {item.options.map((option) => (
+          <TouchableOpacity key={option.id} style={styles.optionContainer} onPress={() => handleOptionPress(item.id, option.id)}>
+            <View style={styles.optionRow}>
+              <View style={[styles.dot, { backgroundColor: item.usersVote === option.id ? colors.secondary : colors.primary }]} />
+              <Text style={styles.optionText}>{option.description}</Text>
+            </View>
+            {item.userHasVoted && (
+              <View style={styles.progressBarContainer}>
+                <View style={[styles.progressBar, { width: `${option.votePct * 100}%`, backgroundColor: colors.primary }]}>
+                  <Text style={styles.percentageText}>{`${Math.round(option.votePct * 100)}%`}</Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
+        ))}
+      </View>
+      {index < requests.length - 1 && <Divider style={styles.divider} />}
+    </View>
+  );
+
+  const handleNewRequestPress = () => {
+    // Handle the action when the new request button is pressed
+    console.log('New request button pressed');
+    navigation.navigate('createRequest');
+    // For example, navigate to a new screen or open a modal
   };
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content"   />
-      <ScrollView style={styles.scrollView}>
-        {requests.map((request) => (
-          <Card key={request.id} style={styles.requestCard}>
-            {/* {request.imageUrl && <Card.Cover source={{ uri: request.imageUrl }} style={styles.requestImage}  resizeMode='contain'/>} */}
-            {request.imageUrl && <Card.Cover source={require('../../assets/images/logo.png')} style={styles.requestImage}  resizeMode='contain'/>}
-
-            <Card.Content>
-              <Title style={styles.requestText}>{request.requestText}</Title>
-              {request.options.map((option, index) => (
-                <TouchableOpacity key={index} style={styles.optionContainer} onPress={() => handleOptionPress(request.id, index)}>
-                  <View  style={[styles.optionBackground, { backgroundColor: colors.text } ]}>
-                    <Text style={styles.optionText}>{option.text}</Text>
-                    {request.showResults && (
-                      <View style={[styles.progressBar, { backgroundColor: option.selected ? colors.secondary : colors.primary }, { width: `${option.percentage}%` }]}/>
-                    )}
-                  </View>
-                  {request.showResults && (
-                    <Text style={styles.percentageText}>{option.percentage}%</Text>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </Card.Content>
-          </Card>
-        ))}
-      </ScrollView>
+      <StatusBar barStyle="dark-content" />
+      <FlatList
+        data={requests}
+        renderItem={renderRequestItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.scrollView}
+        onEndReached={fetchProposals}
+        onEndReachedThreshold={0.5}
+      />
+      <TouchableOpacity style={styles.newRequestButton} onPress={handleNewRequestPress}>
+        <Text style={styles.newRequestButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -109,60 +130,91 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
   },
   scrollView: {
-    flex: 1,
-    padding: 10,
-    paddingTop: (StatusBar.currentHeight || 20)  + 5, // Cihazın status bar yüksekliğini dikkate alır
+    paddingTop: (StatusBar.currentHeight || 20) + 5,
+    paddingBottom: 20,
   },
   requestCard: {
     marginBottom: 10,
-    elevation: 3
+    paddingHorizontal: 16,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
   },
   requestImage: {
     height: 200,
-    backgroundColor: colors.text
+    width: '100%',
+  },
+  requestContent: {
+    paddingBottom: 10,
   },
   requestText: {
     fontSize: 18,
-    marginBottom: 8
+    marginBottom: 8,
   },
   optionContainer: {
+    marginBottom: 4,
+  },
+  optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4
   },
-  optionBackground: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    position: 'relative',
-    backgroundColor: 'rgba(0, 123, 255, 0.2)'
-  },
-  progressBar: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: colors.primary
+  dot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 10,
   },
   optionText: {
     fontSize: 16,
-    color: '#000',
-    zIndex: 1
+    flex: 1,
+  },
+  progressBarContainer: {
+    marginTop: 6,
+    marginBottom: 6,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderRadius: 50,
+    position: 'relative',
+    height: 15,
+  },
+  progressBar: {
+    height: 15,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   percentageText: {
-    width: 50,
-    fontSize: 16,
-    color: colors.background,
+    color: '#fff',
+    fontSize: 14,
     fontWeight: 'bold',
-    textAlign: 'right'
-  }
+  },
+  divider: {
+    marginVertical: 10,
+    backgroundColor: colors.text,
+  },
+  newRequestButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  newRequestButtonText: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
 });
 
 export default RequestsPage;
