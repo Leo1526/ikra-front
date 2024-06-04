@@ -336,7 +336,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             <TouchableOpacity
               key={index}
               style={styles.instructor}
-              onPress={() => navigation.navigate('Profile', { instructor })}
+              onPress={() => navigation.navigate('profile', { instructor })}
             >
               <Text style={styles.instructorText}>
                 {instructor.firstName + " " + instructor.lastName}

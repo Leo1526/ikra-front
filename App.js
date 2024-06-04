@@ -114,6 +114,7 @@ const CourseStack = () => {
       <AllCoursesStack.Screen name ='courses' component={GridItemsPage}/>
       <AllCoursesStack.Screen name ='courseDetailPage' component={CourseDetailPage}/>
       <AllCoursesStack.Screen name ='commentsPage' component={CommentsPage}/>
+      <AttendanceStack.Screen name ='profile' component={Profile}/>
     </AllCoursesStack.Navigator>
   )
 }
@@ -123,6 +124,7 @@ const AttStack = () => {
     <AttendanceStack.Navigator screenOptions={{ headerShown: false}}>
       <AttendanceStack.Screen name ='myCourses' component={MyCoursesScreen}/>
       <AttendanceStack.Screen name ='attendances' component={CourseAttendanceScreen}/>
+    
     </AttendanceStack.Navigator>
   )
 }
