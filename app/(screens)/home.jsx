@@ -180,7 +180,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.iconRow}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('lostItems')}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('aLostItems')}>
           <View style={styles.pngContainer}>
             <Image source={require("../../assets/icons/lost-item.png")} style={styles.icon} />
           </View>
