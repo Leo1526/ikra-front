@@ -21,7 +21,7 @@ import AllTransactionsScreen from './app/(screens)/all_transactions';
 import TransactionPage from './app/(screens)/transaction';
 import LostItemsPage from './app/(screens)/all_LostItems';
 import MyLostItemsPage from './app/(screens)/my_LostItems';
-import createLostPage from './app/(screens)/createLostItem';
+import CreateLostPage from './app/(screens)/createLostItem';
 import DiningMenuScreen from './app/(screens)/dining'
 import RequestsPage from './app/(screens)/all_Requests';
 import RequestComponent from './app/(screens)/createRequest';
@@ -180,13 +180,14 @@ const AttStack = () => {
 }
 
 const LostStack = () => {
+  return (
   <LostItemsStack.Navigator 
-    initialRouteName='all_LostItems'
     screenOptions={{ headerShown: false}}>
     <LostItemsStack.Screen name ='all_LostItems' component={LostItemsPage}/>
-    <LostItemsStack.Screen name ='myLostItems' component={MyLostItemsPage}/>
-    <LostItemsStack.Screen name ='createLostItem' component={createLostPage}/>
+    <LostItemsStack.Screen name ='my_LostItems' component={MyLostItemsPage}/>
+    <LostItemsStack.Screen name ='createLostItem' component={CreateLostPage}/>
   </LostItemsStack.Navigator>
+  )
 }
 
 const HomeStack = () => {

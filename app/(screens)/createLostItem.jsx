@@ -9,7 +9,7 @@ import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı
 import { commonStyle } from '../../design/style';
 import { ikraAxios, urlDev } from '../common';
 
-const createLostPage = ({navigation}) => {
+const CreateLostPage = ({navigation}) => {
   const [imageUri, setImageUri] = useState(null);
   const [description, setDescription] = useState('');
   const [idType, setIdType] = useState('');
@@ -249,4 +249,4 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-export default createLostPage;
+export default CreateLostPage;
