@@ -157,7 +157,7 @@ const LostItemsPage = ({navigation}) => {
         </View>
         <Button
             mode="contained"
-            onPress={() => navigation.navigate('my_LostItems')}
+            onPress={() => navigation.navigate('myLostItems')}
             style={styles.myItemsButton}
           >
             <MaterialIcons name="inbox" size={30} color={colors.primary} />

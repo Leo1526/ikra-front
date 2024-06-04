@@ -19,8 +19,8 @@ import InternshipScreen from './app/(screens)/internship';
 import FinanceScreen from './app/(screens)/finance';
 import AllTransactionsScreen from './app/(screens)/allTransactions';
 import TransactionPage from './app/(screens)/transaction';
-import LostItemsPage from './app/(screens)/all_LostItems';
-import MyLostItemsPage from './app/(screens)/my_LostItems';
+import LostItemsPage from './app/(screens)/lostItems';
+import MyLostItemsPage from './app/(screens)/myLostItems';
 import CreateLostPage from './app/(screens)/createLostItem';
 import DiningMenuScreen from './app/(screens)/dining'
 import RequestsPage from './app/(screens)/allRequests';
@@ -183,8 +183,8 @@ const LostStack = () => {
   return (
   <LostItemsStack.Navigator 
     screenOptions={{ headerShown: false}}>
-    <LostItemsStack.Screen name ='all_LostItems' component={LostItemsPage}/>
-    <LostItemsStack.Screen name ='my_LostItems' component={MyLostItemsPage}/>
+    <LostItemsStack.Screen name ='allLostItems' component={LostItemsPage}/>
+    <LostItemsStack.Screen name ='myLostItems' component={MyLostItemsPage}/>
     <LostItemsStack.Screen name ='createLostItem' component={CreateLostPage}/>
   </LostItemsStack.Navigator>
   )
