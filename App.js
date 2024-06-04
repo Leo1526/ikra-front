@@ -17,17 +17,17 @@ import Settings from './app/(screens)/settings';
 
 import InternshipScreen from './app/(screens)/internship';
 import FinanceScreen from './app/(screens)/finance';
-import AllTransactionsScreen from './app/(screens)/all_transactions';
+import AllTransactionsScreen from './app/(screens)/allTransactions';
 import TransactionPage from './app/(screens)/transaction';
 import LostItemsPage from './app/(screens)/all_LostItems';
 import MyLostItemsPage from './app/(screens)/my_LostItems';
 import CreateLostPage from './app/(screens)/createLostItem';
 import DiningMenuScreen from './app/(screens)/dining'
-import RequestsPage from './app/(screens)/all_Requests';
+import RequestsPage from './app/(screens)/allRequests';
 import RequestComponent from './app/(screens)/createRequest';
 import ProfileScreen from './app/(screens)/profile'; 
 import GridItemsPage from './app/(screens)/courses';
-import CourseDetailPage from './app/(screens)/one_course';
+import CourseDetailPage from './app/(screens)/oneCourse';
 import CommentsPage from './app/(screens)/commentsPage';
 import MyCoursesScreen from './app/(course)/myCourses';
 import CourseAttendanceScreen from './app/(course)/courseAttendance';
@@ -412,6 +412,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 });
-
 
 export default App;
