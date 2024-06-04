@@ -150,54 +150,54 @@ const Home = ({ navigation }) => {
           <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
             PAYLAŞ
           </Button>
-          <Button labelStyle={styles.buttonLabel} style={styles.button} >
+          <Button onPress={() => navigation.navigate('finance')} labelStyle={styles.buttonLabel} style={styles.button} >
             TÜMÜ
           </Button>
         </View>
       </View>
 
       <View style={styles.iconContainer}>
-        <View style={styles.iconRow}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('courses')}>
-            <View style={styles.pngContainer}>
-              <Image source={require("./../../assets/icons/school.png")} style={styles.icon} />
-            </View>
-            <Text style={styles.menuLabel}>Dersler</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('depAnno')}>
-            <View style={styles.pngContainer}>
-              <Image source={require("../../assets/icons/announcement.png")} style={styles.icon} />
-            </View>
-            <Text style={styles.menuLabel}>Duyurular</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('dining')}>
-            <View style={styles.pngContainer}>
-              <Image source={require("../../assets/icons/dining.png")} style={styles.icon} />
-            </View>
-            <Text style={styles.menuLabel}>Yemek Listesi</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.iconRow}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('lostItems')}>
-            <View style={styles.pngContainer}>
-              <Image source={require("../../assets/icons/lost-item.png")} style={styles.icon} />
-            </View>
-            <Text style={styles.menuLabel}>Kayıp Eşya</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('proposal')}>
-            <View style={styles.pngContainer}>
-              <Image source={require("../../assets/icons/request.png")} style={styles.icon} />
-            </View>
-            <Text style={styles.menuLabel}>İstekler</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('internship')}>
-            <View style={styles.pngContainer}>
-              <Image source={require("../../assets/icons/internship.png")} style={styles.icon} />
-            </View>
-            <Text style={styles.menuLabel}>Stajlar</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.iconRow}>
+        <TouchableOpacity style={[styles.iconButton, styles.borderBottomOnly]} onPress={() => navigation.navigate('courses')}>
+          <View style={styles.pngContainer}>
+            <Image source={require("./../../assets/icons/school.png")} style={styles.icon} />
+          </View>
+          <Text style={styles.menuLabel}>Dersler</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.iconButton, styles.middleElement]} onPress={() => navigation.navigate('depAnno')}>
+          <View style={styles.pngContainer}>
+            <Image source={require("../../assets/icons/announcement.png")} style={styles.icon} />
+          </View>
+          <Text style={styles.menuLabel}>Duyurular</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.iconButton, styles.borderBottomOnly]} onPress={() => navigation.navigate('dining')}>
+          <View style={styles.pngContainer}>
+            <Image source={require("../../assets/icons/dining.png")} style={styles.icon} />
+          </View>
+          <Text style={styles.menuLabel}>Yemek Listesi</Text>
+        </TouchableOpacity>
       </View>
+      <View style={styles.iconRow}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('lostItems')}>
+          <View style={styles.pngContainer}>
+            <Image source={require("../../assets/icons/lost-item.png")} style={styles.icon} />
+          </View>
+          <Text style={styles.menuLabel}>Kayıp Eşya</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.iconButton, styles.middleElementSecondRow]} onPress={() => navigation.navigate('proposal')}>
+          <View style={styles.pngContainer}>
+            <Image source={require("../../assets/icons/request.png")} style={styles.icon} />
+          </View>
+          <Text style={styles.menuLabel}>İstekler</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('internship')}>
+          <View style={styles.pngContainer}>
+            <Image source={require("../../assets/icons/internship.png")} style={styles.icon} />
+          </View>
+          <Text style={styles.menuLabel}>Stajlar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
     </ScrollView>
   );
 };
@@ -295,23 +295,38 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   iconContainer: {
-    marginTop: 25,
+    flex: 1,
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Ensures equal spacing between items
+    width: '90%', // Adjust as needed
   },
   iconButton: {
-    borderWidth:1,
     alignItems: 'center',
     flex: 1,
     padding: 10, // Add padding for better spacing
   },
+  borderBottomOnly: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primaryDark,
+  },
+  middleElement: {
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: colors.primaryDark,
+  },
+  middleElementSecondRow: {
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: colors.primaryDark,
+  },
   pngContainer: {
     width: 70, // Set a fixed width
     height: 70, // Set a fixed height
-    borderColor: colors.primaryDark,
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -321,6 +336,7 @@ const styles = StyleSheet.create({
   },
   menuLabel: {
     marginTop: 4,
+    color: colors.primaryDark
   },
 });
 
