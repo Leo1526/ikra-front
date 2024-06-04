@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { navigate } from './navigationService';
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
-export const urlDev = "http://192.168.1.104:8080";
+export const urlDev = "http://192.168.1.16:8080";
 
 let isNavigatingToLogin = false;
 
@@ -15,12 +15,10 @@ export const errorInput = (ref) => {
 };
 
 
-// Varsayılan başarı işleyicisi
 const defaultHandleSuccess = (data) => {
   console.log('Data fetched successfully:', data);
 };
 
-// Varsayılan hata işleyicisi
 const defaultHandleFail = (error) => {
   console.error('Error fetching data:', error);
 };

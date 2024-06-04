@@ -3,14 +3,12 @@ import { FlatList, StyleSheet, View, Text, TouchableOpacity, StatusBar, Image } 
 import { Divider } from 'react-native-paper';
 import { colors } from '../../design/themes';
 import { ikraAxios, urlDev } from '../common';
-import { useNavigation } from '@react-navigation/native';
 
-
-const RequestsPage = () => {
-  const navigation = useNavigation();
+const RequestsPage = ({navigation}) => {
   const [requests, setRequests] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [noMoreComments, setNoMoreComments] = useState(false);
   const size = 5;
 
   useEffect(() => {
@@ -18,6 +16,7 @@ const RequestsPage = () => {
   }, []);
 
   const fetchProposals = async () => {
+    if(noMoreComments) return;
     if (loading) return;
 
     setLoading(true);
@@ -25,6 +24,9 @@ const RequestsPage = () => {
       await ikraAxios({
         url: `${urlDev}/proposals/universityId?page=${page}&size=${size}`,
         onSuccess: (data) => {
+          if(data.body.length === 0){
+            setNoMoreComments(true);
+          }
           setRequests((prevRequests) => [...prevRequests, ...data.body]);
           setPage((prevPage) => prevPage + 1);
         },
@@ -76,7 +78,11 @@ const RequestsPage = () => {
     <View key={item.id} style={styles.requestCard}>
       {item.image && (
         <View style={styles.imageContainer}>
-          <Image source={require('../../assets/images/cards.png')} style={styles.requestImage} resizeMode="contain" />
+          <Image
+            source={{ uri: `data:${item.image.mimeType};base64,${item.image.bytes}` }}
+            style={styles.requestImage}
+            resizeMode="contain"
+          />
         </View>
       )}
       <View style={styles.requestContent}>

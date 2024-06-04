@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, text } from '../../design/themes';
 import {commonStyle} from "../../design/style";
 import * as common from "../common.js";
@@ -208,5 +209,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background
   }
 });
-
 export default SignIn;

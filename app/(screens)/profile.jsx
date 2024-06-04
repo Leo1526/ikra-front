@@ -1,30 +1,58 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Linking } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
 const user = {
-  name: "Jane Doe",
-  email: "jane.doe@example.com",
-  schoolName: "University of Example",
-  schoolLogoUrl: "https://via.placeholder.com/150",
-  profileImageUrl: "https://via.placeholder.com/150"
+  name: "Adnan Özsoy",
+  email: "adnanozsoy@gmail.com",
+  website: "https://avesis.hacettepe.edu.tr/adnan.ozsoy",
+  schoolName: "Hacettepe Üniversitesi",
+  schoolLogoUrl: require("./hctplogo.png"),
+  profileImageUrl: require("./adnan.jpg")
 };
 
-
 const ProfileScreen = () => {
+  // URL'yi açan fonksiyon
+  const openURL = (url) => {
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Card style={styles.card}>
-        <Card.Title title={user.name} subtitle={user.email} />
+        <Card.Title 
+          title={user.name} 
+          subtitle={user.email}
+          titleStyle={styles.centerHeaderText}
+          subtitleStyle={styles.centerText}
+        />
         <Card.Content>
-          <Avatar.Image size={150} source={{ uri: user.profileImageUrl }} style={styles.avatar} />
+        <TouchableOpacity onPress={() => openURL(user.website)}>
+            <Text style={[styles.link, styles.centerText]}>
+              Websitesi
+            </Text>
+          </TouchableOpacity>
+          <Avatar.Image 
+            size={150} 
+            source={user.profileImageUrl}
+            style={styles.avatar}
+          />
           <Button icon="camera" mode="outlined" onPress={() => console.log('Update Profile Photo')}>
-            Update Photo
+            Fotoğraf Yükle
           </Button>
-          <Title style={styles.title}>{user.name}</Title>
-          <Paragraph>{user.email}</Paragraph>
-          <Paragraph>{user.schoolName}</Paragraph>
-          <Avatar.Image size={100} source={{ uri: user.schoolLogoUrl }} style={styles.schoolLogo} />
+          <Title style={[styles.title, styles.centerText]}>{user.schoolName}</Title>
+
+          <Avatar.Image 
+            size={100} 
+            source={user.schoolLogoUrl}
+            style={styles.schoolLogo}
+          />
         </Card.Content>
       </Card>
     </View>
@@ -51,9 +79,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10
   },
+  centerHeaderText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  centerText: {
+    textAlign: 'center',
+  },
   schoolLogo: {
     marginTop: 10,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    backgroundColor: 'transparent'
+  },
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+    marginTop: 10,
+    marginBottom: 10
   }
 });
 

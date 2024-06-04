@@ -8,7 +8,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { urlDev, ikraAxios } from '../common';
 
 
-const AllTransactionsScreen = () => {
+const AllTransactionsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterKeyword, setFilterKeyword] = useState('');
   const [transactionType, setTransactionType] = useState('Tümü');
@@ -93,9 +93,6 @@ const AllTransactionsScreen = () => {
       <View style={styles.container}>
         <View style= {{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={styles.heading}>Tüm İşlemler</Text>
-        <Button style={styles.filterButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.filterButtonText}>Filtrele</Text>
-        </Button>
         </View>
         <FlatList
           data={filteredTransactions.length > 0 ? filteredTransactions : transactions}

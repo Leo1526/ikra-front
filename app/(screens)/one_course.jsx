@@ -1,51 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Button } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Linking, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { Slider } from 'react-native-elements';
 import { BarChart, PieChart } from 'react-native-gifted-charts';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import { colors, text, fonts } from '../../design/themes';
 import RNPickerSelect from 'react-native-picker-select';
-import { TextInput } from 'react-native-paper';
+import { TextInput, Button } from 'react-native-paper';
 import * as myStyle from "../../design/style"
-
-
-const exampleCourseResponse = {
-  id: 1,
-  departmentId: 1,
-  universityId: 1,
-  name: "Fundamentals of Artificial Intelligence",
-  courseCode: "BBM405",
-  website: "www.example.com",
-  instructors: ["Dr. Ali Veli", "Prof. Dr. Ayşe Yılmaz"],
-  courseStatResponse: {
-    gradeMap: {
-      A1: 10,
-      A2: 15,
-      A3: 12,
-      B1: 22,
-      B2: 30,
-      B3: 28,
-      C1: 20,
-      C2: 25,
-      C3: 18,
-      D: 8,
-      F: 5,
-    },
-    difficultyAvg: 7.4,
-    qualityAvg: 8.9,
-    hours: {
-      FIFTEEN_TWENTY: 10,
-      TEN_FIFTEEN: 20,
-      ZERO_FIVE: 5,
-      TWENTY_TWENTYFIVE: 8,
-      FIVE_TEN: 15,
-      TWENTYFIVE_THIRTY: 12
-    }
-  },
-  idate: null
-};
 
 const gradeValueMap = {
   A1: 4.0,
@@ -82,9 +44,7 @@ const qualityDescriptions = [
   "Efsane!"
 ];
 
-
-
-const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDifficulty = 1 }) => {
+const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDifficulty = 1, navigation }) => {
   const route = useRoute();
   const { course } = route.params;
   const [courseDetails, setCourseDetails] = useState(null);
@@ -93,15 +53,14 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
   const [comment, setComment] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [qualityRating, setQualityRating] = useState(0);
-  const [difficulty, setDifficulty] = useState(1);
+  const [difficulty, setDifficulty] = useState(5);
   const [selectedHours, setSelectedHours] = useState('');
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
         // Backend yerine sabit veriden veri çekme işlemi
-        const data = exampleCourseResponse;
-        setCourseDetails(data || {});
+        setCourseDetails(course || {});
       } catch (error) {
         console.error('Error fetching course details:', error);
       }
@@ -114,12 +73,11 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
 
   if (!courseDetails) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
         <Text style={styles.loadingText}>Loading...</Text>
-      </SafeAreaView>
+      </View>
     );
   }
-
 
   const gradeData = [
     { label: 'A1', value: courseDetails.courseStatResponse.gradeMap.A1, color: '#FFD700', gradientCenterColor: '#FFFF00' },
@@ -135,14 +93,12 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
     { label: 'F', value: courseDetails.courseStatResponse.gradeMap.F, color: '#ADFF2F', gradientCenterColor: '#7FFF00' },
   ];
 
-
   const gradePieData = gradeData.map(({ label, value, color, gradientCenterColor }) => ({
     value,
     color,
     gradientCenterColor,
     text: label,
   }));
-
 
   const hoursData = [
     { label: '0-5', value: courseDetails.courseStatResponse.hours.ZERO_FIVE, frontColor: '#006DFF', gradientColor: '#009FFF' },
@@ -161,8 +117,6 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
     { label: '20-25', value: courseDetails.courseStatResponse.hours.TWENTY_TWENTYFIVE, color: '#32CD32', gradientCenterColor: '#00FF00' },
     { label: '25-30', value: courseDetails.courseStatResponse.hours.TWENTYFIVE_THIRTY, color: '#00FA9A', gradientCenterColor: '#00FF7F' },
   ];
-
-
 
   const difficultyData = [
     {
@@ -202,7 +156,6 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
 
     const meanValue = totalCount === 0 ? 'N/A' : (totalScore / totalCount).toFixed(2);
 
-    // Harf notunu dönmek için
     let meanGrade = 'N/A';
     for (const grade in gradeValueMap) {
       if (gradeValueMap[grade] == meanValue) {
@@ -226,6 +179,10 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
     'FIFTEEN_TWENTY': 17.5,
     'TWENTY_TWENTYFIVE': 22.5,
     'TWENTYFIVE_THIRTY': 27.5
+  };
+
+  const handleUrlPress = (url) => {
+    Linking.openURL("https://" + url).catch((err) => console.error('An error occurred', err));
   };
 
   const calculateMeanHours = (hoursMap) => {
@@ -276,19 +233,15 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
     return { max, min };
   };
 
-  // Harcanan saat verileri için dinamik max ve min hesaplama
   const { max: maxHours, min: minHours } = calculateMaxMinValues(hoursData);
-
-  // Not dağılımı verileri için dinamik max ve min hesaplama
   const { max: maxGrades, min: minGrades } = calculateMaxMinValues(gradeData);
-
 
   const interpolateColor = (value) => {
     const red = Math.min(255, (value - 1) * 28);
     const green = Math.max(0, 255 - (value - 1) * 28);
     return `rgb(${red},${green},0)`;
   };
-  
+
   const renderGradeLegendComponent = () => {
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginTop: 10 }}>
@@ -308,6 +261,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
       </View>
     );
   };
+
   const renderHoursLegendComponent = () => {
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginTop: 10 }}>
@@ -327,7 +281,6 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
       </View>
     );
   };
-
 
   const renderLegendComponent = () => {
     return (
@@ -366,195 +319,227 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
     );
   };
 
+  const NoStatsText = "Bu dersle ilgili verimiz yok";
+
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.logo} />
           <Text style={styles.title}>{courseDetails.name}</Text>
-          <Text style={styles.sectionHeading}>Dersin kısa bir açıklaması:</Text>
-          <Text style={styles.description}>Website: {courseDetails.website}</Text>
+          <Text style={styles.sectionHeading}>Dersin Açıklaması:</Text>
+          <Text style={styles.sectionHeading}>Dersin Sitesi:</Text>
+          <TouchableOpacity onPress={() => handleUrlPress(courseDetails.website)}>
+            <Text style={styles.linket}>{courseDetails.website}</Text>
+          </TouchableOpacity>
           <Text style={styles.sectionHeading}>Dersi Veren Hocalar</Text>
           {courseDetails.instructors?.map((instructor, index) => (
-            <Text key={index} style={styles.instructor}>{instructor}</Text>
+            <TouchableOpacity
+              key={index}
+              style={styles.instructor}
+              onPress={() => navigation.navigate('profile', { instructor })}
+            >
+              <Text style={styles.instructorText}>
+                {instructor.firstName + " " + instructor.lastName}
+              </Text>
+            </TouchableOpacity>
           ))}
           <Text style={styles.sectionHeading}>Not Dağılımı</Text>
-          <View style={styles.chartWrapper}>
-            <View style={styles.chartContainer}>
-              {!showGradePieChart ? (
-                <BarChart
-                  data={gradeData}
-                  barWidth={30}
-                  initialSpacing={10}
-                  showGradient
-                  spacing={14}
-                  barBorderRadius={4}
-                  yAxisThickness={0}
-                  xAxisType={'dashed'}
-                  xAxisColor={'lightgray'}
-                  yAxisTextStyle={{ color: 'lightgray' }}
-                  stepValue={Math.ceil(maxGrades / 5)} // max değeri 5 bölüme ayırarak stepValue hesaplama
-                  maxValue={maxGrades}
-                  noOfSections={5} // 5 bölüm halinde gösterim
-                  yAxisLabelTexts={Array.from({ length: 6 }, (_, i) => (i * Math.ceil(maxGrades / 5)).toString())} // 0, 10, 20, ... gibi değerler
-                  labelWidth={40}
-                  xAxisLabelTextStyle={{ color: 'lightgray', textAlign: 'center' }}
-                  showLine
-                  lineConfig={{
-                    color: '#F29C6E',
-                    thickness: 3,
-                    curved: true,
-                    hideDataPoints: true,
-                    shiftY: 20,
-                    initialSpacing: -5,
-                  }}
-                  frontColor={colors.primary}
-
-                />
-              ) : (
-                <View style={{ alignItems: 'center' }}>
-                  <PieChart
-                    data={gradePieData}
-                    donut
+          {!course.courseStatResponse.difficultyAvg ? (
+            <Text style={styles.warning}>{NoStatsText}</Text>
+          ) : (
+            <View style={styles.chartWrapper}>
+              <View style={styles.chartContainer}>
+                {!showGradePieChart ? (
+                  <BarChart
+                    data={gradeData}
+                    barWidth={30}
+                    initialSpacing={10}
                     showGradient
-                    sectionAutoFocus
-                    focusOnPress
-                    radius={90}
-                    innerRadius={60}
-                    innerCircleColor={'#232B5D'}
-                    centerLabelComponent={() => {
-                      return (
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                          <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
-                            {meanGrade}
-                          </Text>
-                          <Text style={{ fontSize: 14, color: 'white' }}>Ortalama Not</Text>
-                        </View>
-                      );
+                    spacing={14}
+                    barBorderRadius={4}
+                    yAxisThickness={0}
+                    xAxisType={'dashed'}
+                    xAxisColor={'lightgray'}
+                    yAxisTextStyle={{ color: 'lightgray' }}
+                    stepValue={Math.ceil(maxGrades / 5)}
+                    maxValue={maxGrades}
+                    noOfSections={5}
+                    yAxisLabelTexts={Array.from({ length: 6 }, (_, i) => (i * Math.ceil(maxGrades / 5)).toString())}
+                    labelWidth={40}
+                    xAxisLabelTextStyle={{ color: 'lightgray', textAlign: 'center' }}
+                    showLine
+                    lineConfig={{
+                      color: '#F29C6E',
+                      thickness: 3,
+                      curved: true,
+                      hideDataPoints: true,
+                      shiftY: 20,
+                      initialSpacing: -5,
                     }}
+                    frontColor={colors.primary}
                   />
-                  {renderGradeLegendComponent()}
-                </View>
-              )}
-            </View>
-            <Button
-              title={!showGradePieChart ? "Pie Chart Göster" : "Bar Chart Göster"}
-              onPress={() => setShowGradePieChart(!showGradePieChart)}
-            />
-          </View>
-
-          <Text style={styles.sectionHeading}>Saat Harcanma Dağılımı</Text>
-          <View style={styles.chartWrapper}>
-            <View style={styles.chartContainer}>
-              {!showHoursPieChart ? (
-                <BarChart
-                  frontColor={colors.primary}
-                  data={hoursData}
-                  barWidth={30}
-                  initialSpacing={10}
-                  spacing={14}
-                  barBorderRadius={4}
-                  showGradient
-                  yAxisThickness={0}
-                  xAxisType={'dashed'}
-                  xAxisColor={'lightgray'}
-                  yAxisTextStyle={{ color: 'lightgray' }}
-                  stepValue={Math.ceil(maxHours / 5)} // max değeri 5 bölüme ayırarak stepValue hesaplama
-                  maxValue={maxHours}
-                  noOfSections={5} // 5 bölüm halinde gösterim
-                  yAxisLabelTexts={Array.from({ length: 6 }, (_, i) => (i * Math.ceil(maxHours / 5)).toString())} // 0, 10, 20, ... gibi değerler
-                  labelWidth={40}
-                  xAxisLabelTextStyle={{ color: 'lightgray', textAlign: 'center' }}
-                  showLine
-                  lineConfig={{
-                    color: '#F29C6E',
-                    thickness: 3,
-                    curved: true,
-                    hideDataPoints: true,
-                    shiftY: 20,
-                    initialSpacing: -5,
-                  }}
-                />
-              ) : (
-                <View style={{ alignItems: 'center' }}>
-                  <PieChart
-                    data={hoursPieData}
-                    donut
-                    showGradient
-                    sectionAutoFocus
-                    focusOnPress
-                    radius={90}
-                    innerRadius={60}
-                    innerCircleColor={'#232B5D'}
-                    centerLabelComponent={() => {
-                      return (
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                          <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
-                            {meanHours}
-                          </Text>
-                          <Text style={{ fontSize: 14, color: 'white' }}>Ortalama Saat</Text>
-                        </View>
-                      );
-                    }}
-                  />
-                  {renderHoursLegendComponent()}
-                </View>
-
-              )}
-
-            </View>
-            <Button
-              title={!showHoursPieChart ? "Pie Chart Göster" : "Bar Chart Göster"}
-              onPress={() => setShowHoursPieChart(!showHoursPieChart)}
-            />
-          </View>
-          <Text style={styles.sectionHeading}>Kalite Ortalaması</Text>
-          <View style={styles.ratingContainer}>
-            <Text style={styles.ratingText}>{courseDetails.courseStatResponse.qualityAvg?.toFixed(1) || 'N/A'}</Text>
-            <Rating
-              readonly
-              startingValue={courseDetails.courseStatResponse.qualityAvg ? courseDetails.courseStatResponse.qualityAvg / 2 : 0}
-              imageSize={30}
-              fractions={1}
-              ratingBackgroundColor={colors.secondaryBackground}
-              ratingColor={colors.secondary}
-            />
-          </View>
-          <Text style={styles.sectionHeading}>Zorluk Ortalaması</Text>
-          <View style={styles.pieChartContainer}>
-            <PieChart
-              data={difficultyData}
-              donut
-              showGradient
-              sectionAutoFocus
-              focusOnPress
-              radius={90}
-              innerRadius={60}
-              innerCircleColor={'#232B5D'}
-              centerLabelComponent={() => {
-                return (
-                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
-                      {courseDetails.courseStatResponse.difficultyAvg?.toFixed(1) || 'N/A'}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: 'white' }}>Ortalama Zorluk</Text>
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <PieChart
+                      data={gradePieData}
+                      donut
+                      showGradient
+                      sectionAutoFocus
+                      focusOnPress
+                      radius={90}
+                      innerRadius={60}
+                      innerCircleColor={'#232B5D'}
+                      centerLabelComponent={() => {
+                        return (
+                          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
+                              {meanGrade}
+                            </Text>
+                            <Text style={{ fontSize: 14, color: 'white' }}>Ortalama Not</Text>
+                          </View>
+                        );
+                      }}
+                    />
+                    {renderGradeLegendComponent()}
                   </View>
-                );
-              }}
-            />
-            {renderLegendComponent()}
+                )}
+              </View>
+              <Button
+                mode="contained"
+                onPress={() => setShowGradePieChart(!showGradePieChart)} // Butona basıldığında durumu değiştir
+                style={{ backgroundColor: '#7B68EE', color: 'white', borderRadius: 20 }}
+              >
+                {showGradePieChart ? "Bar Chart Göster" : "Pie Chart Göster"}
+              </Button>
+            </View>
+          )}
+          <Text style={styles.sectionHeading}>Saat Harcanma Dağılımı</Text>
+          {!course.courseStatResponse.difficultyAvg ? (
+            <Text style={styles.warning}>{NoStatsText}</Text>
+          ) : (
+            <View style={styles.chartWrapper}>
+              <View style={styles.chartContainer}>
+                {!showHoursPieChart ? (
+                  <BarChart
+                    frontColor={colors.primary}
+                    data={hoursData}
+                    barWidth={30}
+                    initialSpacing={10}
+                    spacing={14}
+                    barBorderRadius={4}
+                    showGradient
+                    yAxisThickness={0}
+                    xAxisType={'dashed'}
+                    xAxisColor={'lightgray'}
+                    yAxisTextStyle={{ color: 'lightgray' }}
+                    stepValue={Math.ceil(maxHours / 5)}
+                    maxValue={maxHours}
+                    noOfSections={5}
+                    yAxisLabelTexts={Array.from({ length: 6 }, (_, i) => (i * Math.ceil(maxHours / 5)).toString())}
+                    labelWidth={40}
+                    xAxisLabelTextStyle={{ color: 'lightgray', textAlign: 'center' }}
+                    showLine
+                    lineConfig={{
+                      color: '#F29C6E',
+                      thickness: 3,
+                      curved: true,
+                      hideDataPoints: true,
+                      shiftY: 20,
+                      initialSpacing: -5,
+                    }}
+                  />
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <PieChart
+                      data={hoursPieData}
+                      donut
+                      showGradient
+                      sectionAutoFocus
+                      focusOnPress
+                      radius={90}
+                      innerRadius={60}
+                      innerCircleColor={'#232B5D'}
+                      centerLabelComponent={() => {
+                        return (
+                          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
+                              {meanHours}
+                            </Text>
+                            <Text style={{ fontSize: 14, color: 'white' }}>Ortalama Saat</Text>
+                          </View>
+                        );
+                      }}
+                    />
+                    {renderHoursLegendComponent()}
+                  </View>
+                )}
+              </View>
+              <Button
+                mode="contained"
+                onPress={() => setShowHoursPieChart(!showHoursPieChart)} // Butona basıldığında durumu değiştir
+                style={{ backgroundColor: '#7B68EE', color: 'white', borderRadius: 20 }}
+              >
+                {showHoursPieChart ? "Bar Chart Göster" : "Pie Chart Göster"}
+              </Button>
+            </View>
+          )}
+          <Text style={styles.sectionHeading}>Kalite Ortalaması</Text>
+          {!course.courseStatResponse.difficultyAvg ? (
+            <Text style={styles.warning}>{NoStatsText}</Text>
+          ) : (
+            <View style={styles.ratingContainer}>
+              <Text style={styles.ratingText}>{courseDetails.courseStatResponse.qualityAvg?.toFixed(1) || 'N/A'}/5</Text>
+              <Rating
+                readonly
+                startingValue={courseDetails.courseStatResponse.qualityAvg ? courseDetails.courseStatResponse.qualityAvg: 0}
+                imageSize={30}
+                ratingBackgroundColor={colors.secondaryBackground}
+                ratingColor={colors.secondary}
+              />
+            </View>
+          )}
+          <Text style={styles.sectionHeading}>Zorluk Ortalaması</Text>
+          {!course.courseStatResponse.difficultyAvg ? (
+            <Text style={styles.warning}>{NoStatsText}</Text>
+          ) : (
+            <View style={styles.pieChartContainer}>
+              <PieChart
+                data={difficultyData}
+                donut
+                showGradient
+                sectionAutoFocus
+                focusOnPress
+                radius={90}
+                innerRadius={60}
+                innerCircleColor={'#232B5D'}
+                centerLabelComponent={() => {
+                  return (
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                      <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
+                        {courseDetails.courseStatResponse.difficultyAvg?.toFixed(1) || 'N/A'}
+                      </Text>
+                      <Text style={{ fontSize: 14, color: 'white' }}>Ortalama Zorluk</Text>
+                    </View>
+                  );
+                }}
+              />
+              {renderLegendComponent()}
+            </View>
+          )}
+          <View style={styles.rightEnd}>
+            <Text style={styles.transactionsHeading}>Yorumlar</Text>
+            <Button onPress={() => navigation.navigate('commentsPage', course)}>
+              <Text style={styles.link}>Tümünü gör</Text>
+            </Button>
           </View>
-          <Text style={styles.sectionHeading}>Yorumlar</Text>
           {courseDetails.yorumlar?.map((yorum) => (
             <View key={yorum.id} style={styles.commentContainer}>
               <Text style={styles.commentAuthor}>{yorum.yazar}:</Text>
               <Text style={styles.commentText}>{yorum.yorum}</Text>
             </View>
           ))}
-
           <View style={styles.commentForm}>
             <Text style={styles.ratingLabel}>Derse yorumunuz nedir?</Text>
-
             <TextInput
               label="Yorum"
               mode="outlined"
@@ -565,9 +550,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
               style={styles.input}
               right={<TextInput.Affix text={`${comment.length}/100`} />}
             />
-
             <Text style={styles.ratingLabel}>Dersten hangi notu aldınız?</Text>
-
             <RNPickerSelect
               onValueChange={(value) => setSelectedGrade(value)}
               items={[
@@ -590,7 +573,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             <AirbnbRating
               count={5}
               reviews={qualityDescriptions}
-              selectedColor= {colors.primary}
+              selectedColor={colors.primary}
               defaultRating={3}
               size={30}
               fractions={3}
@@ -600,7 +583,6 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             />
             <View style={styles.formRow}>
               <Text style={styles.ratingLabel}></Text>
-
               <Text style={styles.ratingLabel}>Dersi ne kadar zor buldunuz?</Text>
             </View>
             <Text style={[styles.text, { color: interpolateColor(difficulty) }]}>
@@ -619,7 +601,6 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
               style={{ width: '100%', height: 40 }}
             />
             <Text style={styles.ratingLabel}>Derse çalışırken kaç saat ayırdınız?</Text>
-
             <RNPickerSelect
               onValueChange={(value) => setSelectedHours(value)}
               items={[
@@ -633,17 +614,20 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
               placeholder={{ label: 'Saat Aralığı Seçin', value: null }}
               style={pickerSelectStyles}
             />
+
             <Button
-              title="Yorumu Gönder"
-              style={myStyle.commonStyle.secondaryButton}
+              mode="contained" // Bu, dolgulu bir buton stilidir.
               onPress={() => {
-                // Yorum gönderme işlemi
+                console.log(course)
               }}
-            />
+              style={myStyle.commonStyle.primaryButton}
+            >
+              Yorumu Gönder
+            </Button>
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -684,7 +668,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
-    paddingVertical: 20,
   },
   container: {
     alignItems: 'center',
@@ -702,7 +685,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderRadius: 10,
     borderColor: colors.primary,
-    borderWidth: 3,
+    borderWidth: 2,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
@@ -730,7 +713,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: text.primaryDark,
-    fontFamily: fonts.bold,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -738,15 +720,32 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: text.primaryDark,
-    fontFamily: fonts.bold,
     marginTop: 20,
     marginBottom: 10,
     textAlign: 'center',
   },
+  link: {
+    color: colors.secondary,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  warning: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: text.primaryDark,
+    marginTop: 5,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  transactionsHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 10,
+  },
   description: {
     fontSize: 16,
     color: text.secondaryDark,
-    fontFamily: fonts.regular,
     marginBottom: 20,
     textAlign: 'center',
     paddingHorizontal: 20,
@@ -756,16 +755,27 @@ const styles = StyleSheet.create({
     height: 40,
   },
   thumb: {
-    width: 20, // Thumb genişliği
-    height: 20, // Thumb yüksekliği
-    borderRadius: 10, // Thumb'un yuvarlak olması için yarıçap
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   instructor: {
     fontSize: 18,
     color: text.secondaryDark,
-    fontFamily: fonts.regular,
     marginBottom: 5,
     textAlign: 'center',
+  },
+  instructorText: {
+    color: colors.primary, // Tıklanabilir metnin rengini vurgulamak için
+    textDecorationLine: 'underline', // Altını çizmek için
+  },
+  rightEnd: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '95%',
+    paddingHorizontal: 16, // Yatay boşluk eklemek için
+    paddingTop: 5
   },
   chartWrapper: {
     width: '100%',
@@ -810,11 +820,17 @@ const styles = StyleSheet.create({
     color: text.primaryLight,
     textAlign: 'center',
   },
+  linket: {
+    color: 'blue',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   loadingText: {
     fontSize: 18,
     textAlign: 'center',
     color: text.primaryDark,
-    fontFamily: fonts.regular,
     marginTop: 20,
   },
   commentContainer: {
@@ -828,13 +844,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: text.primaryDark,
-    fontFamily: fonts.bold,
     marginBottom: 5,
   },
   commentText: {
     fontSize: 14,
     color: text.secondaryDark,
-    fontFamily: fonts.regular,
   },
 });
 
