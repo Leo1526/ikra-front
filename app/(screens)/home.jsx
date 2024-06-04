@@ -204,6 +204,7 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:-65,
     flex: 1,
     backgroundColor: colors.background,
   },

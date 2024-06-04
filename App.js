@@ -23,7 +23,7 @@ import LostItemsPage from './app/(screens)/all_LostItems'
 import DiningMenuScreen from './app/(screens)/dining'
 import RequestsPage from './app/(screens)/all_Requests';
 import RequestComponent from './app/(screens)/createRequest';
-import Profile from './app/(tabs)/profile'; 
+import ProfileScreen from './app/(screens)/profile'; 
 import GridItemsPage from './app/(screens)/courses';
 import CourseDetailPage from './app/(screens)/one_course';
 import CommentsPage from './app/(screens)/commentsPage';
@@ -219,7 +219,7 @@ const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="Profil"
-        component={Profile}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" color={color} size={size} />
