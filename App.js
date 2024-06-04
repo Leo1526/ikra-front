@@ -35,6 +35,7 @@ import SchoolAnnouncementScreen from './app/(anno)/schoolAnnouncements'
 import CommunityAnnouncementScreen from './app/(anno)/communityAnnouncements';
 import DepartmentAnnouncementScreen from './app/(anno)/departmentAnnouncements';
 import CreateAnnouncementScreen from './app/(anno)/createAnnouncement';
+import AnnouncementDetailsScreen from './app/(anno)/announcementDetails';
 
 import {colors,text,} from './design/themes'
 import settingsLogo from './assets/icons/settings.png'
@@ -133,6 +134,7 @@ const AnnouncementStack = () => {
       <AnnStack.Screen name='departmentAnnouncements' component={DepartmentAnnouncementScreen} />
       <AnnStack.Screen name='communityAnnouncements' component={CommunityAnnouncementScreen} />
       <AnnStack.Screen name='createAnnouncement' component={CreateAnnouncementScreen} />
+      <AnnStack.Screen name='announcementDetails' component={AnnouncementDetailsScreen}/>
     </AnnStack.Navigator>
   );
 };
