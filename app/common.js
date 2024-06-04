@@ -15,12 +15,10 @@ export const errorInput = (ref) => {
 };
 
 
-// Varsayılan başarı işleyicisi
 const defaultHandleSuccess = (data) => {
   console.log('Data fetched successfully:', data);
 };
 
-// Varsayılan hata işleyicisi
 const defaultHandleFail = (error) => {
   console.error('Error fetching data:', error);
 };

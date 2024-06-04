@@ -9,18 +9,7 @@ const GridItemsPage = ({navigation}) => {
 
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filteredKod, setFilteredKod] = useState('');
-  const [items, setItems] = useState([
-    { id: '1', kod: 'bbm301', isim: 'Data Structures' },
-    { id: '2', kod: 'bbm302', isim: 'Algorithms' },
-    { id: '3', kod: 'bbm303', isim: 'Operating Systems' },
-    { id: '4', kod: 'bbm304', isim: 'Computer Networks' },
-    { id: '5', kod: 'bbm305', isim: 'Database Systems' },
-    { id: '6', kod: 'bbm306', isim: 'Software Engineering' },
-    { id: '7', kod: 'bbm307', isim: 'Artificial Intelligence' },
-    { id: '8', kod: 'bbm308', isim: 'Machine Learning' },
-    { id: '9', kod: 'bbm309', isim: 'Web Development' },
-    { id: '10', kod: 'bbm310', isim: 'Mobile Application Development' }
-  ]);
+  const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState(items);
 
   useEffect(() => {
@@ -81,7 +70,6 @@ const GridItemsPage = ({navigation}) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={styles.heading}>Tüm İşlemler</Text>
         <Button
           icon="filter"
           mode="contained"
@@ -137,8 +125,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
     alignItems: 'center',
   },
   itemCard: {
@@ -149,10 +137,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 150,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
     elevation: 5,
   },
   itemTitle: {
@@ -179,10 +163,12 @@ const styles = StyleSheet.create({
   filterButton: {
     backgroundColor: colors.primary,
     borderRadius: 8,
+    alignSelf: 'flex-end',
+    marginTop: 8,
   },
   listContentContainer: {
     paddingBottom: 16,
-    borderColor: colors.primary
+    paddingTop: 8,  // FlatList'in üst kısmına padding ekleyin
   },
   modalOverlay: {
     flex: 1,

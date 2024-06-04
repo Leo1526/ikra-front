@@ -181,7 +181,7 @@ const BottomTabNavigator = () => {
   return (
     <Tab.Navigator initialRouteName='HomeStack'>
       <Tab.Screen
-        name="attendance"
+        name="Yoklama"
         component={FinanceScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -191,7 +191,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="HomeStack"
+        name="Ev"
         component={HomeStack}
         options={{
           headerShown: false,
@@ -201,7 +201,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="profile"
+        name="Profil"
         component={Profile}
         options={{
           tabBarIcon: ({ color, size }) => (

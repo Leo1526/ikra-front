@@ -4,7 +4,6 @@ import { Divider } from 'react-native-paper';
 import { colors } from '../../design/themes';
 import { ikraAxios, urlDev } from '../common';
 
-
 const RequestsPage = ({navigation}) => {
   const [requests, setRequests] = useState([]);
   const [page, setPage] = useState(0);
@@ -74,7 +73,11 @@ const RequestsPage = ({navigation}) => {
     <View key={item.id} style={styles.requestCard}>
       {item.image && (
         <View style={styles.imageContainer}>
-          <Image source={require('../../assets/images/cards.png')} style={styles.requestImage} resizeMode="contain" />
+          <Image
+            source={{ uri: `data:${item.image.mimeType};base64,${item.image.bytes}` }}
+            style={styles.requestImage}
+            resizeMode="contain"
+          />
         </View>
       )}
       <View style={styles.requestContent}>
