@@ -13,7 +13,7 @@ const Index = () => {
     }
   })
   return (
-    <App />
+    <App style={styles.container} />
 
     // <View style={styles.container}>
     //   <Text style={styles.text}>hacasasep</Text>
@@ -37,10 +37,13 @@ const Index = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%'
   },
   text: {
     fontSize: 24,

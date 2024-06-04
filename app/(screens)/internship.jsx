@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../design/themes";
-import { images } from "../../constants";
+import { images } from "../../constants/images";
 
 import { urlDev, ikraAxios } from "../common";
 

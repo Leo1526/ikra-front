@@ -141,7 +141,10 @@ const Home = ({ navigation }) => {
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.studentNo}>{studentId}</Text>
           <Text style={styles.balanceLabel}>Bakiye</Text>
-          <Text style={styles.balance}>{balance} TL</Text>
+          <View style={styles.bakiyeContainer}>
+            <Text style={styles.currency}>₺</Text>
+            <Text style={styles.balance}>{balance}</Text>
+          </View>
         </View>
         <View style={styles.buttonContainer}>
           <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
@@ -155,40 +158,44 @@ const Home = ({ navigation }) => {
 
       <View style={styles.iconContainer}>
         <View style={styles.iconRow}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page1')}>
-            <Image source={require("../../assets/icons/school.svg")} style={styles.icon} />
-            <Text>Dersler</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('courses')}>
+            <View style={styles.pngContainer}>
+              <Image source={require("./../../assets/icons/school.png")} style={styles.icon} />
+            </View>
+            <Text style={styles.menuLabel}>Dersler</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page2')}>
-            <Image source={require("../../assets/icons/announcement.svg")} style={styles.icon} />
-            <Text>Duyurular</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('depAnno')}>
+            <View style={styles.pngContainer}>
+              <Image source={require("../../assets/icons/announcement.png")} style={styles.icon} />
+            </View>
+            <Text style={styles.menuLabel}>Duyurular</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page3')}>
-            <Image source={require("../../assets/icons/dining.svg")} style={styles.icon} />
-            <Text>Yemek Listesi</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page4')}>
-            <Image source={require("../../assets/icons/lost-item.svg")} style={styles.icon} />
-            <Text>Kayıp Eşya</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('dining')}>
+            <View style={styles.pngContainer}>
+              <Image source={require("../../assets/icons/dining.png")} style={styles.icon} />
+            </View>
+            <Text style={styles.menuLabel}>Yemek Listesi</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.iconRow}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page5')}>
-            <Image source={require("../../assets/icons/proposal.svg")} style={styles.icon} />
-            <Text>İstekler</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('lostItems')}>
+            <View style={styles.pngContainer}>
+              <Image source={require("../../assets/icons/lost-item.png")} style={styles.icon} />
+            </View>
+            <Text style={styles.menuLabel}>Kayıp Eşya</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page6')}>
-            <Image source={require("../../assets/icons/internship.svg")} style={styles.icon} />
-            <Text>Staj</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('proposal')}>
+            <View style={styles.pngContainer}>
+              <Image source={require("../../assets/icons/request.png")} style={styles.icon} />
+            </View>
+            <Text style={styles.menuLabel}>İstekler</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page7')}>
-            <Image source={{ uri: 'https://example.com/icon7.png' }} style={styles.icon} />
-            <Text>Page 7</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('internship')}>
+            <View style={styles.pngContainer}>
+              <Image source={require("../../assets/icons/internship.png")} style={styles.icon} />
+            </View>
+            <Text style={styles.menuLabel}>Stajlar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page8')}>
-            <Image source={{ uri: 'https://example.com/icon8.png' }} style={styles.icon} />
-            <Text>Page 8</Text>
-          </TouchableOpacity> */}
         </View>
       </View>
     </ScrollView>
@@ -232,6 +239,7 @@ const styles = StyleSheet.create({
   },
   balanceContainer: {
     margin: 15,
+    marginTop: 30,
     flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -246,21 +254,30 @@ const styles = StyleSheet.create({
   },
   name: {
     color: colors.primary, 
-    fontWeight: '500',// White text color
+    fontWeight: '400',// White text color
     fontSize: 20,
   },
   studentNo: {
     color: colors.secondary, // Light gray text color
-    fontSize: 14,
+    fontSize: 15,
     marginBottom: 24,
   },
   balanceLabel: {
-    color: text.primaryDark, // Gray text color
+    color: colors.primary, // Gray text color
     fontSize: 14,
   },
   balance: {
     color: colors.primary, // White text color
-    fontSize: 28,
+    fontSize: 48,
+  },
+  bakiyeContainer : {
+    flexDirection: 'row',
+    color: colors.primary, // White text color
+    alignItems: 'baseline', // Aligns the baseline of the text
+  },
+  currency: {
+    color: colors.primary,
+    fontSize: 24, // Smaller font size for the currency symbol
   },
   buttonContainer: {
     flex:1,
@@ -278,20 +295,32 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   iconContainer: {
-    padding: 15,
+    marginTop: 25,
   },
   iconRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
+    justifyContent: 'space-between', // Ensures equal spacing between items
   },
   iconButton: {
+    borderWidth:1,
     alignItems: 'center',
+    flex: 1,
+    padding: 10, // Add padding for better spacing
+  },
+  pngContainer: {
+    width: 70, // Set a fixed width
+    height: 70, // Set a fixed height
+    borderColor: colors.primaryDark,
+    borderRadius: 10,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 40, // Smaller width for the icon
+    height: 40, // Smaller height for the icon
+  },
+  menuLabel: {
+    marginTop: 4,
   },
 });
 

@@ -57,8 +57,7 @@ const SignIn = ({navigation}) => {
           navigation.navigate("DrawerNavigator")
         }
       } catch (error) {
-        console.log(error)
-        console.log(error.message)
+        alert("Bağlantı hatası! " + error.message)
       }
     }
 
