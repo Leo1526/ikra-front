@@ -5,22 +5,29 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator  } from '@react-navigation/drawer';
 
+import { useNavigation } from '@react-navigation/native'; 
 import { Appbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Assuming you're using MaterialCommunityIcons
 import SignIn from './app/(auth)/sign-in';
 import SignUp from './app/(auth)/sign-up';
 import Home from './app/(screens)/home';
 
-import { useNavigation } from '@react-navigation/native'; 
-
 import Settings from './app/(screens)/settings';
+
+import InternshipScreen from './app/(screens)/internship';
+import FinanceScreen from './app/(screens)/finance';
+import LostItemsPage from './app/(screens)/all_LostItems'
+import DiningMenuScreen from './app/(screens)/dining'
 import DepartmentAnnouncement from './app/(anno)/depAnno';
+
+
 import FinanceScreen from './app/(screens)/finance';
 import Profile from './app/(tabs)/profile'; 
 import {colors,text,} from './design/themes'
 import settingsLogo from './assets/icons/settings.png'
 
 const Stack = createNativeStackNavigator();
+const DepStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -56,7 +63,6 @@ const CustomHeader = ({navigation, title }) => {
   );
 };
 
-
 const HomeStack = () => {
   return (
     <Stack.Navigator
@@ -82,7 +88,12 @@ const HomeStack = () => {
       })}
     >
       <Stack.Screen name="home" component={Home} />
-      <Stack.Screen name="depAnno" component={DepartmentAnnouncement} />
+      <Stack.Screen name='finance' component={FinanceScreen}/>
+      <Stack.Screen name='internship' component={InternshipScreen}/>
+      <Stack.Screen name='dining' component={DiningMenuScreen}/>
+      <Stack.Screen name='lostItems' component={LostItemsPage}/>
+      <Stack.Screen name ='depAnno' component={DepartmentAnnouncement}/>
+      
     </Stack.Navigator>
   );
 };
@@ -102,7 +113,7 @@ const BottomTabNavigator = () => {
   return (
     <Tab.Navigator initialRouteName='HomeStack'>
       <Tab.Screen
-        name="finance"
+        name="attendance"
         component={FinanceScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

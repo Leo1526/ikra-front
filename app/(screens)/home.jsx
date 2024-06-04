@@ -156,39 +156,39 @@ const Home = ({ navigation }) => {
       <View style={styles.iconContainer}>
         <View style={styles.iconRow}>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page1')}>
-            <Image source={{ uri: 'https://example.com/icon1.png' }} style={styles.icon} />
-            <Text>Page 1</Text>
+            <Image source={require("../../assets/icons/school.svg")} style={styles.icon} />
+            <Text>Dersler</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page2')}>
-            <Image source={{ uri: 'https://example.com/icon2.png' }} style={styles.icon} />
-            <Text>Page 2</Text>
+            <Image source={require("../../assets/icons/announcement.svg")} style={styles.icon} />
+            <Text>Duyurular</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page3')}>
-            <Image source={{ uri: 'https://example.com/icon3.png' }} style={styles.icon} />
-            <Text>Page 3</Text>
+            <Image source={require("../../assets/icons/dining.svg")} style={styles.icon} />
+            <Text>Yemek Listesi</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page4')}>
-            <Image source={{ uri: 'https://example.com/icon4.png' }} style={styles.icon} />
-            <Text>Page 4</Text>
+            <Image source={require("../../assets/icons/lost-item.svg")} style={styles.icon} />
+            <Text>Kayıp Eşya</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.iconRow}>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page5')}>
-            <Image source={{ uri: 'https://example.com/icon5.png' }} style={styles.icon} />
-            <Text>Page 5</Text>
+            <Image source={require("../../assets/icons/proposal.svg")} style={styles.icon} />
+            <Text>İstekler</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page6')}>
-            <Image source={{ uri: 'https://example.com/icon6.png' }} style={styles.icon} />
-            <Text>Page 6</Text>
+            <Image source={require("../../assets/icons/internship.svg")} style={styles.icon} />
+            <Text>Staj</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page7')}>
+          {/* <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page7')}>
             <Image source={{ uri: 'https://example.com/icon7.png' }} style={styles.icon} />
             <Text>Page 7</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Page8')}>
             <Image source={{ uri: 'https://example.com/icon8.png' }} style={styles.icon} />
             <Text>Page 8</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </ScrollView>
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   iconContainer: {
-    paddingHorizontal: 10,
+    padding: 15,
   },
   iconRow: {
     flexDirection: 'row',
