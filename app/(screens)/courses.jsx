@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList,TouchableOpacity, StyleSheet, Text, Modal } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet, Text, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Title, Button, TextInput } from 'react-native-paper';
 import { colors } from '../../design/themes';  // Varsayılan renkleriniz buradan alınıyor
-import { useNavigation } from '@react-navigation/native';
+import { ikraAxios, url, urlDev } from '../common';
 
-const GridItemsPage = () => {
+const GridItemsPage = ({navigation}) => {
 
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filteredKod, setFilteredKod] = useState('');
@@ -22,36 +22,61 @@ const GridItemsPage = () => {
     { id: '10', kod: 'bbm310', isim: 'Mobile Application Development' }
   ]);
   const [filteredItems, setFilteredItems] = useState(items);
-  const navigation = useNavigation();
 
   useEffect(() => {
+    fetchAllCoursesByDepartmentId();
     // Verilerinizi buradan çekebilirsiniz
   }, []);
 
+  const fetchAllCourses = async () => {
+    console.log("fetchAllCourses");
+    await ikraAxios({
+      url: urlDev + '/courses/universityId',
+      onSuccess: (data) => {
+        setItems(data.body);
+        console.log('Fetched courses:', data.body);
+      },
+      onError: (error) => {
+        console.error('Error fetching courses:', error);
+      },
+    });
+  };
+
+  const fetchAllCoursesByDepartmentId = async () => {
+    console.log("fetchAllCourses");
+    await ikraAxios({
+      url: urlDev + '/courses/departmentId',
+      onSuccess: (data) => {
+        setItems(data.body);
+        setFilteredItems(data.body);
+        console.log('Fetched courses:', data.body);
+      },
+      onError: (error) => {
+        console.error('Error fetching courses:', error);
+      },
+    });
+  };
+
   const renderItem = ({ item }) => (
     <Card style={styles.itemCard}>
-    <TouchableOpacity onPress={() => navigation.navigate('one_course', { course: item })}>
-
-      <Card.Content>
-        <Title style={styles.itemTitle}>{item.kod}</Title>
-        <Title style={styles.itemTitle}>{item.isim}</Title>
-      </Card.Content>
-    </TouchableOpacity>
-
+      <TouchableOpacity onPress={() => navigation.navigate('courseDetailPage', { course: item })}>
+        <Card.Content>
+          <Title style={styles.itemTitle}>{item.courseCode}</Title>
+          <Title style={styles.itemText}>{item.name}</Title>
+        </Card.Content>
+      </TouchableOpacity>
     </Card>
   );
 
   const handleFilter = (kod) => {
     if (kod) {
-      const filtered = items.filter(item => item.kod === kod);
-      
+      const filtered = items.filter(item => item.courseCode.toLowerCase().includes(kod.toLowerCase()));
       setFilteredItems(filtered);
     } else {
       setFilteredItems(items);  // Filtre yoksa tüm itemları göster
     }
     setFilterModalVisible(false);
   };
-
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -72,6 +97,7 @@ const GridItemsPage = () => {
         keyExtractor={item => item.id}
         numColumns={2}  // İki sütunlu bir grid yapısı
         columnWrapperStyle={styles.row}  // Satırları düzgün hizalamak için
+        contentContainerStyle={styles.listContentContainer}  // Liste içeriğinin stili
       />
       <Modal
         visible={filterModalVisible}
@@ -87,17 +113,19 @@ const GridItemsPage = () => {
               value={filteredKod}
               onChangeText={setFilteredKod}
               style={styles.input}
+              mode="outlined"
+              theme={{ colors: { primary: colors.primary } }}
             />
             <Button
               mode="contained"
               onPress={() => handleFilter(filteredKod)}
+              style={styles.modalButton}
             >
               Filtrele
             </Button>
           </View>
         </View>
       </Modal>
-
     </SafeAreaView>
   );
 };
@@ -111,58 +139,74 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 16,
-    alignItems: 'center',  // Bu satır başlık ve düğmenin düzgün hizalanmasını sağlar
+    alignItems: 'center',
   },
   itemCard: {
-    flex: 0.5,  // Yarım flex değeri iki sütunlu düzen için
+    flex: 0.5,
     margin: 8,
-    marginHorizontal: 5,
-    backgroundColor: '#f4511e',  // Örnek: Kırmızı arka plan
+    backgroundColor: colors.cardBackground,  // Varsayılan kart arka plan rengi
     borderRadius: 8,
-    justifyContent: 'center',  // İçerikleri dikeyde ortala
-    alignItems: 'center',  // İçerikleri yatayda ortala
+    justifyContent: 'center',
+    alignItems: 'center',
     height: 150,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   itemTitle: {
-    color: '#ffffff',  // Yazı rengi beyaz
+    color: colors.textPrimary,  // Varsayılan yazı rengi
     fontSize: 16,
-    textAlign: 'center',  // Yazıları merkeze hizala
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  itemText: {
+    color: colors.textPrimary,  // Varsayılan yazı rengi
+    fontSize: 16,
+    textAlign: 'center',
   },
   row: {
     flex: 1,
     justifyContent: 'space-between',
+    paddingHorizontal: 16,
   },
   heading: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
+    color: colors.textPrimary,
   },
   filterButton: {
     backgroundColor: colors.primary,
     borderRadius: 8,
   },
+  listContentContainer: {
+    paddingBottom: 16,
+    borderColor: colors.primary
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
     width: '80%',
-    borderRadius: 10
+    borderRadius: 10,
   },
   modalHeading: {
     fontSize: 20,
-    marginBottom: 10
+    marginBottom: 10,
+    color: colors.textPrimary,
   },
   input: {
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10
-  }
+  },
+  modalButton: {
+    backgroundColor: colors.primary,
+  },
 });
 
 export default GridItemsPage;

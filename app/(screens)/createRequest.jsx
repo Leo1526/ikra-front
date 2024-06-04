@@ -8,7 +8,7 @@ import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı
 import { commonStyle } from '../../design/style';
 import { ikraAxios, urlDev, url } from '../common';
 
-const RequestComponent = () => {
+const RequestComponent = ({navigation}) => {
   const [imageUri, setImageUri] = useState(null);
   const [requestText, setRequestText] = useState('');
   const [options, setOptions] = useState(['', '']);

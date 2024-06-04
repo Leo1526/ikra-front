@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TransactionItem from '../../components/TransactionItem';
-import { Link } from '@react-navigation/native';
 import { colors } from '../../design/themes';
 import { urlDev, ikraAxios } from '../common';
 
@@ -16,7 +14,7 @@ const FinanceScreen = ({navigation}) => {
     ikraAxios({
       url: urlDev + '/wallets',
       onSuccess: (data) => {
-        setCardBalance(data.balance);
+        setCardBalance(data.body.balance);
         console.log(data);
       },
       onError: (error) => {
@@ -55,9 +53,9 @@ const FinanceScreen = ({navigation}) => {
         <View style={styles.transactionsContainer}>
           <View style={styles.rightEnd}>
             <Text style={styles.transactionsHeading}>Geçmiş İşlemler</Text>
-            <Link to="/all_transactions">
+            <Button onPress={() => navigation.navigate('allTransactions')}>
               <Text style={styles.link}>Tümünü gör</Text>
-            </Link>
+            </Button>
           </View>
           {transactions.length === 0 ? (
             <View style={styles.noTransactionsContainer}>

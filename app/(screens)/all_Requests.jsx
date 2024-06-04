@@ -3,11 +3,9 @@ import { FlatList, StyleSheet, View, Text, TouchableOpacity, StatusBar, Image } 
 import { Divider } from 'react-native-paper';
 import { colors } from '../../design/themes';
 import { ikraAxios, urlDev } from '../common';
-import { useNavigation } from '@react-navigation/native';
 
 
-const RequestsPage = () => {
-  const navigation = useNavigation();
+const RequestsPage = ({navigation}) => {
   const [requests, setRequests] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);

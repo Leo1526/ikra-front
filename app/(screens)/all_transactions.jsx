@@ -8,7 +8,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { urlDev, ikraAxios } from '../common';
 
 
-const AllTransactionsScreen = () => {
+const AllTransactionsScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterKeyword, setFilterKeyword] = useState('');
   const [transactionType, setTransactionType] = useState('Tümü');

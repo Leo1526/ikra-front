@@ -17,11 +17,15 @@ import Settings from './app/(screens)/settings';
 
 import InternshipScreen from './app/(screens)/internship';
 import FinanceScreen from './app/(screens)/finance';
+import AllTransactionsScreen from './app/(screens)/all_transactions';
+import TransactionPage from './app/(screens)/transaction';
 import LostItemsPage from './app/(screens)/all_LostItems'
 import DiningMenuScreen from './app/(screens)/dining'
 import RequestsPage from './app/(screens)/all_Requests';
+import RequestComponent from './app/(screens)/createRequest';
 import Profile from './app/(tabs)/profile'; 
 import GridItemsPage from './app/(screens)/courses';
+import CourseDetailPage from './app/(screens)/one_course';
 
 import DepartmentAnnouncement from './app/(anno)/departmentAnnouncements';
 import CommunityAnnouncement from './app/(anno)/communityAnnouncements';
@@ -35,6 +39,9 @@ const Stack = createNativeStackNavigator();
 const AnnStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+const FinanceStack = createNativeStackNavigator();
+const ReqStack = createNativeStackNavigator();
+const AllCoursesStack = createNativeStackNavigator();
 
 const SettingsIcon = () => (
   <Image
@@ -78,6 +85,34 @@ const AnnouncementStack = () => {
   )
 }
 
+const FinStack = () => {
+  return (
+    <FinanceStack.Navigator screenOptions={{ headerShown: false}}>
+      <FinanceStack.Screen name ='finance' component={FinanceScreen}/>
+      <FinanceStack.Screen name ='allTransactions' component={AllTransactionsScreen}/>
+      <FinanceStack.Screen name ='transaction' component={TransactionPage}/>
+    </FinanceStack.Navigator>
+  )
+}
+
+const RequestStack = () => {
+  return (
+    <ReqStack.Navigator screenOptions={{ headerShown: false}}>
+      <ReqStack.Screen name ='requests' component={RequestsPage}/>
+      <ReqStack.Screen name ='createRequest' component={RequestComponent}/>
+    </ReqStack.Navigator>
+  )
+}
+
+const CourseStack = () => {
+  return (
+    <AllCoursesStack.Navigator screenOptions={{ headerShown: false}}>
+      <AllCoursesStack.Screen name ='courses' component={GridItemsPage}/>
+      <AllCoursesStack.Screen name ='courseDetailPage' component={CourseDetailPage}/>
+    </AllCoursesStack.Navigator>
+  )
+}
+
 const HomeStack = () => {
   return (
     <Stack.Navigator
@@ -118,13 +153,15 @@ const HomeStack = () => {
       })}
     >
       <Stack.Screen name="home" component={Home} />
-      <Stack.Screen name='finance' component={FinanceScreen}/>
-      <Stack.Screen name='courses' component= {GridItemsPage}/>
+      <Stack.Screen name='finance' component={FinStack}/>
+      <Stack.Screen name='courses' component= {CourseStack}/>
       <Stack.Screen name='internship' component={InternshipScreen}/>
       <Stack.Screen name='announcements' component={AnnouncementStack}/>
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
       <Stack.Screen name='lostItems' component={LostItemsPage}/>
-      <Stack.Screen name='proposal' component={RequestsPage}/>
+      <Stack.Screen name='requests' component={RequestStack}/>
+      
+
     </Stack.Navigator>
   );
 };
