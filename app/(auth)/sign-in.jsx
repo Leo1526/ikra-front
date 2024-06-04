@@ -12,10 +12,6 @@ const SignIn = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-<<<<<<< HEAD
-=======
-  // const navigation = useNavigation();
->>>>>>> master
   const [showPassword, setShowPassword] = useState(false);
   const [errorUsername, setErrorUsername] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
@@ -28,7 +24,6 @@ const SignIn = ({navigation}) => {
       setErrorUsername(true);
       return
     } 
-    if (password.length < 2) {
     if (password.length < 2) {
       setErrorPassword(true)
       return;
