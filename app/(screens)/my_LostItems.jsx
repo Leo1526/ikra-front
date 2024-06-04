@@ -5,7 +5,7 @@ import { Card, Title, FAB, Button, TextInput } from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import { colors } from '../../design/themes';
 
-const LostItemsPage = () => {
+const MyLostItemsPage = () => {
   const [lostItems, setLostItems] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [foundModalVisible, setFoundModalVisible] = useState(false);
@@ -316,4 +316,4 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-export default LostItemsPage;
+export default MyLostItemsPage;

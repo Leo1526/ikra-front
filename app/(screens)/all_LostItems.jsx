@@ -5,7 +5,7 @@ import { Card, Title, FAB, Button, TextInput} from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import { colors } from '../../design/themes';
 
-const LostItemsPage = () => {
+const LostItemsPage = ({navigation}) => {
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [claimLostItemId, setClaimLostItemId] = useState(0);
   const [contactInfo, setContactInfo] = useState('');
