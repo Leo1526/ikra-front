@@ -36,6 +36,8 @@ const SignIn = ({navigation}) => {
         password: password
       };
       try {
+        console.log(url)
+        console.log(payload)
         const response = await axios.post(url, payload, {
           headers: {
             'Content-Type': 'application/json',
@@ -44,11 +46,11 @@ const SignIn = ({navigation}) => {
         const data = response.data;
         if (data.status === "ERROR" || !data.body) {
           console.log("error")
-            console.log(data)
-            data.messages.forEach(message => {
-              console.log(data.messages)
-              alert(message)
-            });
+          console.log(data)
+          data.messages.forEach(message => {
+            console.log(data.messages)
+            alert(message)
+          });
             return;
         } else {
           await AsyncStorage.setItem('jwtToken', data.body.token);

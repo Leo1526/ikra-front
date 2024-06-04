@@ -44,7 +44,9 @@ const Home = ({ navigation }) => {
         announcements.push(obj)
       });
       setAnnouncementImages(announcements);
+      return 
     }
+    alert("Hata oluştu: " + data.messages[0])
   }
 
   const handleCardSuccess = (data) => {
@@ -204,7 +206,6 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:-65,
     flex: 1,
     backgroundColor: colors.background,
   },

@@ -12,128 +12,156 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { colors } from "../../design/themes";
+import { ikraAxios, urlDev } from '../common';
 
-const DepartmentAnnouncement = ({navigation}) => {
-  const [announcements, setAnnouncements] = useState([]);
-  const isFocused = useIsFocused();
+const DepartmentAnnouncementScreen = ({navigation}) => {
+    const [announcements, setAnnouncements] = useState([]);
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const size = 5;
+    const [lastDataLength, setLastDataLength] = useState(5)
 
-  useEffect(() => {
-    if (isFocused) {
-      loadAnnouncements();
+    useEffect(() => {
+        fetchAnnouncements();
+      }, []);
+
+    const fetchAnnouncements = async () => {
+        if (lastDataLength < 5 ) {
+            return false;
+        }
+        try {
+          await ikraAxios({
+            url: `${urlDev}/announcement/department?page=${page}&size=${size}`,
+            onSuccess: (data) => {
+                if (data.status === 'SUCCESS') {
+                    setAnnouncements((prevAnnouncements) => [...prevAnnouncements, ...data.body]);
+                    setPage((prevPage) => prevPage + 1);
+                    setLastDataLength(data.body.length)
+                    return;
+                }
+                else {
+                    alert("Duyurular getirilirken hata! " +  error)
+                }
+            },
+            onError: (error) => {
+                alert('Error fetching Announcement Data: ' + error);
+            },
+          });
+        } catch (error) {
+          alert('Error in fetch Announcements: ' + error);
+        } finally {
+          setLoading(false);
+        }
+    };
+
+    const handleViewDetails = () => {
+        navigation.navigate('')
     }
-  }, [isFocused]);
 
-  const loadAnnouncements = async () => {
-    const storedAnnouncements = await AsyncStorage.getItem(
-      "@department_announcements_list"
+    
+
+    const renderAnnouncementItem = ({ item, index }) => (
+        <View style={styles.announcementItem}>
+            {item.image && (
+                <Image
+                    source={item.image ? { uri: `data:${item.mimeType};base64,${item.image}` } : require('../../assets/images/placeholder.png')}
+                    style={styles.announcementImage}
+                />
+            )}
+            <View style={styles.announcementContent}>
+                <Text style={styles.announcementTitle}>{item.title}</Text>
+                <View style={styles.announcementFooter}>
+                    <TouchableOpacity
+                        style={styles.detailsButton}
+                        onPress={handleViewDetails}
+                    >
+                        <Text style={styles.detailsButtonText}>View Details</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.announcementInsertDate}>{new Date(item.insertDate).toLocaleDateString()}</Text>
+                </View>
+            </View>
+        </View>
     );
-    const announcementsList = storedAnnouncements
-      ? JSON.parse(storedAnnouncements)
-      : [];
-    setAnnouncements(announcementsList);
-  };
 
-  const deleteAnnouncement = async (index) => {
-    const updatedAnnouncements = announcements.filter((_, i) => i !== index);
-    setAnnouncements(updatedAnnouncements);
-    await AsyncStorage.setItem(
-      "@department_announcements_list",
-      JSON.stringify(updatedAnnouncements)
-    );
-  };
 
-  const confirmDeleteAnnouncement = (index) => {
-    Alert.alert(
-      "Duyuru Sil",
-      "Bu duyuruyu silmek istediğinizden emin misiniz?",
-      [
-        { text: "Hayır", style: "cancel" },
-        { text: "Evet", onPress: () => deleteAnnouncement(index) },
-      ]
-    );
-  };
-
-  const renderAnnouncement = ({ item, index }) => (
-    <View style={styles.card}>
-      {item.imageUri && (
-        <Image source={{ uri: item.imageUri }} style={styles.imageStyle} />
-      )}
-      <Text style={styles.communityName}>{item.communityName}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => confirmDeleteAnnouncement(index)}
-      >
-        <Text style={styles.buttonText}>Sil</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate("createAnno")}
-        >
-          <Text style={styles.buttonText}>Duyuru Ekle</Text>
-        </TouchableOpacity>
-
-        <FlatList
-          data={announcements}
-          renderItem={renderAnnouncement}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
-    </SafeAreaView>
-  );
-};
+    return (
+        <SafeAreaView style={styles.container}>
+            {announcements.length === 0 ? (
+                <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
+            ) : (
+                <FlatList
+                    data={announcements}
+                    renderItem={renderAnnouncementItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    onEndReached={fetchAnnouncements}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={loading && <Text>Loading...</Text>}
+                />
+            )}
+        </SafeAreaView>
+    )
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: colors.background,
-  },
-  addButton: {
-    backgroundColor: colors.primary,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-    elevation: 2,
-  },
-  imageStyle: {
-    width: "100%",
-    height: 200,
-    marginBottom: 10,
-  },
-  communityName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  deleteButton: {
-    backgroundColor: "#f44336",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 10,
-  },
+    noAnnouncementsText: {
+        fontSize: 18,
+        color: '#555',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    container: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
+    announcementItem: {
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        padding: 10,
+        marginVertical: 5,
+        marginHorizontal: 10,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    announcementImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 0,
+    },
+    announcementContent: {
+        flex: 1,
+        paddingLeft: 10,
+        justifyContent: 'space-between',
+    },
+    announcementTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    announcementFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+    },
+    announcementInsertDate: {
+        fontSize: 12,
+        color: '#555',
+        alignSelf: 'flex-end',
+    },
+    detailsButton: {
+        backgroundColor: colors.primary,
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+    },
+    detailsButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+
 });
 
-export default DepartmentAnnouncement;
+export default DepartmentAnnouncementScreen;
