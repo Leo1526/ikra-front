@@ -114,7 +114,7 @@ const CourseStack = () => {
       <AllCoursesStack.Screen name ='courses' component={GridItemsPage}/>
       <AllCoursesStack.Screen name ='courseDetailPage' component={CourseDetailPage}/>
       <AllCoursesStack.Screen name ='commentsPage' component={CommentsPage}/>
-      <AttendanceStack.Screen name ='profile' component={Profile}/>
+      <AttendanceStack.Screen name ='profile' component={ProfileScreen}/>
     </AllCoursesStack.Navigator>
   )
 }
@@ -176,9 +176,7 @@ const HomeStack = () => {
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
       <Stack.Screen name='lostItems' component={LostItemsPage}/>
       <Stack.Screen name='requests' component={RequestStack}/>
-      <Stack.Screen name='myCourses' component={AttStack}/>
-      
-
+      <Stack.Screen name='myCourses' component={AttStack}/>      
     </Stack.Navigator>
   );
 };
