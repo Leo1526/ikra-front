@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNPickerSelect from "react-native-picker-select";
 import { colors } from "../../design/themes";
 
-const AddAnnouncementScreen = ({ navigation }) => {
+const createAnnouncementScreen = ({ navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const [announcementType, setAnnouncementType] = useState(null);
   const [communityName, setCommunityName] = useState("");
@@ -220,4 +220,4 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-export default AddAnnouncementScreen;
+export default createAnnouncementScreen;

@@ -5,12 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator  } from '@react-navigation/drawer';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native'; 
 import { Appbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Assuming you're using MaterialCommunityIcons
 import SignIn from './app/(auth)/sign-in';
 import SignUp from './app/(auth)/sign-up';
 import Home from './app/(screens)/home';
+
+import { navigationRef } from './app/navigationService';
 
 import Settings from './app/(screens)/settings';
 
@@ -18,16 +19,20 @@ import InternshipScreen from './app/(screens)/internship';
 import FinanceScreen from './app/(screens)/finance';
 import LostItemsPage from './app/(screens)/all_LostItems'
 import DiningMenuScreen from './app/(screens)/dining'
-import DepartmentAnnouncement from './app/(anno)/depAnno';
 import RequestsPage from './app/(screens)/all_Requests';
 import Profile from './app/(tabs)/profile'; 
 import GridItemsPage from './app/(screens)/courses';
+
+import DepartmentAnnouncement from './app/(anno)/departmentAnnouncements';
+import CommunityAnnouncement from './app/(anno)/communityAnnouncements';
+import createAnnouncementScreen from './app/(anno)/createAnnouncement';
+
 
 import {colors,text,} from './design/themes'
 import settingsLogo from './assets/icons/settings.png'
 
 const Stack = createNativeStackNavigator();
-const DepStack = createNativeStackNavigator();
+const AnnStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -62,6 +67,16 @@ const CustomHeader = ({navigation, title }) => {
     </Appbar.Header>
   );
 };
+
+const AnnouncementStack = () => {
+  return (
+    <AnnStack.Navigator screenOptions={{ headerShown: false}}>
+      <AnnStack.Screen name ='departmentAnnouncements' component={DepartmentAnnouncement}/>
+      <AnnStack.Screen name ='communityAnnouncements' component={CommunityAnnouncement}/>
+      <AnnStack.Screen name ='createAnnouncement' component={DepartmentAnnouncement}/>
+    </AnnStack.Navigator>
+  )
+}
 
 const HomeStack = () => {
   return (
@@ -106,9 +121,9 @@ const HomeStack = () => {
       <Stack.Screen name='finance' component={FinanceScreen}/>
       <Stack.Screen name='courses' component= {GridItemsPage}/>
       <Stack.Screen name='internship' component={InternshipScreen}/>
+      <Stack.Screen name='announcements' component={AnnouncementStack}/>
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
       <Stack.Screen name='lostItems' component={LostItemsPage}/>
-      <Stack.Screen name ='depAnno' component={DepartmentAnnouncement}/>
       <Stack.Screen name='proposal' component={RequestsPage}/>
     </Stack.Navigator>
   );
@@ -186,7 +201,7 @@ const AuthStack = () => {
 
 const App = () => {
   return (
-    <NavigationContainer independent={true} >
+    <NavigationContainer independent={true} ref={navigationRef} >
       <Stack.Navigator >
         <Stack.Screen name="AuthStack" component={AuthStack} options={{gestureEnabled: false, headerShown: false}}/>
         <Stack.Screen 

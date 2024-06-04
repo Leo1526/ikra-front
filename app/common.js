@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import { navigate } from './navigationService';
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
 export const urlDev = "http://192.168.1.104:8080";
+
+let isNavigatingToLogin = false;
 
 export const errorInput = (ref) => {
   if (ref && ref.current) {
@@ -11,6 +13,7 @@ export const errorInput = (ref) => {
     });
   }
 };
+
 
 // Varsayılan başarı işleyicisi
 const defaultHandleSuccess = (data) => {
@@ -41,7 +44,10 @@ export const ikraAxios = async ({
       headers.Authorization = `Bearer ${token}`;
     }
     else {
-      navigateToLoginPage(expired=true);
+      if (!isNavigatingToLogin) {
+        isNavigatingToLogin = true;
+      }
+      return false;
     }
   }
   try {
@@ -62,12 +68,17 @@ export const ikraAxios = async ({
 
 export const checkTokenExpiration = async () => {
   const token = await AsyncStorage.getItem('jwtToken');
-  
   const expireDate = await AsyncStorage.getItem('expireDate')
+  const date = new Date(expireDate);
+  const milliseconds = date.getTime();
   if (expireDate) {
-    const currentTime = Date.now() / 1000; // current time in seconds
-    if (expireDate < currentTime) {
-      navigateToLoginPage(expired = true)
+    const currentTime = Date.now();
+    if (milliseconds < currentTime) {
+      if (!isNavigatingToLogin) {
+        isNavigatingToLogin = true;
+        navigateToLoginPage(true);
+      }
+      return false;
     } else {
       return token;
     }
@@ -75,9 +86,10 @@ export const checkTokenExpiration = async () => {
 };
 
 export const navigateToLoginPage = async (expired = false) => {
-  var email = await AsyncStorage.getItem('username');
-  navigation.navigate('sign-in', {});
+  navigate('AuthStack');
   if (expired) {
     alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
   }
+  return false;
+  var email = await AsyncStorage.getItem('username');
 }

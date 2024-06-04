@@ -164,7 +164,7 @@ const Home = ({ navigation }) => {
           </View>
           <Text style={styles.menuLabel}>Dersler</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.iconButton, styles.middleElement]} onPress={() => navigation.navigate('depAnno')}>
+        <TouchableOpacity style={[styles.iconButton, styles.middleElement]} onPress={() => navigation.navigate('announcements')}>
           <View style={styles.pngContainer}>
             <Image source={require("../../assets/icons/announcement.png")} style={styles.icon} />
           </View>

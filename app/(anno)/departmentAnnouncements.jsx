@@ -13,9 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { colors } from "../../design/themes";
 
-const DepartmentAnnouncement = () => {
+const DepartmentAnnouncement = ({navigation}) => {
   const [announcements, setAnnouncements] = useState([]);
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {

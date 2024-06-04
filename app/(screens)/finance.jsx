@@ -8,8 +8,7 @@ import { Link } from '@react-navigation/native';
 import { colors } from '../../design/themes';
 import { urlDev, ikraAxios } from '../common';
 
-const FinanceScreen = () => {
-  const navigation = useNavigation();
+const FinanceScreen = ({navigation}) => {
   const [cardBalance, setCardBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
