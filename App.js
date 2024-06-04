@@ -26,6 +26,9 @@ import RequestComponent from './app/(screens)/createRequest';
 import ProfileScreen from './app/(screens)/profile'; 
 import GridItemsPage from './app/(screens)/courses';
 import CourseDetailPage from './app/(screens)/one_course';
+import CommentsPage from './app/(screens)/commentsPage';
+import MyCoursesScreen from './app/(course)/myCourses';
+import CourseAttendanceScreen from './app/(course)/courseAttendance';
 
 import DepartmentAnnouncement from './app/(anno)/departmentAnnouncements';
 import CommunityAnnouncement from './app/(anno)/communityAnnouncements';
@@ -42,6 +45,7 @@ const Drawer = createDrawerNavigator();
 const FinanceStack = createNativeStackNavigator();
 const ReqStack = createNativeStackNavigator();
 const AllCoursesStack = createNativeStackNavigator();
+const AttendanceStack = createNativeStackNavigator();
 
 const SettingsIcon = () => (
   <Image
@@ -109,7 +113,17 @@ const CourseStack = () => {
     <AllCoursesStack.Navigator screenOptions={{ headerShown: false}}>
       <AllCoursesStack.Screen name ='courses' component={GridItemsPage}/>
       <AllCoursesStack.Screen name ='courseDetailPage' component={CourseDetailPage}/>
+      <AllCoursesStack.Screen name ='commentsPage' component={CommentsPage}/>
     </AllCoursesStack.Navigator>
+  )
+}
+
+const AttStack = () => {
+  return (
+    <AttendanceStack.Navigator screenOptions={{ headerShown: false}}>
+      <AttendanceStack.Screen name ='myCourses' component={MyCoursesScreen}/>
+      <AttendanceStack.Screen name ='attendances' component={CourseAttendanceScreen}/>
+    </AttendanceStack.Navigator>
   )
 }
 
@@ -160,6 +174,7 @@ const HomeStack = () => {
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
       <Stack.Screen name='lostItems' component={LostItemsPage}/>
       <Stack.Screen name='requests' component={RequestStack}/>
+      <Stack.Screen name='myCourses' component={AttStack}/>
       
 
     </Stack.Navigator>
@@ -179,10 +194,10 @@ const DrawerNavigator = () => {
 
 const BottomTabNavigator = () => {
   return (
-    <Tab.Navigator initialRouteName='HomeStack'>
+    <Tab.Navigator initialRouteName='Ev'>
       <Tab.Screen
         name="Yoklama"
-        component={FinanceScreen}
+        component={AttStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="credit-card" color={color} size={size} />
