@@ -6,12 +6,16 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 
+import { ikraAxios, urlDev } from '../common';
+
 const LostItemComponent = () => {
   const [imageUri, setImageUri] = useState(null);
   const [description, setDescription] = useState('');
   const [isIDCategory, setIsIDCategory] = useState(false);
   const [idNumber, setIdNumber] = useState(''); 
-  const handleSubmit = () => {
+
+
+  const handleSubmit = async () => {
     if (!imageUri) {
       alert("Lütfen bir fotoğraf yükleyin!");
       return;
@@ -32,6 +36,36 @@ const LostItemComponent = () => {
     // Tüm kontroller geçtiğinde işlemleri burada yap
     console.log("Kayıp Eşya Kaydedildi:", description, isIDCategory);
     alert("Kayıp Eşya başarıyla bildirildi!");
+
+
+
+    setIsIDCategory("ID_KNOWN");
+    setIdNumber("suleyman");
+    setDescription("laptop");
+
+    try {
+      await ikraAxios({
+        
+
+        url: urlDev + "/lost?lostAndFoundType=" + isIDCategory + "&ownerInfo=" + idNumber + "&description=" + description,
+        method: "POST",
+        
+        onSuccess: (response) => {
+          console.log("kayıp ilanı başarıyla oluşturuldu:", response);
+          
+          setDescription("");
+          setIsIDCategory("");
+          setIdNumber("");
+          setImageUri(null);
+
+        },
+        onError: (error) => {
+          console.error("Kayıp ilanı oluşturulamadı:", error);
+        },
+      });
+    } catch (e) {
+      console.error("Error creating lost and found announcement", e);
+    }
   };
 
   const handleChoosePhoto = async () => {
