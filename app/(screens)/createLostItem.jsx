@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Card, Button, Title } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNPickerSelect from 'react-native-picker-select';
@@ -38,8 +38,8 @@ const CreateLostPage = ({ navigation }) => {
       alert("Lütfen tüm alanları doldurun!");
       return;
     }
-    if(idType && !idNumber){
-      alert("Lütfen tüm alanları doldurun!");
+    if(idType === "ID_KNOWN" && !idNumber){
+      alert("Lütfen kimlik bilgisi alanını doldurun!");
       return;
     }
 
@@ -98,56 +98,61 @@ const CreateLostPage = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Title style={styles.title}>Kayıp Eşya Bildir</Title>
-        {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode='contain' />}
-        <TouchableOpacity style={styles.photoButton} onPress={handleChoosePhoto}>
-          <MaterialIcons name="camera-alt" size={24} color={colors.primary} />
-          <Text style={styles.photoButtonText}>Fotoğraf Yükle</Text>
-        </TouchableOpacity>
-        <TextInput
-          label="Eşya Tanımı"
-          value={description}
-          onChangeText={setDescription}
-          mode="outlined"
-          style={[commonStyle.input, styles.textInput]}
-          theme={{ colors: { primary: colors.primary } }}
-          labelStyle={styles.textInputLabel}
-        />
-        <View style={styles.spacer} />
-        <RNPickerSelect
-          selectedValue={idType}
-          onValueChange={setIdType}
-          items={[
-            { label: "ID", value: "ID_KNOWN" },
-            { label: "Diğer", value: "ID_NOT_KNOWN" },
-          ]}
-          style={pickerSelectStyles}
-          placeholder={{
-            label: 'Bir kategori seçin',
-            value: null,
-          }}
-        />
-        {idType === "ID_KNOWN" && (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Title style={styles.title}>Kayıp Eşya Bildir</Title>
+          {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode='contain' />}
+          <TouchableOpacity style={styles.photoButton} onPress={handleChoosePhoto}>
+            <MaterialIcons name="camera-alt" size={24} color={colors.primary} />
+            <Text style={styles.photoButtonText}>Fotoğraf Yükle</Text>
+          </TouchableOpacity>
           <TextInput
-            label="Kimlik Bilgisi"
-            value={idNumber}
-            onChangeText={setIdNumber}
+            label="Eşya Tanımı"
+            value={description}
+            onChangeText={setDescription}
             mode="outlined"
-            style={commonStyle.input}
+            style={[commonStyle.input, styles.textInput]}
             theme={{ colors: { primary: colors.primary } }}
+            labelStyle={styles.textInputLabel}
           />
-        )}
-        <Button
-          mode="outlined"
-          onPress={handleSubmit}
-          color={colors.primary}
-          style={styles.submitButton}
-          labelStyle={styles.buttonText}
-        >
-          Bildir
-        </Button>
-      </ScrollView>
+          <View style={styles.spacer} />
+          <RNPickerSelect
+            selectedValue={idType}
+            onValueChange={setIdType}
+            items={[
+              { label: "ID", value: "ID_KNOWN" },
+              { label: "Diğer", value: "ID_NOT_KNOWN" },
+            ]}
+            style={pickerSelectStyles}
+            placeholder={{
+              label: 'Bir kategori seçin',
+              value: null,
+            }}
+          />
+          {idType === "ID_KNOWN" && (
+            <TextInput
+              label="Kimlik Bilgisi"
+              value={idNumber}
+              onChangeText={setIdNumber}
+              mode="outlined"
+              style={commonStyle.input}
+              theme={{ colors: { primary: colors.primary } }}
+            />
+          )}
+          <Button
+            mode="outlined"
+            onPress={handleSubmit}
+            color={colors.primary}
+            style={styles.submitButton}
+            labelStyle={styles.buttonText}
+          >
+            Bildir
+          </Button>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -158,6 +163,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   container: {
+    flex: 1,
+  },
+  scrollContainer: {
     flexGrow: 1,
     padding: 16,
   },
