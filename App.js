@@ -32,15 +32,12 @@ import CommentsPage from './app/(screens)/commentsPage';
 import MyCoursesScreen from './app/(course)/myCourses';
 import CourseAttendanceScreen from './app/(course)/courseAttendance';
 
-import SchoolAnnouncementScreen from './app/(anno)/schoolAnnouncements'
-import CommunityAnnouncementScreen from './app/(anno)/communityAnnouncements';
-import DepartmentAnnouncementScreen from './app/(anno)/departmentAnnouncements';
-import CreateAnnouncementScreen from './app/(anno)/createAnnouncement';
-import AnnouncementDetailsScreen from './app/(anno)/announcementDetails';
+import AnnouncementsScreen from './app/(anno)/annoucements'
+import CreateAnnouncementScreen from './app/(anno)/createAnnouncement'
+import AnnouncementDetailsScreen from './app/(anno)/announcementDetails'
 
 import {colors,text,} from './design/themes'
 import settingsLogo from './assets/icons/settings.png'
-import { HeaderBackButton } from '@react-navigation/elements';
 
 const Stack = createNativeStackNavigator();
 const AnnStack = createNativeStackNavigator();
@@ -122,18 +119,10 @@ const AnnouncementHeader = ({navigation, title }) => {
 const AnnouncementStack = () => {
   return (
     <AnnStack.Navigator
-    screenOptions={({ route } ) => ({
-      header: (props) => {
-        let title;
-        switch (route.name) {
-          }
-          return <AnnouncementHeader {...props} />;
-        },
-      })}
+    initialRouteName='announcementsScreen'
+    screenOptions={{ headerShown: false}}
     >
-      <AnnStack.Screen name='schoolAnnouncements' component={SchoolAnnouncementScreen} />
-      <AnnStack.Screen name='departmentAnnouncements' component={DepartmentAnnouncementScreen} />
-      <AnnStack.Screen name='communityAnnouncements' component={CommunityAnnouncementScreen} />
+      <AnnStack.Screen name='announcementsScreen' component={AnnouncementsScreen} />
       <AnnStack.Screen name='createAnnouncement' component={CreateAnnouncementScreen} />
       <AnnStack.Screen name='announcementDetails' component={AnnouncementDetailsScreen}/>
     </AnnStack.Navigator>
