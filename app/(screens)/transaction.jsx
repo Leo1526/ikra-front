@@ -228,6 +228,8 @@ const TransactionPage = () => {
               Para Gönder
             </Button>
 
+
+
             {/* Modal */}
             <Modal style={{ height: '65%' }} visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
               <View style={styles.modalContent}>
@@ -243,6 +245,7 @@ const TransactionPage = () => {
                 </ScrollView>
               </View>
             </Modal>
+
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>

@@ -179,9 +179,9 @@ const LostItemsPage = ({ navigation }) => {
           onRequestClose={() => setModalVisible(false)}
           onDismiss={() => setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>Filtrele</Text>
+          <View style={commonStyle.modalOverlay}>
+            <View style={commonStyle.modalContent}>
+              <Text style={commonStyle.modalHeading}>Filtrele</Text>
               <RNPickerSelect
                 placeholder={{ label: "Kategori seçiniz...", value: null }}
                 onValueChange={setTemporaryFilterCategory}
@@ -195,8 +195,8 @@ const LostItemsPage = ({ navigation }) => {
               <Button
                 mode="contained"
                 onPress={applyFilter}
-                style={styles.button}
-                labelStyle={styles.buttonLabel}
+                style={commonStyle.primaryButton}
+                labelStyle={commonStyle.primaryButtonLabel}
               >
                 Uygula
               </Button>

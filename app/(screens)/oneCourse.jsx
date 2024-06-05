@@ -60,7 +60,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
 
 
   useEffect(() => {
-    if (course) {
+    if (courseId) {
       fetchCourseDetails();
     }
   }, []);
@@ -388,7 +388,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             </TouchableOpacity>
           ))}
           <Text style={styles.sectionHeading}>Not Dağılımı</Text>
-          {!course.courseStatResponse.difficultyAvg ? (
+          {!courseDetails.courseStatResponse.difficultyAvg ? (
             <Text style={styles.warning}>{NoStatsText}</Text>
           ) : (
             <View style={styles.chartWrapper}>
@@ -458,7 +458,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             </View>
           )}
           <Text style={styles.sectionHeading}>Saat Harcanma Dağılımı</Text>
-          {!course.courseStatResponse.difficultyAvg ? (
+          {!courseDetails.courseStatResponse.difficultyAvg ? (
             <Text style={styles.warning}>{NoStatsText}</Text>
           ) : (
             <View style={styles.chartWrapper}>
@@ -528,7 +528,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             </View>
           )}
           <Text style={styles.sectionHeading}>Kalite Ortalaması</Text>
-          {!course.courseStatResponse.difficultyAvg ? (
+          {!courseDetails.courseStatResponse.difficultyAvg ? (
             <Text style={styles.warning}>{NoStatsText}</Text>
           ) : (
             <View style={styles.ratingContainer}>
@@ -543,7 +543,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             </View>
           )}
           <Text style={styles.sectionHeading}>Zorluk Ortalaması</Text>
-          {!course.courseStatResponse.difficultyAvg ? (
+          {!courseDetails.courseStatResponse.difficultyAvg ? (
             <Text style={styles.warning}>{NoStatsText}</Text>
           ) : (
             <View style={styles.pieChartContainer}>
@@ -572,7 +572,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
           )}
           <View style={styles.rightEnd}>
             <Text style={styles.transactionsHeading}>Yorumlar</Text>
-            <Button onPress={() => navigation.navigate('commentsPage', course)}>
+            <Button onPress={() => navigation.navigate('commentsPage', courseDetails)}>
               <Text style={styles.link}>Tümünü gör</Text>
             </Button>
           </View>

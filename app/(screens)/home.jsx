@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, RefreshControl,Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import Swiper from 'react-native-swiper';
-import { Card, Title, Paragraph, Button } from 'react-native-paper';
+import { Card, Title, Paragraph, Button, IconButton } from 'react-native-paper';
 import { ikraAxios, urlDev, url } from '../common';
 import Carousel from 'react-native-reanimated-carousel';
 import { colors, text } from '../../design/themes';
@@ -133,7 +133,8 @@ const Home = ({ navigation }) => {
   );
 
   return (
-    <ScrollView style={styles.container}      refreshControl={
+    <ScrollView style={styles.container}      
+    refreshControl={
       <RefreshControl
         refreshing={refreshing}
         onRefresh={onRefresh}
@@ -166,11 +167,11 @@ const Home = ({ navigation }) => {
             <Text style={styles.balance}>{balance}</Text>
           </View>
         </View>
+        
         <View style={styles.buttonContainer}>
-          <Button labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
-            PAYLAŞ
-          </Button>
-          <Button onPress={() => navigation.navigate('finance')} labelStyle={styles.buttonLabel} style={styles.button} >
+          <IconButton icon = "share-variant"  labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
+          </IconButton>
+          <Button icon = "card-account-details"  onPress={() => navigation.navigate('finance')} labelStyle={styles.buttonLabel} style={styles.button} >
             TÜMÜ
           </Button>
         </View>

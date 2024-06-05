@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, Keyboard, KeyboardAvoidingView, Platform, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TouchableWithoutFeedback,  Alert, Keyboard, KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
@@ -7,7 +7,7 @@ import { colors } from '../../design/themes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
 import { ikraAxios, urlDev } from '../common';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { ActivityIndicator, Button,TextInput } from 'react-native-paper';
 import { commonStyle } from '../../design/style';
 
 
@@ -62,6 +62,8 @@ const CourseAttendanceScreen = () => {
   const handleAttendance = async () => {
     setLoading(true);
     setModalVisible(false);
+
+
 
     await ikraAxios({
       url: `${urlDev}/attendant`,
@@ -155,11 +157,20 @@ const CourseAttendanceScreen = () => {
                     data={attendanceWeeks}
                     renderItem={renderAttendanceItem}
                     keyExtractor={(item) => item.attendance.id.toString()}
+                    ListEmptyComponent={() => (
+                      <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>Daha önce yoklama alınmadı.</Text>
+                      </View>
+                    )}
                   />
                 </KeyboardAvoidingView>
 
-                <Button style={commonStyle.secondaryButton} onPress={() => setModalVisible(true)}>
-                  <Text style={styles.buttonText}>Yoklama Ver</Text>
+                <Button
+                  style={[commonStyle.secondaryButton, { width: "90%", bottom: 15, alignSelf: "center" }]} // Stilleri bir dizi içinde birleştir
+                  labelStyle={commonStyle.secondaryButtonLabel}
+                  onPress={() => setModalVisible(true)}
+                >
+                  Yoklama Ver
                 </Button>
               </View>
             )
@@ -170,21 +181,25 @@ const CourseAttendanceScreen = () => {
             visible={modalVisible}
             onRequestClose={() => setModalVisible(false)}
           >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalView}>
-                <TextInput
-                  style={styles.modalInput}
-                  placeholder="6 haneli kodu girin"
-                  value={inputCode}
-                  onChangeText={setInputCode}
-                  keyboardType="numeric"
-                  maxLength={6}
-                />
-                <TouchableOpacity style={styles.submitButton} onPress={handleAttendance}>
-                  <Text style={styles.buttonText}>Onayla</Text>
-                </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+              <View style={commonStyle.modalOverlay}>
+                <TouchableWithoutFeedback onPress={() => { }}>
+                  <View style={commonStyle.modalContent}>
+                    <TextInput
+                      style={commonStyle.modalInput}
+                      placeholder="6 haneli kodu girin"
+                      value={inputCode}
+                      onChangeText={setInputCode}
+                      keyboardType="numeric"
+                      maxLength={6}
+                    />
+                    <Button style={commonStyle.secondaryButton} labelStyle={commonStyle.secondaryButtonLabel} onPress={handleAttendance}>
+                      Onayla
+                    </Button>
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </Modal>
         </View>
       </View>
@@ -223,6 +238,14 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     paddingLeft: 10,
+  },
+  emptyContainer: {
+    padding: 20,
+    alignItems: 'center'
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'grey'
   },
   attendanceRate: {
     fontSize: 18,
@@ -305,17 +328,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     elevation: 5,
-  },
-  modalInput: {
-    height: 50,
-    borderColor: '#4CAF50',
-    borderWidth: 1,
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    width: '100%',
-    marginBottom: 20,
-    textAlign: 'center',
-    fontSize: 18,
   },
   generateCodeContainer: {
     flexDirection: 'row',
