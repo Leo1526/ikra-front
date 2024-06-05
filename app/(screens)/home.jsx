@@ -93,7 +93,7 @@ const Home = ({ navigation }) => {
         onSuccess: handleCardSuccess,
         onError: () => {
           setLoading(false);
-          alert("Ana sayfa için duyurular getirilirken hata oluştu!" + error?.message? error.message : "Bilinmeyen")
+          alert("Ana sayfa için cüzdan getirilirken hata oluştu!" + error?.message? error.message : "Bilinmeyen")
         },
         tokenRequired: true,
       })

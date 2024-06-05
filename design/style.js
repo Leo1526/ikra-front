@@ -33,7 +33,8 @@ export const commonStyle = {
   },
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor:colors.background
+    backgroundColor:colors.background,
+    padding: 20
   },  
   primaryButton: {
     width: '100%',
