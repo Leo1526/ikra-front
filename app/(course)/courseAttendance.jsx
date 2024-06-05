@@ -9,9 +9,8 @@ import * as Location from 'expo-location';
 import { ikraAxios, urlDev } from '../common';
 import { ActivityIndicator } from 'react-native-paper';
 import { commonStyle } from '../../design/style';
-const CourseAttendanceScreen = () => {
 
-const CourseAttendanceScreen = ({navigate}) => {
+const CourseAttendanceScreen = ({navigation}) => {
   const route = useRoute();
   const { course } = route.params;
   const [attendanceWeeks, setAttendanceWeeks] = useState([]);
