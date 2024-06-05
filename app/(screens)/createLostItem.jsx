@@ -97,12 +97,16 @@ const CreateLostPage = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+  >
+    <SafeAreaView style={[styles.safeArea,]}>
+      <View style={[commonStyle.mainContainer,]}>
+
+
+
+        <ScrollView contentContainerStyle={[styles.scrollContainer,]}>
           <Title style={styles.title}>Kayıp Eşya Bildir</Title>
           {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode='contain' />}
           <TouchableOpacity style={styles.photoButton} onPress={handleChoosePhoto}>
@@ -145,15 +149,16 @@ const CreateLostPage = ({ navigation }) => {
           <Button
             mode="outlined"
             onPress={handleSubmit}
-            color={colors.primary}
-            style={styles.submitButton}
-            labelStyle={styles.buttonText}
+            style={commonStyle.secondaryButton}
+            labelStyle={[commonStyle.secondaryButtonLabel, {fontSize:16}]}
           >
             Bildir
           </Button>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
+    </KeyboardAvoidingView>
+
   );
 };
 
@@ -167,7 +172,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    padding: 16,
+    
   },
   title: {
     fontSize: 24,

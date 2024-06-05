@@ -189,7 +189,7 @@ const MyLostItemsPage = ({ navigation }) => {
                 alignSelf: "center",
               }}
             >
-              <Text style={styles.heading}>Benim Kayıp Eşya İlanlarım</Text>
+              <Text style={styles.heading}>Kayıp Eşya İlanlarım</Text>
             </View>
             <FlatList
               data={displayItems}
