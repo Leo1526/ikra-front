@@ -14,7 +14,9 @@ const AllTransactionsScreen = ({navigation}) => {
   const [transactionType, setTransactionType] = useState('Tümü');
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [noMoreComments, setNoMoreComments] = useState(false);
   const [page, setPage] = useState(0);
+  const size = 5;
 
 
   useEffect(() => {
@@ -22,11 +24,18 @@ const AllTransactionsScreen = ({navigation}) => {
   }, []);
   
   const handleGetTransactions = () => {
+    if(noMoreComments) {
+      return;
+    }
+
     ikraAxios({
-      url: urlDev + '/transactions/byPage?page=0&size=10',
+      url: urlDev + '/transactions/byPage?page=' + page + '&size=' + size,
       onSuccess: (data) => {
+        if(data.body.length < size) {
+          setNoMoreComments(true);
+        }
         setPage(page + 1);
-        setTransactions(data.body);
+        setTransactions((prevTransactions) => [...prevTransactions, ...data.body]);
         console.log(transactions);
       },
       onError: (error) => {
@@ -96,6 +105,7 @@ const AllTransactionsScreen = ({navigation}) => {
         </View>
         <FlatList
           data={filteredTransactions.length > 0 ? filteredTransactions : transactions}
+          onEndReached={handleGetTransactions}
           renderItem={({ item }) => (
             <TransactionItem
               txTime={item.txTime}
@@ -172,6 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   container: {
+    ...StyleSheet.absoluteFillObject,
     flex: 1,
     padding: 16,
   },
