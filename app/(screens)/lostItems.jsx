@@ -240,6 +240,7 @@ const LostItemsPage = ({ navigation }) => {
               onPress={() => setClaimModalVisible(false)}
               mode="outlined"
               style={styles.cancelButton}
+              labelStyle={commonStyle.secondaryButtonLabel}
             >
               Vazgeç
             </Button>
@@ -247,6 +248,7 @@ const LostItemsPage = ({ navigation }) => {
               mode="contained"
               onPress={sendClaim}
               disabled={!contactInfo || !claimDescription}
+              style={[{width:undefined,backgroundColor:colors.primary}]}
             >
               Gönder
             </Button>
