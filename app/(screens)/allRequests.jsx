@@ -24,7 +24,7 @@ const RequestsPage = ({navigation}) => {
       await ikraAxios({
         url: `${urlDev}/proposals/universityId?page=${page}&size=${size}`,
         onSuccess: (data) => {
-          if(data.body.length === 0){
+          if(data.body.length < size){
             setNoMoreComments(true);
           }
           setRequests((prevRequests) => [...prevRequests, ...data.body]);

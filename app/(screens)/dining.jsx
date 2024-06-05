@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
+import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../design/themes';
 import { ikraAxios, urlDev } from '../common';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { commonStyle } from '../../design/style';
 
 
 const PAGE_SIZE = 3;
 
 const DiningMenuScreen = () => {
-  const [refreshVal, setRefreshVal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1);
   const [mealList, setMealList] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
@@ -20,16 +21,30 @@ const DiningMenuScreen = () => {
 
   useEffect(() => {
     fetchMeals();
-  }, [refreshVal]);
+  }, []);
 
-  const fetchMeals = async () => {
+  const fetchMeals = async (onReview) => {
     console.log(urlDev + '/meal?page=' + page + '&size=3');
+    var pageRequest = page;
+    if (onReview) {
+      pageRequest = pageRequest - 1;
+    }
+    
     await ikraAxios({
-      url: urlDev + '/meal?page=' + page + '&size=3',
+      url: urlDev + '/meal?page=' + pageRequest + '&size=3',
       onSuccess: (data) => {
-        setMealList(prevMealList => [...prevMealList, ...data.body]);
-        setPage(page + 1);
-        console.log(data);
+        if(!onReview){
+          setMealList(prevMealList => [...prevMealList, ...data.body]);
+          setPage(page + 1);
+        }
+        else {
+            const updatedMealList = mealList.map(meal => {
+            const updatedMeal = data.body.find(newMeal => newMeal.id === meal.id);
+            return updatedMeal ? updatedMeal : meal;
+          });
+          
+          setMealList(updatedMealList);
+        }
       },
       onError: (error) => {
         console.error('Error fetching meal data:', error);
@@ -42,8 +57,8 @@ const DiningMenuScreen = () => {
       url: urlDev + '/mealReview?mealId=' + meal + '&points=' + rating,
       method: 'POST',
       onSuccess: (data) => {
-        setRefreshVal(refreshVal+1)
         setRatingModalVisible(false);
+        fetchMeals(true);
       },
       onError: (error) => {
         console.error('Error submitting rating:', error);
@@ -74,9 +89,9 @@ const DiningMenuScreen = () => {
             {item.avgRating ? item.avgRating : 'Değerlendirilmedi'} ({item.reviewCount ? item.reviewCount : 0})
           </Text>
         </View>
-        <TouchableOpacity style={styles.ratingButton} onPress={() => openRatingModal(item)}>
-          <Text style={styles.ratingButtonText}>Değerlendir</Text>
-        </TouchableOpacity>
+        <Button style={commonStyle.secondaryButton} labelStyle={commonStyle.secondaryButtonLabel} onPress={() => openRatingModal(item)}>
+          Değerlendir
+        </Button>
       </View>
     </View>
   );
@@ -133,14 +148,20 @@ const DiningMenuScreen = () => {
             />
             <View style={styles.buttonContainer}>
               <Button
-                title="Vazgeç"
+                style={commonStyle.secondaryButton}
+                labelStyle={commonStyle.secondaryButtonLabel}
                 onPress={() => setRatingModalVisible(false)}
-              />
+              >
+                Vazgeç
+              </Button>
               <Button
-                title="Puan Ver"
+                style={commonStyle.secondaryButton}
+                labelStyle={commonStyle.secondaryButtonLabel}
                 onPress={() => handleRating(selectedMeal.id, rating)}
                 disabled={rating === 0}
-              />
+              >
+                Puan Ver
+              </Button>
             </View>
           </View>
         </View>

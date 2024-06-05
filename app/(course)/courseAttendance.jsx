@@ -10,7 +10,6 @@ import { ikraAxios, urlDev } from '../common';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import { commonStyle } from '../../design/style';
 
-const CourseAttendanceScreen = ({navigation}) => {
 
 const CourseAttendanceScreen = () => {
   const route = useRoute();
