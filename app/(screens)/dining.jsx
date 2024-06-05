@@ -94,21 +94,24 @@ const DiningMenuScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => handlePageChange('prev')} style={styles.iconButton}>
-          <Icon name="chevron-left" size={24} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={styles.heading}>Yemek Listesi</Text>
-        <TouchableOpacity onPress={() => handlePageChange('next')} style={styles.iconButton}>
-          <Icon name="chevron-right" size={24} color={colors.text} />
-        </TouchableOpacity>
+      <View style={styles.mainContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => handlePageChange('prev')} style={styles.iconButton}>
+            <Icon name="chevron-left" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={styles.heading}>Yemek Listesi</Text>
+          <TouchableOpacity onPress={() => handlePageChange('next')} style={styles.iconButton}>
+            <Icon name="chevron-right" size={24} color={colors.text} />
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={currentData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.list}
+        />
       </View>
-      <FlatList
-        data={currentData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.list}
-      />
+      
 
       <Modal
         animationType="slide"
@@ -148,6 +151,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     padding: 20,
+    paddingVertical: 0
+  },
+  mainContainer: {
+    ...StyleSheet.absoluteFillObject,
   },
   header: {
     flexDirection: 'row',

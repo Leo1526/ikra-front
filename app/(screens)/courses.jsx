@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   container: {
-    marginTop: -65,
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 16,
