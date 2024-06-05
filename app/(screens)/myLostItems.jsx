@@ -136,7 +136,7 @@ const MyLostItemsPage = ({ navigation }) => {
           <Text style={styles.claimCount}>Talepler ({item.claims.length})</Text>
           <IconButton
             icon="bell"
-            iconColor="green"
+            iconColor={colors.primary}
             size={25}
             onPress={() => handleClaimsIconPress(item.claims)}
           />
@@ -163,7 +163,7 @@ const MyLostItemsPage = ({ navigation }) => {
             setFoundItem(item);
             setFoundModalVisible(true);
           }}
-          style={[styles.claimButton, { backgroundColor: "green" }]}
+          style={[styles.claimButton, { backgroundColor: colors.primary }]}
           labelStyle={[{ color: "white" }]}
         >
           Bulundu
@@ -264,7 +264,10 @@ const MyLostItemsPage = ({ navigation }) => {
                     <Button
                       onPress={handleUpdate}
                       mode="contained"
-                      style={[styles.claimButton, { backgroundColor: "green" }]}
+                      style={[
+                        styles.claimButton,
+                        { backgroundColor: colors.primary },
+                      ]}
                       labelStyle={[{ color: "white" }]}
                     >
                       Onayla
@@ -308,7 +311,10 @@ const MyLostItemsPage = ({ navigation }) => {
                       onPress={() => {
                         handleDelete();
                       }}
-                      style={[styles.claimButton, { backgroundColor: "green" }]}
+                      style={[
+                        styles.claimButton,
+                        { backgroundColor: colors.primary },
+                      ]}
                       labelStyle={[{ color: "white" }]}
                     >
                       Evet
@@ -319,40 +325,44 @@ const MyLostItemsPage = ({ navigation }) => {
             </Modal>
 
             <Modal
-  visible={claimsModalVisible}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setClaimsModalVisible(false)}
->
-  <View style={styles.modalOverlay}>
-    <View style={styles.modalContent}>
-      <Text style={[styles.modalHeading, styles.centeredHeading]}>Talepler</Text>
-      <FlatList
-        data={selectedClaims}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.claimItem}>
-            <Text style={styles.claimLabel}>İletişim:</Text>
-            <Text style={styles.claimInfo}>{item.contactInfo}</Text>
-            <Text style={styles.claimLabel}>Açıklama:</Text>
-            <Text style={styles.claimInfo}>{item.description}</Text>
-          </View>
-        )}
-        contentContainerStyle={styles.flatListContentContainer}
-        style={styles.flatList}
-      />
-      <Button
-        onPress={() => setClaimsModalVisible(false)}
-        mode="contained"
-        style={[styles.claimButton, { backgroundColor: colors.primary }]}
-        labelStyle={[{ color: "white" }]}
-      >
-        Kapat
-      </Button>
-    </View>
-  </View>
-</Modal>
-
+              visible={claimsModalVisible}
+              animationType="slide"
+              transparent={true}
+              onRequestClose={() => setClaimsModalVisible(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                  <Text style={[styles.modalHeading, styles.centeredHeading]}>
+                    Talepler
+                  </Text>
+                  <FlatList
+                    data={selectedClaims}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                      <View style={styles.claimItem}>
+                        <Text style={styles.claimLabel}>İletişim:</Text>
+                        <Text style={styles.claimInfo}>{item.contactInfo}</Text>
+                        <Text style={styles.claimLabel}>Açıklama:</Text>
+                        <Text style={styles.claimInfo}>{item.description}</Text>
+                      </View>
+                    )}
+                    contentContainerStyle={styles.flatListContentContainer}
+                    style={styles.flatList}
+                  />
+                  <Button
+                    onPress={() => setClaimsModalVisible(false)}
+                    mode="contained"
+                    style={[
+                      styles.claimButton,
+                      { backgroundColor: colors.primary },
+                    ]}
+                    labelStyle={[{ color: "white" }]}
+                  >
+                    Kapat
+                  </Button>
+                </View>
+              </View>
+            </Modal>
           </View>
         </View>
       </SafeAreaView>
@@ -363,13 +373,6 @@ const MyLostItemsPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.primary,
   },
   container: {
     flex: 1,
@@ -402,7 +405,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     alignSelf: "center",
-    color: colors.primary
+    color: colors.primary,
   },
   centeredHeading: {
     textAlign: "center",
@@ -423,21 +426,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10,
   },
-  itemOwnerInfo: {
-    fontSize: 16,
-    color: colors.text,
-    marginTop: 4,
-    fontWeight: "bold",
-  },
-  filterButton: {
-    backgroundColor: colors.secondary,
-    borderRadius: 8,
-    alignSelf: "flex-end",
-  },
-  filterButtonText: {
-    color: colors.text,
-    fontWeight: "bold",
-  },
+
   heading: {
     fontSize: 20,
     fontWeight: "bold",
@@ -454,16 +443,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     padding: 10,
   },
-  statusButton: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  foundButton: {
-    backgroundColor: "green",
-  },
-  lostButton: {
-    backgroundColor: "red",
-  },
+
   textInput: {
     marginBottom: 16,
   },
@@ -486,13 +466,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  cancelButton: {
-    borderColor: colors.primary,
-    borderWidth: 1,
-  },
-  closeButton: {
-    marginTop: 10,
-  },
+
   claimItem: {
     marginBottom: 10,
     borderWidth: 2,
@@ -503,7 +477,7 @@ const styles = StyleSheet.create({
   claimLabel: {
     fontSize: 18,
     fontWeight: "bold",
-    color: colors.primary
+    color: colors.primary,
   },
   claimInfo: {
     fontSize: 14,
@@ -516,7 +490,7 @@ const styles = StyleSheet.create({
   },
   claimCount: {
     fontSize: 15,
-    color: "green",
+    color: colors.primary,
     fontWeight: "bold",
     marginLeft: 10,
   },
@@ -528,15 +502,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: "center",
     marginBottom: 10,
-  },
-  myItemsButton: {
-    backgroundColor: colors.secondary,
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignSelf: "flex-start",
-    alignItems: "center",
   },
 
   newRequestButton: {
