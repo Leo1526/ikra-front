@@ -193,7 +193,7 @@ const CourseAttendanceScreen = () => {
                       keyboardType="numeric"
                       maxLength={6}
                     />
-                    <Button style={commonStyle.primaryButton} labelStyle={commonStyle.primaryButtonLabel} onPress={handleAttendance}>
+                    <Button style={commonStyle.secondaryButton} labelStyle={commonStyle.secondaryButtonLabel} onPress={handleAttendance}>
                       Onayla
                     </Button>
                   </View>

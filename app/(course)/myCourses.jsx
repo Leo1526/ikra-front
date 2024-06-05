@@ -112,7 +112,6 @@ const MyCoursesScreen = ({ navigate }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={commonStyle.mainContainer}>
 
-        <Text style={styles.heading}>Derslerim</Text>
 
 
 
