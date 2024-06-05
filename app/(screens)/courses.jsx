@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Title, Button, TextInput } from 'react-native-paper';
 import { colors } from '../../design/themes';  // Varsayılan renkleriniz buradan alınıyor
 import { ikraAxios, url, urlDev } from '../common';
+import { commonStyle } from '../../design/style';
 
 const GridItemsPage = ({navigation}) => {
 
@@ -80,6 +81,8 @@ const GridItemsPage = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+<View style = {commonStyle.mainContainer}>
+
       <View style={styles.container}>
         <Text style={styles.heading}>Tüm İşlemler</Text>
         <Button
@@ -126,6 +129,8 @@ const GridItemsPage = ({navigation}) => {
           </View>
         </View>
       </Modal>
+      </View>
+
     </SafeAreaView>
   );
 };

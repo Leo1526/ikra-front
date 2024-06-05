@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ikraAxios, urlDev } from '../common';
-
+import { commonStyle } from '../../design/style';
 const MyCoursesScreen = ({navigate}) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
@@ -110,6 +110,8 @@ const MyCoursesScreen = ({navigate}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+<View style = {commonStyle.mainContainer}>
+
       <Text style={styles.heading}>Derslerim</Text>
 
       <TouchableOpacity style={styles.addButton} onPress={handleOpenModal}>
@@ -169,6 +171,7 @@ const MyCoursesScreen = ({navigate}) => {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+      </View>
     </SafeAreaView>
   );
 };

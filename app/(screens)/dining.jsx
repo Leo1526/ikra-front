@@ -6,9 +6,11 @@ import { ikraAxios, urlDev } from '../common';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
 const PAGE_SIZE = 3;
 
 const DiningMenuScreen = () => {
+  const [refreshVal, setRefreshVal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1);
   const [mealList, setMealList] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
@@ -18,7 +20,7 @@ const DiningMenuScreen = () => {
 
   useEffect(() => {
     fetchMeals();
-  }, []);
+  }, [refreshVal]);
 
   const fetchMeals = async () => {
     console.log(urlDev + '/meal?page=' + page + '&size=3');
@@ -40,13 +42,14 @@ const DiningMenuScreen = () => {
       url: urlDev + '/mealReview?mealId=' + meal + '&points=' + rating,
       method: 'POST',
       onSuccess: (data) => {
-        console.log('Rating submitted successfully:', data);
+        setRefreshVal(refreshVal+1)
         setRatingModalVisible(false);
       },
       onError: (error) => {
         console.error('Error submitting rating:', error);
       },
     });
+
     
   };
 
