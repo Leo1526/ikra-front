@@ -242,6 +242,7 @@ const TransactionPage = () => {
             </ScrollView>
           </View>
         </Modal>
+
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -319,7 +320,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondaryBackground,
     margin: 40,
     borderRadius: 10,
-
   },
   buttonContent: {
     width: '100%', // İçerik genişliğini buton genişliğine eşitliyoruz
