@@ -8,6 +8,7 @@ import { colors, text, fonts } from '../../design/themes';
 import RNPickerSelect from 'react-native-picker-select';
 import { TextInput, Button } from 'react-native-paper';
 import * as myStyle from "../../design/style"
+import { ikraAxios, urlDev } from '../common';  // API istekleri için kullanılan özelleştirilmiş axios instance
 
 const gradeValueMap = {
   A1: 4.0,
@@ -46,7 +47,7 @@ const qualityDescriptions = [
 
 const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDifficulty = 1, navigation }) => {
   const route = useRoute();
-  const { course } = route.params;
+  const { courseId } = route.params;
   const [courseDetails, setCourseDetails] = useState(null);
   const [showGradePieChart, setShowGradePieChart] = useState(false);
   const [showHoursPieChart, setShowHoursPieChart] = useState(false);
@@ -56,20 +57,63 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
   const [difficulty, setDifficulty] = useState(5);
   const [selectedHours, setSelectedHours] = useState('');
 
-  useEffect(() => {
-    const fetchCourseDetails = async () => {
-      try {
-        // Backend yerine sabit veriden veri çekme işlemi
-        setCourseDetails(course || {});
-      } catch (error) {
-        console.error('Error fetching course details:', error);
-      }
-    };
 
+
+  useEffect(() => {
     if (course) {
       fetchCourseDetails();
     }
-  }, [course]);
+  }, []);
+
+
+  const fetchCourseDetails = () => {
+    const endpoint = `/courses/courseId?courseId=${courseId}`; // id varsa, URL'ye ekle
+    ikraAxios({
+      url: urlDev + endpoint,  // Dinamik URL
+      onSuccess: (data) => {
+        console.log(data.body.courseStatResponse.hours)
+        setCourseDetails(data.body)
+      },
+      onError: (error) => {
+        console.error('Error fetching profile info: ', error);
+        Alert.alert("Profil Bilgisi Yükleme Hatası", "Profil bilgileri yüklenirken bir hata oluştu.");
+      }
+    });
+  };
+
+  const handleSendComment = async () => {
+
+    const formData = {
+      "courseId": courseId,
+      "comment": comment,
+      "grade": selectedGrade,
+      "difficulty": difficulty,
+      "quality": qualityRating,
+      "hours": selectedHours
+    };
+
+    try {
+      // Backend'e POST isteği at
+      ikraAxios({
+        url: urlDev + '/courseStats',  // POST isteği atılacak endpoint
+        method: 'POST',
+        data: formData,
+        onSuccess: (data) => {
+          console.log(data);
+          fetchCourseDetails();
+        },
+        onError: (error) => {
+          console.error('Error fetching profile info: ', error);
+          Alert.alert("Profil Bilgisi Yükleme Hatası", "Profil bilgileri yüklenirken bir hata oluştu.");
+        },
+      });
+    } catch (error) {
+      // Ağ hatası veya diğer hatalar için
+      console.error("Network error:", error);
+      Alert.alert("Ağ Hatası", "Bir ağ hatası meydana geldi.");
+    }
+  };
+
 
   if (!courseDetails) {
     return (
@@ -336,7 +380,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             <TouchableOpacity
               key={index}
               style={styles.instructor}
-              onPress={() => navigation.navigate('profile', { instructor })}
+              onPress={() => { navigation.navigate('profile', { id: instructor.id }) }}
             >
               <Text style={styles.instructorText}>
                 {instructor.firstName + " " + instructor.lastName}
@@ -491,7 +535,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
               <Text style={styles.ratingText}>{courseDetails.courseStatResponse.qualityAvg?.toFixed(1) || 'N/A'}/5</Text>
               <Rating
                 readonly
-                startingValue={courseDetails.courseStatResponse.qualityAvg ? courseDetails.courseStatResponse.qualityAvg: 0}
+                startingValue={courseDetails.courseStatResponse.qualityAvg ? courseDetails.courseStatResponse.qualityAvg : 0}
                 imageSize={30}
                 ratingBackgroundColor={colors.secondaryBackground}
                 ratingColor={colors.secondary}
@@ -532,12 +576,6 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
               <Text style={styles.link}>Tümünü gör</Text>
             </Button>
           </View>
-          {courseDetails.yorumlar?.map((yorum) => (
-            <View key={yorum.id} style={styles.commentContainer}>
-              <Text style={styles.commentAuthor}>{yorum.yazar}:</Text>
-              <Text style={styles.commentText}>{yorum.yorum}</Text>
-            </View>
-          ))}
           <View style={styles.commentForm}>
             <Text style={styles.ratingLabel}>Derse yorumunuz nedir?</Text>
             <TextInput
@@ -618,7 +656,7 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
             <Button
               mode="contained" // Bu, dolgulu bir buton stilidir.
               onPress={() => {
-                console.log(course)
+                handleSendComment();
               }}
               style={myStyle.commonStyle.primaryButton}
             >
@@ -630,6 +668,9 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
     </View>
   );
 };
+
+
+
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {

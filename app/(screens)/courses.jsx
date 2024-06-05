@@ -59,7 +59,7 @@ const GridItemsPage = ({navigation}) => {
 
   const renderItem = ({ item }) => (
     <Card style={styles.itemCard}>
-      <TouchableOpacity onPress={() => navigation.navigate('courseDetailPage', { course: item })}>
+      <TouchableOpacity onPress={() => navigation.navigate('courseDetailPage', { courseId: item.id })}>
         <Card.Content>
           <Title style={styles.itemTitle}>{item.courseCode}</Title>
           <Title style={styles.itemText}>{item.name}</Title>
