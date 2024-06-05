@@ -4,54 +4,64 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../design/themes";
-import { images } from "../../constants/images";
-
 import { urlDev, ikraAxios } from "../common";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 const InternshipScreen = () => {
   const [internshipListings, setInternshipListings] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [displayedInternships, setDisplayedInternships] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await ikraAxios({
+    fetchInternships();
+  }, []);
+
+  const fetchInternships = async () => {
+    setLoading(true);
+    try {
+      await ikraAxios({
         url: urlDev + "/jobs/jobAdvertsByDepartmentId",
-        onSuccess: (data) => {},
+        onSuccess: (data) => {
+          setInternshipListings(data.body);
+          setDisplayedInternships(data.body.slice(0, PAGE_SIZE));
+        },
         onError: (error) => {
           console.error("Error fetching jobs data:", error);
         },
       });
+    } catch (error) {
+      console.error("Error in fetchInternships:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      console.log(response); // API'den dönen tüm veriyi konsola yazdır
-      setInternshipListings(response.body);
-    };
-
-    fetchData();
-
-    
-  }, []);
-
-  const totalPages = Math.ceil(internshipListings.length / PAGE_SIZE);
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const endIndex = startIndex + PAGE_SIZE;
-  const currentData = internshipListings.slice(startIndex, endIndex);
+  const loadMoreInternships = () => {
+    const nextPage = displayedInternships.length / PAGE_SIZE;
+    const newInternships = internshipListings.slice(
+      nextPage * PAGE_SIZE,
+      (nextPage + 1) * PAGE_SIZE
+    );
+    setDisplayedInternships((prevInternships) => [
+      ...prevInternships,
+      ...newInternships,
+    ]);
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.internshipContainer}>
       <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: `data:${item.jobAdvertImage.mimeType};base64,${item.jobAdvertImage.bytes}` }}
-            style={styles.requestImage}
-            resizeMode="contain"
-          />
-        </View>
+        <Image
+          source={{ uri: `data:${item.jobAdvertImage.mimeType};base64,${item.jobAdvertImage.bytes}` }}
+          style={styles.requestImage}
+          resizeMode="contain"
+        />
+      </View>
       <View>
         <Text style={styles.companyName}>{item.companyName}</Text>
         <Text style={styles.internshipTitle}>{item.name}</Text>
@@ -72,69 +82,16 @@ const InternshipScreen = () => {
     </View>
   );
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const renderPagination = () => {
-    const pages = [];
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        pages.push(1, 2, 3, 4, "...", totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(
-          1,
-          "...",
-          totalPages - 3,
-          totalPages - 2,
-          totalPages - 1,
-          totalPages
-        );
-      } else {
-        pages.push(
-          1,
-          "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
-          "...",
-          totalPages
-        );
-      }
-    }
-
-    return (
-      <View style={styles.paginationContainer}>
-        {pages.map((page, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.pageButton,
-              currentPage === page && styles.activePageButton,
-            ]}
-            onPress={() => page !== "..." && handlePageChange(page)}
-          >
-            <Text style={styles.pageButtonText}>{page}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Text style={styles.heading}>Staj İlanları</Text>
       <FlatList
-        data={currentData}
+        data={displayedInternships}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.list}
+        onEndReached={loadMoreInternships}
+        onEndReachedThreshold={0.1}
       />
-      {renderPagination()}
     </SafeAreaView>
   );
 };
@@ -161,18 +118,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
   },
-  companyPhoto: {
-    width: 300,
-    height: 150,
-    alignSelf: "center",
-    resizeMode: "contain",
-    marginBottom: 20,
-  },
   companyName: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 15,
     color: colors.secondary,
+    alignSelf: 'center',
   },
   internshipTitle: {
     fontSize: 16,
@@ -189,24 +140,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.primary, 
   },
-  paginationContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  pageButton: {
-    margin: 5,
-    padding: 10,
-    backgroundColor: colors.primary,
-    borderRadius: 5,
-  },
-  activePageButton: {
-    backgroundColor: colors.secondary,
-  },
-  pageButtonText: {
-    color: colors.text,
-  },
-
   imageContainer: {
     alignItems: 'center',
     marginBottom: 10,

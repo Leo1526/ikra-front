@@ -7,7 +7,8 @@ import {
   StatusBar,
   Modal,
   TouchableOpacity,
-  Image
+  TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Title, Button, TextInput, Divider } from "react-native-paper";
@@ -15,11 +16,9 @@ import RNPickerSelect from "react-native-picker-select";
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from "../common";
 
-import { MaterialIcons } from '@expo/vector-icons'; // Kamera ikonu için
+import { commonStyle } from "../../design/style";
 
-
-const LostItemsPage = ({navigation}) => {
-
+const LostItemsPage = ({ navigation }) => {
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [claimLostItemId, setClaimLostItemId] = useState(0);
   const [contactInfo, setContactInfo] = useState("");
@@ -89,20 +88,19 @@ const LostItemsPage = ({navigation}) => {
           claimDescription,
         method: "POST",
         onSuccess: (response) => {
-          console.log("claim başarıyla oluşturuldu:", response);
           setClaimLostItemId("");
           setContactInfo("");
           setClaimDescription("");
         },
         onError: (error) => {
-          console.error("Kayıp ilanı oluşturulamadı:", error);
+          console.error("claim oluşturulamadı:", error);
         },
       });
     } catch (e) {
-      console.error("Error creating lost and found announcement", e);
+      console.error("Error creating claim", e);
     }
 
-    console.log("Claim submitted:", claimLostItemId, contactInfo, claimDescription);
+    
     setClaimModalVisible(false);
   };
 
@@ -111,27 +109,31 @@ const LostItemsPage = ({navigation}) => {
       {item.file && (
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: `data:${item.file.mimeType};base64,${item.file.bytes}` }}
-            style={styles.requestImage}
+            source={{
+              uri: `data:${item.file.mimeType};base64,${item.file.bytes}`,
+            }}
+            style={styles.itemImage}
             resizeMode="contain"
           />
         </View>
       )}
       <View style={styles.itemContent}>
-        <Text style={styles.itemDescription}>{item.description}</Text>
+        <Text style={styles.itemDescription}>
+          <Text style={styles.descriptionLabel}>Açıklama: </Text>
+          {item.description}
+        </Text>
         {item.lostAndFoundType === "ID_KNOWN" && (
-          <Text style={styles.itemOwnerInfo}>
-            Kime ait: {item.ownerInfo}
+          <Text style={styles.itemDescription}>
+            <Text style={styles.descriptionLabel}>Kime ait: </Text>
+            {item.ownerInfo}
           </Text>
-        )}
-        {item.claims === "ID_KNOWN" && (
-          <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
         )}
       </View>
       <Button
         mode="contained"
         onPress={() => claimButton(item.id)}
-        style={styles.claimButton}
+        style={commonStyle.secondaryButton}
+        labelStyle={commonStyle.secondaryButtonLabel}
       >
         Bu eşya bana ait
       </Button>
@@ -141,26 +143,27 @@ const LostItemsPage = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          
-          <Text style={styles.heading}>Kayıp Eşya İlanları</Text>
+      <View style={styles.mainContainer}>
+        <View style={styles.header}>
           <Button
+            icon="file-document"
+            mode="contained"
+            onPress={() => navigation.navigate("myLostItems")}
+            style={styles.myItemsButton}
+          >
+            İlanlarım
+          </Button>
+
+          <Button
+            icon={"filter"}
+            mode="contained"
             style={styles.filterButton}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={styles.filterButtonText}>Filtrele</Text>
+            Filtrele
           </Button>
-          
         </View>
-        <Button
-            mode="contained"
-            onPress={() => navigation.navigate('myLostItems')}
-            style={styles.myItemsButton}
-          >
-            <MaterialIcons name="inbox" size={30} color={colors.primary} />
-          </Button>
+
         <FlatList
           data={filteredItems}
           renderItem={renderLostItem}
@@ -170,91 +173,101 @@ const LostItemsPage = ({navigation}) => {
           onEndReachedThreshold={0.5}
         />
         <Modal
-          visible={modalVisible}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setModalVisible(false)}
-          onDismiss={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>Filtrele</Text>
-              <RNPickerSelect
-                onValueChange={setTemporaryFilterCategory}
-                items={[
-                  { label: "Kimlik", value: "ID_KNOWN" },
-                  { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
-                  { label: "Tümü", value: "all" },
-                ]}
-                style={pickerSelectStyles}
-              />
-              <Button
-                mode="contained"
-                onPress={applyFilter}
-                style={styles.button}
-                labelStyle={styles.buttonLabel}
-              >
-                Uygula
-              </Button>
-            </View>
-          </View>
-        </Modal>
+  visible={modalVisible}
+  animationType="slide"
+  transparent={true}
+  onRequestClose={() => setModalVisible(false)}
+  onDismiss={() => setModalVisible(false)}
+>
+  <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+    <View style={commonStyle.modalOverlay}>
+      <TouchableWithoutFeedback onPress={() => {}}>
+        <View style={commonStyle.modalContent}>
+          <Text style={commonStyle.modalHeading}>Filtrele</Text>
+          <RNPickerSelect
+            placeholder={{ label: "Kategori seçiniz...", value: null }}
+            onValueChange={setTemporaryFilterCategory}
+            items={[
+              { label: "Tümü", value: "all" },
+              { label: "Kimlik", value: "ID_KNOWN" },
+              { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
+            ]}
+            style={pickerSelectStyles}
+          />
+          <Button
+            mode="contained"
+            onPress={applyFilter}
+            style={commonStyle.secondaryButton}
+            labelStyle={commonStyle.secondaryButtonLabel}
+          >
+            Uygula
+          </Button>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  </TouchableWithoutFeedback>
+</Modal>
 
-        <Modal
-          visible={claimModalVisible}
-          onDismiss={() => setClaimModalVisible(false)}
-          onRequestClose={() => setClaimModalVisible(false)}
-          contentContainerStyle={styles.modalContainer}
-          transparent={true}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>İletişim Bilgisi Giriniz</Text>
-              <TextInput
-                label="İletişim Bilgisi"
-                value={contactInfo}
-                onChangeText={setContactInfo}
-                mode="outlined"
-                style={styles.input}
-              />
-              <Text style={styles.modalHeading}>Açıklama Giriniz</Text>
-              <TextInput
-                label="Açıklama"
-                value={claimDescription}
-                onChangeText={setClaimDescription}
-                mode="outlined"
-                style={styles.input}
-              />
+<Modal
+  visible={claimModalVisible}
+  onRequestClose={() => setClaimModalVisible(false)}
+  onDismiss={() => setClaimModalVisible(false)}
+  transparent={true}
+>
+  <TouchableWithoutFeedback onPress={() => setClaimModalVisible(false)}>
+    <View style={styles.modalOverlay}>
+      <TouchableWithoutFeedback onPress={() => {}}> 
+        <View style={styles.modalContent}>
+          <Text style={styles.modalHeading}>İletişim Bilgisi Giriniz</Text>
+          <TextInput
+            label="İletişim Bilgisi"
+            value={contactInfo}
+            onChangeText={setContactInfo}
+            mode="outlined"
+            style={commonStyle.modalInput}
+          />
+          <Text style={styles.modalHeading}>Açıklama Giriniz</Text>
+          <TextInput
+            label="Açıklama"
+            value={claimDescription}
+            onChangeText={setClaimDescription}
+            mode="outlined"
+            style={commonStyle.modalInput}
+          />
 
-              <View style={styles.buttonContainer}>
-                <Button
-                  onPress={() => setClaimModalVisible(false)}
-                  mode="outlined"
-                  style={styles.cancelButton}
-                >
-                  Vazgeç
-                </Button>
-                <Button
-                  mode="contained"
-                  onPress={sendClaim}
-                  disabled={!contactInfo || !claimDescription}
-                >
-                  Gönder
-                </Button>
-              </View>
-            </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={() => setClaimModalVisible(false)}
+              mode="outlined"
+              style={styles.cancelButton}
+              labelStyle={commonStyle.secondaryButtonLabel}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              mode="contained"
+              onPress={sendClaim}
+              disabled={!contactInfo || !claimDescription}
+              style={[{width:undefined,backgroundColor:colors.primary}]}
+            >
+              Gönder
+            </Button>
           </View>
-        </Modal>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  </TouchableWithoutFeedback>
+</Modal>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
+  mainContainer: {
+    ...StyleSheet.absoluteFillObject,
   },
+
   list: {
     width: "100%",
     paddingBottom: 30,
@@ -266,40 +279,35 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
   },
   itemImage: {
     height: 200,
-    width: '100%',
+    width: "100%",
   },
   itemContent: {
-    paddingBottom: 10,
+    borderColor: colors.primary,
+    padding: 10,
   },
   itemDescription: {
     fontSize: 18,
     marginBottom: 8,
+    marginLeft: 10,
   },
-  itemOwnerInfo: {
+  descriptionLabel: {
     fontSize: 16,
-    color: colors.text,
+    color: colors.primary,
     marginTop: 4,
     fontWeight: "bold",
+    marginLeft: 10,
   },
-  filterButton: {
-    backgroundColor: colors.secondary,
-    borderRadius: 8,
-    alignSelf: "flex-end",
-  },
-  filterButtonText: {
-    color: colors.text,
-    fontWeight: "bold",
-  },
+
   heading: {
     fontSize: 20,
     fontWeight: "bold",
-    color: colors.text,
-    marginRight: 10,
+    color: colors.primary,
+    marginBottom: 10,
   },
   safeArea: {
     flex: 1,
@@ -323,43 +331,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   claimButton: {
-    backgroundColor: colors.primary,
     marginTop: 20,
     marginBottom: 10,
     borderRadius: 20,
-    justifyContent: "center",
     alignSelf: "center",
-  },
-  inputHeading: {
+    backgroundColor: colors.background,
     fontSize: 16,
-    color: "#333",
-    marginBottom: 5,
+    letterSpacing: 2,
+    fontWeight: "500",
+    borderColor: "green",
+    borderWidth: 1,
   },
+  claimButtonLabel: {
+    color: "green",
+    fontWeight: "500",
+  },
+
   button: {
-    backgroundColor: "#FF6347",
-    paddingVertical: 8,
-    marginVertical: 5,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    alignSelf: "center",
   },
   buttonLabel: {
     color: "#FFFFFF",
     fontSize: 16,
-  },
-  loadMoreButton: {
-    backgroundColor: colors.background,
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    justifyContent: "center",
-    alignSelf: "center",
-    padding: 10,
-  },
-  loadMoreButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "bold",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -370,6 +365,11 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderWidth: 1,
   },
+  sendButton: {
+    borderColor: colors.primary,
+    borderWidth: 1,
+    backgroundColor: colors.primary,
+  },
   input: {
     marginBottom: 16,
   },
@@ -377,19 +377,27 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: colors.text,
   },
-  requestImage: {
-    height: 200,
-    width: '100%',
-  },
   myItemsButton: {
-    backgroundColor: colors.secondary,
-    marginTop: 20,
-    marginBottom: 10,
+    marginLeft: 10,
+    backgroundColor: colors.primary,
     borderRadius: 20,
     justifyContent: "center",
-    alignSelf: "flex-start",
-    alignItems: 'center'
-
+    alignItems: "center",
+    width: 115,
+  },
+  filterButton: {
+    marginRight: 10,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 100,
+  },
+  header: {
+    flexDirection: "row",
+    marginBottom: 10,
+    marginTop: 10,
+    justifyContent: "space-between",
   },
 });
 
