@@ -34,7 +34,8 @@ export const commonStyle = {
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor:colors.background,
-    padding: 20
+    paddingHorizontal: 10,
+    padding:10
   },  
   primaryButton: {
     width: '100%',

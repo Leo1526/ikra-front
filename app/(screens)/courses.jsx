@@ -82,9 +82,8 @@ const GridItemsPage = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={commonStyle.mainContainer}>
-
         <View style={styles.container}>
-          <Text style={styles.heading}>Tüm İşlemler</Text>
+          <Text style={styles.heading}>Tüm Dersler</Text>
           <Button
             icon="filter"
             mode="contained"

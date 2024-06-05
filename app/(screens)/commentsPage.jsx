@@ -4,6 +4,7 @@ import { AirbnbRating } from 'react-native-ratings';
 import { Avatar } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 import { ikraAxios, url, urlDev } from '../common';
+import { commonStyle } from '../../design/style';
 
 const hoursSpentMapping = {
   ZERO_FIVE: "0-5",
@@ -17,6 +18,18 @@ const hoursSpentMapping = {
 const Comment = ({ item }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ay 0'dan başlar, bu yüzden 1 eklenir.
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+    return `${day}/${month}/${year}
+    ${hours}:${minutes}`;
+  };
+
   return (
     <View style={styles.commentCard}>
       <View style={styles.commentHeader}>
@@ -26,11 +39,11 @@ const Comment = ({ item }) => {
             count={5}
             reviews={[]}
             defaultRating={item.quality}
-            size={15}
+            size={20}
             isDisabled={true}
             showRating={false}
           />
-          <Text style={styles.dateText}>{item.date}</Text>
+          <Text style={styles.dateText}>{formatDate(item.date)}</Text>
         </View>
       </View>
       <Text>{item.comment}</Text>
@@ -41,6 +54,7 @@ const Comment = ({ item }) => {
       )}
       {expanded && (
         <View>
+          <Text></Text>
           <Text>Ders Zorluğu: {item.difficulty}/10</Text>
           <Text>Alınan Not: {item.courseGrade}</Text>
           <Text>Harcanan Saat: {hoursSpentMapping[item.hoursSpent]}</Text>
@@ -78,6 +92,8 @@ const CommentsPage = () => {
         url: `${urlDev}/courseStats/byCourseId?courseId=${course.id}&page=${page}&size=${ITEMS_PER_PAGE}`,
         method: 'GET',
         onSuccess: (data) => {
+          console.log(data.body[0])
+
           if(data.body.length === 0){
             setNoMoreComments(true);
           }
@@ -95,6 +111,8 @@ const CommentsPage = () => {
     }
   };
 
+
+
   const renderItem = ({ item }) => {
     return <Comment item={item} />;
   };
@@ -102,10 +120,10 @@ const CommentsPage = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      
+      <View style={commonStyle.mainContainer}>
+
         <Text style={styles.headerText}>{course.name}</Text>
-      </View>
       <FlatList
         contentContainerStyle={styles.flatListContent}
         data={comments}
@@ -115,6 +133,8 @@ const CommentsPage = () => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={loading && <Text>Yükleniyor...</Text>}
       />
+      </View>
+
     </SafeAreaView>
   );
 };
@@ -142,6 +162,8 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
+    alignContent:"center",
+    textAlign:"center"
   },
   flatListContent: {
     padding: 10,

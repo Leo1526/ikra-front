@@ -9,7 +9,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { TextInput, Button } from 'react-native-paper';
 import * as myStyle from "../../design/style"
 import { ikraAxios, urlDev } from '../common';  // API istekleri için kullanılan özelleştirilmiş axios instance
-
+import { commonStyle } from '../../design/style';
 const gradeValueMap = {
   A1: 4.0,
   A2: 3.75,
@@ -572,8 +572,8 @@ const CourseDetailPage = ({ initialDifficulty = 1, maxDifficulty = 10, minDiffic
           )}
           <View style={styles.rightEnd}>
             <Text style={styles.transactionsHeading}>Yorumlar</Text>
-            <Button onPress={() => navigation.navigate('commentsPage', courseDetails)}>
-              <Text style={styles.link}>Tümünü gör</Text>
+            <Button style={commonStyle.secondaryButton} labelStyle={commonStyle.secondaryButtonLabel} onPress={() => navigation.navigate('commentsPage', courseDetails)}>
+              Tümünü gör
             </Button>
           </View>
           <View style={styles.commentForm}>
@@ -769,6 +769,7 @@ const styles = StyleSheet.create({
     color: colors.secondary,
     fontSize: 18,
     fontWeight: 'bold',
+    
   },
   warning: {
     fontSize: 15,
