@@ -45,7 +45,13 @@ const InternshipScreen = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.internshipContainer}>
-      <Image source={images.intern} style={styles.companyPhoto} />
+      <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: `data:${item.jobAdvertImage.mimeType};base64,${item.jobAdvertImage.bytes}` }}
+            style={styles.requestImage}
+            resizeMode="contain"
+          />
+        </View>
       <View>
         <Text style={styles.companyName}>{item.companyName}</Text>
         <Text style={styles.internshipTitle}>{item.name}</Text>
@@ -199,6 +205,15 @@ const styles = StyleSheet.create({
   },
   pageButtonText: {
     color: colors.text,
+  },
+
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  requestImage: {
+    height: 200,
+    width: '100%',
   },
 });
 
