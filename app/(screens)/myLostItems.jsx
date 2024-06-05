@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 2,
     fontWeight: "500",
-    borderColor: "green",
+    borderColor: colors.primary,
     borderWidth: 1,
   },
   claimButtonLabel: {
