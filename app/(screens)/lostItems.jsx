@@ -100,7 +100,6 @@ const LostItemsPage = ({ navigation }) => {
       console.error("Error creating claim", e);
     }
 
-    
     setClaimModalVisible(false);
   };
 
@@ -174,91 +173,95 @@ const LostItemsPage = ({ navigation }) => {
           onEndReachedThreshold={0.5}
         />
         <Modal
-  visible={modalVisible}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setModalVisible(false)}
-  onDismiss={() => setModalVisible(false)}
->
-  <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-    <View style={commonStyle.modalOverlay}>
-      <TouchableWithoutFeedback onPress={() => {}}>
-        <View style={commonStyle.modalContent}>
-          <Text style={commonStyle.modalHeading}>Filtrele</Text>
-          <RNPickerSelect
-            placeholder={{ label: "Kategori seçiniz...", value: null }}
-            onValueChange={setTemporaryFilterCategory}
-            items={[
-              { label: "Tümü", value: "all" },
-              { label: "Kimlik", value: "ID_KNOWN" },
-              { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
-            ]}
-            style={pickerSelectStyles}
-          />
-          <Button
-            mode="contained"
-            onPress={applyFilter}
-            style={commonStyle.secondaryButton}
-            labelStyle={commonStyle.secondaryButtonLabel}
-          >
-            Uygula
-          </Button>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
-  </TouchableWithoutFeedback>
-</Modal>
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}
+          onDismiss={() => setModalVisible(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <View style={commonStyle.modalOverlay}>
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View style={commonStyle.modalContent}>
+                  <Text style={commonStyle.modalHeading}>Filtrele</Text>
+                  <RNPickerSelect
+                    placeholder={{ label: "Kategori seçiniz...", value: null }}
+                    onValueChange={setTemporaryFilterCategory}
+                    items={[
+                      { label: "Tümü", value: "all" },
+                      { label: "Kimlik", value: "ID_KNOWN" },
+                      { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
+                    ]}
+                    style={pickerSelectStyles}
+                  />
+                  <Button
+                    mode="contained"
+                    onPress={applyFilter}
+                    style={commonStyle.secondaryButton}
+                    labelStyle={commonStyle.secondaryButtonLabel}
+                  >
+                    Uygula
+                  </Button>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
 
-<Modal
-  visible={claimModalVisible}
-  onRequestClose={() => setClaimModalVisible(false)}
-  onDismiss={() => setClaimModalVisible(false)}
-  transparent={true}
->
-  <TouchableWithoutFeedback onPress={() => setClaimModalVisible(false)}>
-    <View style={styles.modalOverlay}>
-      <TouchableWithoutFeedback onPress={() => {}}> 
-        <View style={styles.modalContent}>
-          <Text style={styles.modalHeading}>İletişim Bilgisi Giriniz</Text>
-          <TextInput
-            label="İletişim Bilgisi"
-            value={contactInfo}
-            onChangeText={setContactInfo}
-            mode="outlined"
-            style={commonStyle.modalInput}
-          />
-          <Text style={styles.modalHeading}>Açıklama Giriniz</Text>
-          <TextInput
-            label="Açıklama"
-            value={claimDescription}
-            onChangeText={setClaimDescription}
-            mode="outlined"
-            style={commonStyle.modalInput}
-          />
+        <Modal
+          visible={claimModalVisible}
+          onRequestClose={() => setClaimModalVisible(false)}
+          onDismiss={() => setClaimModalVisible(false)}
+          transparent={true}
+        >
+          <TouchableWithoutFeedback onPress={() => setClaimModalVisible(false)}>
+            <View style={styles.modalOverlay}>
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalHeading}>
+                    İletişim Bilgisi Giriniz
+                  </Text>
+                  <TextInput
+                    label="İletişim Bilgisi"
+                    value={contactInfo}
+                    onChangeText={setContactInfo}
+                    mode="outlined"
+                    style={commonStyle.modalInput}
+                  />
+                  <Text style={styles.modalHeading}>Açıklama Giriniz</Text>
+                  <TextInput
+                    label="Açıklama"
+                    value={claimDescription}
+                    onChangeText={setClaimDescription}
+                    mode="outlined"
+                    style={commonStyle.modalInput}
+                  />
 
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={() => setClaimModalVisible(false)}
-              mode="outlined"
-              style={styles.cancelButton}
-              labelStyle={commonStyle.secondaryButtonLabel}
-            >
-              Vazgeç
-            </Button>
-            <Button
-              mode="contained"
-              onPress={sendClaim}
-              disabled={!contactInfo || !claimDescription}
-              style={[{width:undefined,backgroundColor:colors.primary}]}
-            >
-              Gönder
-            </Button>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
-  </TouchableWithoutFeedback>
-</Modal>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      onPress={() => setClaimModalVisible(false)}
+                      mode="outlined"
+                      style={styles.cancelButton}
+                      labelStyle={commonStyle.secondaryButtonLabel}
+                    >
+                      Vazgeç
+                    </Button>
+                    <Button
+                      mode="contained"
+                      onPress={sendClaim}
+                      disabled={!contactInfo || !claimDescription}
+                      style={[
+                        { width: undefined, backgroundColor: colors.primary },
+                      ]}
+                    >
+                      Gönder
+                    </Button>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -304,12 +307,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
-  heading: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.primary,
-    marginBottom: 10,
-  },
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
@@ -343,19 +340,10 @@ const styles = StyleSheet.create({
     borderColor: "green",
     borderWidth: 1,
   },
-  claimButtonLabel: {
-    color: "green",
-    fontWeight: "500",
-  },
-
   button: {
     backgroundColor: colors.secondary,
     borderRadius: 20,
     alignSelf: "center",
-  },
-  buttonLabel: {
-    color: "#FFFFFF",
-    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -365,14 +353,6 @@ const styles = StyleSheet.create({
   cancelButton: {
     borderColor: colors.primary,
     borderWidth: 1,
-  },
-  sendButton: {
-    borderColor: colors.primary,
-    borderWidth: 1,
-    backgroundColor: colors.primary,
-  },
-  input: {
-    marginBottom: 16,
   },
   divider: {
     marginVertical: 10,

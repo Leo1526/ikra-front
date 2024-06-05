@@ -215,30 +215,8 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     paddingHorizontal: 10,
   },
-  pickerContainer: {
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  pickerLabel: {
-    fontSize: 18,
-    color: colors.text,
-    marginBottom: 8,
-  },
   picker: {
     height: 50,
-    color: colors.text,
-    fontSize: 18,
-  },
-  submitButton: {
-    marginTop: 20,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  buttonText: {
     color: colors.text,
     fontSize: 18,
   },
