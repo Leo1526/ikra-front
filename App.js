@@ -57,26 +57,23 @@ const SettingsIcon = () => (
   />
 );
 
-const CustomHeader = ({navigation, title }) => {
+const CustomHeader = ({ navigation, title }) => {
   return (
     <Appbar.Header style={styles.header}>
-      <View style={styles.leftContainer}>
+      <View style={styles.centerContainer}>
+        <Appbar.Content
+          title={title}
+          titleStyle={styles.title}
+          style={styles.titleContainer}
+        />
         <Image
           source={require('./assets/images/logo-text.png')}
           style={styles.logo}
           resizeMode="contain"
         />
       </View>
-      <View style={styles.centerContainer}>
-        <Appbar.Content
-          title={title}
-          titleStyle={styles.title}
-          style={{ justifyContent: 'center', alignItems: 'center' }}
-        />
-      </View>
       <View style={styles.rightContainer}>
-        <Appbar.Action icon={() => <SettingsIcon />} onPress={() => 
-          { navigation.dispatch(DrawerActions.toggleDrawer())}} />
+        <Appbar.Action icon={() => <SettingsIcon />} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} />
       </View>
     </Appbar.Header>
   );
@@ -211,6 +208,9 @@ const HomeStack = () => {
           case 'courses':
             title='Dersler'
             break;
+          case 'requests':
+            title='İstekler'
+            break;
           default:
               title = '';
           }
@@ -244,33 +244,83 @@ const DrawerNavigator = () => {
 
 const BottomTabNavigator = () => {
   return (
-    <Tab.Navigator initialRouteName='Ev'>
+    <Tab.Navigator
+      initialRouteName='Ev'
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconSource;
+          let iconSize = focused ? size + 8 : size; // Aktif sekme için simge boyutunu artır
+          let iconStyle = focused ? styles.focusedIcon : styles.icon;
+
+          if (route.name === 'Ev') {
+            iconSource = require('./assets/icons/home.png');
+          } else if (route.name === 'Profil') {
+            iconSource = require('./assets/icons/profile.png');
+          } else if (route.name === 'Yoklama') {
+            iconSource = require('./assets/icons/pan-tool.png');
+          }
+
+          return (
+            <Image 
+              source={iconSource} 
+              style={[
+                iconStyle, 
+                { tintColor: color, width: iconSize, height: iconSize }
+              ]} 
+            />
+          );
+        },
+        tabBarActiveTintColor: '#FFFFFF', // Aktif sekme simge rengi
+        tabBarInactiveTintColor: '#FFFFFF', // Pasif sekme simge rengi
+        tabBarStyle: { backgroundColor: colors.primary, height: 90, paddingBottom: 10 }, // Arka plan rengi ve yükseklik
+        tabBarLabelStyle: { fontSize: 14, paddingBottom: 5 }, // Etiket boyutu ve padding
+        tabBarItemStyle: { marginTop: 5 }, // Simgeyi yukarı taşımak için margin ekledik
+      })}
+    >
       <Tab.Screen
         name="Yoklama"
         component={AttStack}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="credit-card" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Image 
+              source={require('./assets/icons/pan-tool.png')} 
+              style={[
+                focused ? styles.focusedIcon : styles.icon, 
+                { tintColor: color, width: focused ? size + 8 : size, height: focused ? size + 8 : size }
+              ]} 
+            />
           ),
-          header: (props) => <CustomHeader {...props} title="" />,
+          header: (props) => <CustomHeader {...props} title="Yoklama" />,
         }}
       />
       <Tab.Screen
         name="Ev"
         component={HomeStack}
         options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Image 
+              source={require('./assets/icons/home.png')} 
+              style={[
+                focused ? styles.focusedIcon : styles.icon, 
+                { tintColor: color, width: focused ? size + 8 : size, height: focused ? size + 8 : size }
+              ]} 
+            />
           ),
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="Profil"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="account" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Image 
+              source={require('./assets/icons/profile.png')} 
+              style={[
+                focused ? styles.focusedIcon : styles.icon, 
+                { tintColor: color, width: focused ? size + 8 : size, height: focused ? size + 8 : size }
+              ]} 
+            />
           ),
           header: (props) => <CustomHeader {...props} title="Profil" />,
         }}
@@ -278,7 +328,6 @@ const BottomTabNavigator = () => {
     </Tab.Navigator>
   );
 };
-
 
 const AuthStack = () => {
   return (
@@ -324,9 +373,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
-
   header: {
     width: '100%',
     alignItems: 'center',
@@ -335,7 +383,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    height: 36,
+    height: 60, // Boyutu büyütmek için
   },
   announcementHeader: {
     width: '100%',
@@ -349,23 +397,21 @@ const styles = StyleSheet.create({
     top: 0,
   },
   leftContainer: {
-    height: "100%",
+    height: '100%',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginBottom: 5,
   },
   centerContainer: {
-    flex: 1,
+    flex: 0,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
+    alignSelf: 'center',
+    position: 'relative',
   },
   rightContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginBottom: 5,
   },
   leftContainerAnn: {
     height: "100%",
@@ -387,19 +433,34 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   logo: {
-    width: 100,
-    height: 40,
+    width: 100, // Boyutunu artırın
+    height: 50, // Boyutunu artırın
+    position: 'absolute',
+    bottom: -10, // Logoyu başlığın altına taşır
+    left: -10
+  },
+  titleContainer: {
+    justifyContent: 'flex-end',
+    alignSelf: 'center',
+    position: 'absolute',
+    top: 0, // Başlığı üstte konumlandırır
+    left: 10
   },
   title: {
     textAlign: 'center',
     color: '#FFFFFF',
     letterSpacing: 1,
   },
-  icon: { 
-    width: 24, 
-    height: 24,
+  icon: {
+    width: 36,
+    height: 36,
     marginHorizontal: 10,
   },
+  focusedIcon: {
+    width: 36,
+    height: 36,
+    marginTop: -5, // Aktif simgeyi de yukarı taşır
+  }
 });
 
 export default App;
