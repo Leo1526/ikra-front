@@ -9,7 +9,7 @@ import * as Location from 'expo-location';
 import { ikraAxios, urlDev } from '../common';
 import { ActivityIndicator } from 'react-native-paper';
 
-const CourseAttendanceScreen = () => {
+const CourseAttendanceScreen = ({navigate}) => {
   const route = useRoute();
   const { course } = route.params;
   const [attendanceWeeks, setAttendanceWeeks] = useState([]);
@@ -18,7 +18,7 @@ const CourseAttendanceScreen = () => {
   const [loading, setLoading] = useState(false);
   const [latitude, setLatitude] = useState(0.0);
   const [longitude, setLongitude] = useState(0.0);
-
+  const [selectedInstructor, setSelectedInstructor] = useState(0);
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -33,9 +33,10 @@ const CourseAttendanceScreen = () => {
   }, []);
 
   const fetchLocation = async () => {
-    //let location = await Location.getCurrentPositionAsync({});
-    //setLatitude(location.coords.latitude);
-    //setLongitude(location.coords.longitude);
+    console.log("fetching location");
+    let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Lowest});
+    setLatitude(location.coords.latitude);
+    setLongitude(location.coords.longitude);
     console.log(location.coords.latitude);
     console.log(location.coords.longitude);
   };
@@ -44,6 +45,7 @@ const CourseAttendanceScreen = () => {
     if (instructorId == 'null') {
       return;
     }
+    setSelectedInstructor(instructorId);
     await ikraAxios({
       url: `${urlDev}/attendant/studentAttendanceLog?courseId=${course.id}&instructorId=${instructorId}`,
       onSuccess: (data) => {
@@ -58,22 +60,28 @@ const CourseAttendanceScreen = () => {
   const handleAttendance = async () => {
     setLoading(true);
     setModalVisible(false);
-
-    
     
     await ikraAxios({
       url: `${urlDev}/attendant`,
       method: 'POST',
       data: {
         "courseId": course.id,
-        "latitude": location.coords.latitude,
-        "longitude": location.coords.longitude,
+        "latitude": latitude,
+        "longitude": longitude,
         "code": inputCode
       },
       onSuccess: (data) => {
         console.log(data);
         setLoading(false);
-        Alert.alert("Yoklama işlemi başarılı!");
+        
+        if(data.status != 'ERROR'){
+          Alert.alert("Yoklama işlemi başarılı!");
+        }
+        else{
+          Alert.alert(data.messages[0]);
+        }
+
+        fetchAttendanceLog(selectedInstructor);
       },
       onError: (error) => {
         console.log("Error creating attendant: ", error)
@@ -83,6 +91,7 @@ const CourseAttendanceScreen = () => {
     });
 
     setInputCode("");
+    setLoading(false);
 
   };
 

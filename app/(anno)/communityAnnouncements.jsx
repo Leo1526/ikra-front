@@ -9,8 +9,6 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from '../common';
 
