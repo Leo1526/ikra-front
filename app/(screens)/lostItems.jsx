@@ -14,7 +14,8 @@ import { Card, Title, Button, TextInput, Divider } from "react-native-paper";
 import RNPickerSelect from "react-native-picker-select";
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from "../common";
-import { MaterialIcons } from "@expo/vector-icons"; // Kamera ikonu için
+
+import { commonStyle } from "../../design/style";
 
 const LostItemsPage = ({ navigation }) => {
   const [claimModalVisible, setClaimModalVisible] = useState(false);
@@ -116,24 +117,28 @@ const LostItemsPage = ({ navigation }) => {
             source={{
               uri: `data:${item.file.mimeType};base64,${item.file.bytes}`,
             }}
-            style={styles.requestImage}
+            style={styles.itemImage}
             resizeMode="contain"
           />
         </View>
       )}
       <View style={styles.itemContent}>
-        <Text style={styles.itemDescription}>{item.description}</Text>
+        <Text style={styles.itemDescription}>
+          <Text style={styles.descriptionLabel}>Açıklama: </Text>
+          {item.description}
+        </Text>
         {item.lostAndFoundType === "ID_KNOWN" && (
-          <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
-        )}
-        {item.claims === "ID_KNOWN" && (
-          <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
+          <Text style={styles.itemDescription}>
+            <Text style={styles.descriptionLabel}>Kime ait: </Text>
+            {item.ownerInfo}
+          </Text>
         )}
       </View>
       <Button
         mode="contained"
         onPress={() => claimButton(item.id)}
         style={styles.claimButton}
+        labelStyle={styles.claimButtonLabel}
       >
         Bu eşya bana ait
       </Button>
@@ -143,27 +148,26 @@ const LostItemsPage = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
+      <View style={styles.mainContainer}>
         <View style={styles.header}>
-          <View style={styles.buttonGroup}>
-            <Button
-              style={styles.filterButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.filterButtonText}>Filtrele</Text>
-            </Button>
+          <Button
+            icon={"file-document"}
+            mode="contained"
+            onPress={() => navigation.navigate("myLostItems")}
+            style={styles.myItemsButton}
+          >
+            İlanlarım
+          </Button>
 
-            <Text style={styles.heading}>Kayıp Eşyalar</Text>
-
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate("myLostItems")}
-              style={styles.myItemsButton}
-            >
-              <MaterialIcons name="inbox" size={30} color={colors.primary} />
-            </Button>
-          </View>
+          <Text style={styles.heading}>Kayıp Eşya</Text>
+          <Button
+            icon={"filter"}
+            mode="contained"
+            style={styles.filterButton}
+            onPress={() => setModalVisible(true)}
+          >
+            Filtrele
+          </Button>
         </View>
 
         <FlatList
@@ -185,11 +189,12 @@ const LostItemsPage = ({ navigation }) => {
             <View style={styles.modalContent}>
               <Text style={styles.modalHeading}>Filtrele</Text>
               <RNPickerSelect
+                placeholder={{ label: "Kategori seçiniz...", value: null }}
                 onValueChange={setTemporaryFilterCategory}
                 items={[
+                  { label: "Tümü", value: "all" },
                   { label: "Kimlik", value: "ID_KNOWN" },
                   { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
-                  { label: "Tümü", value: "all" },
                 ]}
                 style={pickerSelectStyles}
               />
@@ -256,10 +261,10 @@ const LostItemsPage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
+  mainContainer: {
+    ...StyleSheet.absoluteFillObject,
   },
+
   list: {
     width: "100%",
     paddingBottom: 30,
@@ -279,33 +284,26 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   itemContent: {
-    paddingBottom: 10,
+    borderColor: colors.primary,
+    padding: 10,
   },
   itemDescription: {
     fontSize: 18,
     marginBottom: 8,
+    marginLeft: 10,
   },
-  itemOwnerInfo: {
+  descriptionLabel: {
     fontSize: 16,
-    color: colors.text,
+    color: colors.primary,
     marginTop: 4,
     fontWeight: "bold",
+    marginLeft: 10,
   },
-  filterButton: {
-    backgroundColor: colors.secondary,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginHorizontal: 5,
-  },
-  filterButtonText: {
-    color: colors.text,
-    fontWeight: "bold",
-  },
+
   heading: {
     fontSize: 20,
     fontWeight: "bold",
-    color: colors.text,
+    color: colors.primary,
     marginBottom: 10,
   },
   safeArea: {
@@ -330,43 +328,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   claimButton: {
-    backgroundColor: colors.primary,
     marginTop: 20,
     marginBottom: 10,
     borderRadius: 20,
-    justifyContent: "center",
     alignSelf: "center",
-  },
-  inputHeading: {
+    backgroundColor: colors.background,
     fontSize: 16,
-    color: "#333",
-    marginBottom: 5,
+    letterSpacing: 2,
+    fontWeight: "500",
+    borderColor: "green",
+    borderWidth: 1,
   },
+  claimButtonLabel: {
+    color: "green",
+    fontWeight: "500",
+  },
+
   button: {
-    backgroundColor: "#FF6347",
-    paddingVertical: 8,
-    marginVertical: 5,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    alignSelf: "center",
   },
   buttonLabel: {
     color: "#FFFFFF",
     fontSize: 16,
-  },
-  loadMoreButton: {
-    backgroundColor: colors.background,
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    justifyContent: "center",
-    alignSelf: "center",
-    padding: 10,
-  },
-  loadMoreButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "bold",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -377,6 +362,11 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderWidth: 1,
   },
+  sendButton: {
+    borderColor: colors.primary,
+    borderWidth: 1,
+    backgroundColor: colors.primary,
+  },
   input: {
     marginBottom: 16,
   },
@@ -384,29 +374,26 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: colors.text,
   },
-  requestImage: {
-    height: 200,
-    width: "100%",
-  },
   myItemsButton: {
-    backgroundColor: colors.secondary,
-    marginTop: 10,
-    marginBottom: 10,
+    marginLeft: 10,
+    backgroundColor: colors.primary,
     borderRadius: 20,
-    justifyContent: "flex-end",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 115,
+  },
+  filterButton: {
+    marginRight: 10,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 100,
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     marginBottom: 10,
-    alignSelf: "center",
-  },
-  buttonGroup: {
-    flexDirection: "row",
-    alignItems: "center",
+    marginTop: 10,
     justifyContent: "space-between",
   },
 });

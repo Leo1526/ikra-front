@@ -9,7 +9,7 @@ import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı
 import { commonStyle } from '../../design/style';
 import { ikraAxios, urlDev } from '../common';
 
-const CreateLostPage = ({navigation}) => {
+const CreateLostPage = ({ navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const [description, setDescription] = useState('');
   const [idType, setIdType] = useState('');
@@ -29,15 +29,23 @@ const CreateLostPage = ({navigation}) => {
 
     if (!pickerResult.canceled) {
       const myUri = pickerResult.assets[0].uri; // assets dizisinden URI alınır
-      console.log("file address: ", myUri);
       setImageUri(myUri);
     }
   };
 
   const handleSubmit = () => {
+    if (!description || !imageUri || !idType) {
+      alert("Lütfen tüm alanları doldurun!");
+      return;
+    }
+    if(idType && !idNumber){
+      alert("Lütfen tüm alanları doldurun!");
+      return;
+    }
+
     Alert.alert(
       "Onay",
-      "Kayıp eşya bildirim bedeli 5 TL'dir. Onaylıyor musunuz?",
+      "Kayıp eşya oluşturulacak. Onaylıyor musunuz?",
       [
         {
           text: "İptal",
@@ -72,7 +80,6 @@ const CreateLostPage = ({navigation}) => {
           'Content-Type': 'multipart/form-data',
         },
         onSuccess: (data) => {
-          console.log("Kayıp eşya bildirildi:", data.body);
           alert("Kayıp eşya bildirildi!");
           setDescription("");
           setIdType("");
