@@ -7,19 +7,16 @@ import {
   StatusBar,
   Modal,
   TouchableOpacity,
-  Image
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Title, Button, TextInput, Divider } from "react-native-paper";
 import RNPickerSelect from "react-native-picker-select";
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from "../common";
+import { MaterialIcons } from "@expo/vector-icons"; // Kamera ikonu için
 
-import { MaterialIcons } from '@expo/vector-icons'; // Kamera ikonu için
-
-
-const LostItemsPage = ({navigation}) => {
-
+const LostItemsPage = ({ navigation }) => {
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [claimLostItemId, setClaimLostItemId] = useState(0);
   const [contactInfo, setContactInfo] = useState("");
@@ -102,7 +99,12 @@ const LostItemsPage = ({navigation}) => {
       console.error("Error creating lost and found announcement", e);
     }
 
-    console.log("Claim submitted:", claimLostItemId, contactInfo, claimDescription);
+    console.log(
+      "Claim submitted:",
+      claimLostItemId,
+      contactInfo,
+      claimDescription
+    );
     setClaimModalVisible(false);
   };
 
@@ -111,7 +113,9 @@ const LostItemsPage = ({navigation}) => {
       {item.file && (
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: `data:${item.file.mimeType};base64,${item.file.bytes}` }}
+            source={{
+              uri: `data:${item.file.mimeType};base64,${item.file.bytes}`,
+            }}
             style={styles.requestImage}
             resizeMode="contain"
           />
@@ -120,9 +124,7 @@ const LostItemsPage = ({navigation}) => {
       <View style={styles.itemContent}>
         <Text style={styles.itemDescription}>{item.description}</Text>
         {item.lostAndFoundType === "ID_KNOWN" && (
-          <Text style={styles.itemOwnerInfo}>
-            Kime ait: {item.ownerInfo}
-          </Text>
+          <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
         )}
         {item.claims === "ID_KNOWN" && (
           <Text style={styles.itemOwnerInfo}>Kime ait: {item.ownerInfo}</Text>
@@ -143,24 +145,27 @@ const LostItemsPage = ({navigation}) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          
-          <Text style={styles.heading}>Kayıp Eşya İlanları</Text>
-          <Button
-            style={styles.filterButton}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={styles.filterButtonText}>Filtrele</Text>
-          </Button>
-          
+        <View style={styles.header}>
+          <View style={styles.buttonGroup}>
+            <Button
+              style={styles.filterButton}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text style={styles.filterButtonText}>Filtrele</Text>
+            </Button>
+
+            <Text style={styles.heading}>Kayıp Eşyalar</Text>
+
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate("myLostItems")}
+              style={styles.myItemsButton}
+            >
+              <MaterialIcons name="inbox" size={30} color={colors.primary} />
+            </Button>
+          </View>
         </View>
-        <Button
-            mode="contained"
-            onPress={() => navigation.navigate('myLostItems')}
-            style={styles.myItemsButton}
-          >
-            <MaterialIcons name="inbox" size={30} color={colors.primary} />
-          </Button>
+
         <FlatList
           data={filteredItems}
           renderItem={renderLostItem}
@@ -266,12 +271,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
   },
   itemImage: {
     height: 200,
-    width: '100%',
+    width: "100%",
   },
   itemContent: {
     paddingBottom: 10,
@@ -289,7 +294,9 @@ const styles = StyleSheet.create({
   filterButton: {
     backgroundColor: colors.secondary,
     borderRadius: 8,
-    alignSelf: "flex-end",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
   },
   filterButtonText: {
     color: colors.text,
@@ -299,7 +306,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: colors.text,
-    marginRight: 10,
+    marginBottom: 10,
   },
   safeArea: {
     flex: 1,
@@ -379,17 +386,28 @@ const styles = StyleSheet.create({
   },
   requestImage: {
     height: 200,
-    width: '100%',
+    width: "100%",
   },
   myItemsButton: {
     backgroundColor: colors.secondary,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
     borderRadius: 20,
-    justifyContent: "center",
-    alignSelf: "flex-start",
-    alignItems: 'center'
-
+    justifyContent: "flex-end",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  buttonGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
 
