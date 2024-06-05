@@ -158,6 +158,7 @@ const LostItemsPage = ({ navigation }) => {
             icon={"filter"}
             mode="contained"
             style={styles.filterButton}
+            labelStyle={commonStyle.secondaryButtonLabel}
             onPress={() => setModalVisible(true)}
           >
             Filtrele
@@ -387,8 +388,10 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     marginRight: 10,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.background,
     borderRadius: 20,
+    borderColor: colors.primary,
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     width: 100,
