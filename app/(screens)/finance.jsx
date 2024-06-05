@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    ...StyleSheet.absoluteFillObject,
   },
   centerView: {
     alignItems: 'center',
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   balanceContainer: {
     backgroundColor: colors.background,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 12,
     padding: 16,
     marginBottom: 20,
     alignItems: 'center',
@@ -120,24 +121,23 @@ const styles = StyleSheet.create({
   },
   balanceHeading: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 'thin',
     color: colors.text,
   },
   balanceAmountContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginTop: 8,
   },
   currencySymbol: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: 'thin',
     color: colors.text,
   },
   balanceAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: 36,
+    fontWeight: 'thin',
     color: colors.text,
-    marginLeft: 5,
   },
   transactionsContainer: {
     flex: 1,

@@ -95,7 +95,7 @@ const SchoolAnnouncementScreen = ({navigation}) => {
                 <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
             ) : (
                 <FlatList
-                    contentContainerStyle={{ flexGrow: 1 }}
+                    contentContainerStyle={{ flexGrow: 1}}
                     style={{ flex: 1 }}
                     data={announcements}
                     renderItem={renderAnnouncementItem}
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
       },
     container: {
         flex: 1,
+        width: "100%",
         backgroundColor: colors.background,
     },
     announcementItem: {

@@ -34,7 +34,6 @@ const LostItemsPage = ({navigation}) => {
 
   useEffect(() => {
     fetchLostItems();
-    console.log('sayfaya girdi')
   }, []);
 
   const fetchLostItems = async () => {
