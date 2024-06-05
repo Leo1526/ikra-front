@@ -87,25 +87,19 @@ const LostItemsPage = ({ navigation }) => {
           claimDescription,
         method: "POST",
         onSuccess: (response) => {
-          console.log("claim başarıyla oluşturuldu:", response);
           setClaimLostItemId("");
           setContactInfo("");
           setClaimDescription("");
         },
         onError: (error) => {
-          console.error("Kayıp ilanı oluşturulamadı:", error);
+          console.error("claim oluşturulamadı:", error);
         },
       });
     } catch (e) {
-      console.error("Error creating lost and found announcement", e);
+      console.error("Error creating claim", e);
     }
 
-    console.log(
-      "Claim submitted:",
-      claimLostItemId,
-      contactInfo,
-      claimDescription
-    );
+    
     setClaimModalVisible(false);
   };
 
