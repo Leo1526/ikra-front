@@ -8,6 +8,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
 import { ikraAxios, urlDev } from '../common';
 import { ActivityIndicator } from 'react-native-paper';
+import { commonStyle } from '../../design/style';
+const CourseAttendanceScreen = () => {
 
 const CourseAttendanceScreen = ({navigate}) => {
   const route = useRoute();
@@ -124,8 +126,10 @@ const CourseAttendanceScreen = ({navigate}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {
-        loading ? (<ActivityIndicator></ActivityIndicator>) :
+<View style = {commonStyle.mainContainer}>
+
+      <View style={commonStyle.mainContainer}>
+      {loading ? (<ActivityIndicator></ActivityIndicator>) :
         (
           <View style={styles.mainContainer}>
             <Text style={styles.heading}>{course.courseCode}</Text>
@@ -143,7 +147,6 @@ const CourseAttendanceScreen = ({navigate}) => {
                 value: null,
               }}
             />
-
             <KeyboardAvoidingView
               style={{ flex: 1 }}
               behavior={Platform.OS === "ios" ? "padding" : null}
@@ -161,15 +164,6 @@ const CourseAttendanceScreen = ({navigate}) => {
           </View>
         )
       }
-      
-      
-
-      
-
-      
-
-      
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -192,6 +186,8 @@ const CourseAttendanceScreen = ({navigate}) => {
           </View>
         </View>
       </Modal>
+      </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -199,12 +195,12 @@ const CourseAttendanceScreen = ({navigate}) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#f8f8f8',
   },
   mainContainer: {
     width: "100%",
     height: "100%",
+
   },
   heading: {
     fontSize: 28,

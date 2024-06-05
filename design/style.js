@@ -1,4 +1,5 @@
 import { colors, text } from '../design/themes';
+import { StyleSheet } from 'react-native';
 
 export const commonStyle = {
   input: {
@@ -9,6 +10,9 @@ export const commonStyle = {
     borderTopWidth: 0,
     letterSpacing: 2,
   },
+  mainContainer: {
+    ...StyleSheet.absoluteFillObject,
+  },  
   primaryButton: {
     width: '100%',
     marginTop: 10,

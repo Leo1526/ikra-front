@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
+import { View, RefreshControl,Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { ikraAxios, urlDev, url } from '../common';
@@ -7,7 +7,9 @@ import Carousel from 'react-native-reanimated-carousel';
 import { colors, text } from '../../design/themes';
 import * as Clipboard from 'expo-clipboard';
 
+
 const Home = ({ navigation }) => {
+  const [refreshVal, setRefreshVal] = useState(0)
   const [balance, setBalance] = useState(0.0)
   const [name, setName] = useState('')
   const [studentId, setStudentId] = useState(0)
@@ -16,7 +18,18 @@ const Home = ({ navigation }) => {
   const height = Dimensions.get('window').height;
 
   const [announcementImages, setAnnouncementImages] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
 
+  // Refresh fonksiyonunu tanımlayın
+  const onRefresh = () => {
+    setRefreshing(true);
+    setRefreshVal(refreshVal+1);
+    // Burada API çağrısı yapılabilir veya başka bir işlem gerçekleştirilebilir
+    // Örneğin, veri yenileme işlemi burada simüle ediliyor
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);  // 2 saniye sonra refreshing'i false yap
+  };
   const announcementSuccessHandler = (data) => {
     if (data.status === 'SUCCESS') {
       let announcements = []
@@ -86,7 +99,7 @@ const Home = ({ navigation }) => {
       })
     }
     fetchCard();
-  }, []);
+  }, [refreshVal]);
 
 
   const handleAnnouncementClick = (id) => {
@@ -120,7 +133,12 @@ const Home = ({ navigation }) => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}      refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
+    }>
       <View style={styles.sliderContainer}>
         <Carousel
           data={announcementImages}
