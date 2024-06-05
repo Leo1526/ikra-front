@@ -30,3 +30,5 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+/app/common.js
