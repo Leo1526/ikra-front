@@ -12,6 +12,7 @@ export const commonStyle = {
   },
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
+    padding: 20
   },  
   primaryButton: {
     width: '100%',

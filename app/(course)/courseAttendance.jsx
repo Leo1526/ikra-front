@@ -7,11 +7,10 @@ import { colors } from '../../design/themes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
 import { ikraAxios, urlDev } from '../common';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Button } from 'react-native-paper';
 import { commonStyle } from '../../design/style';
-const CourseAttendanceScreen = () => {
 
-const CourseAttendanceScreen = ({navigate}) => {
+const CourseAttendanceScreen = () => {
   const route = useRoute();
   const { course } = route.params;
   const [attendanceWeeks, setAttendanceWeeks] = useState([]);
@@ -36,7 +35,7 @@ const CourseAttendanceScreen = ({navigate}) => {
 
   const fetchLocation = async () => {
     console.log("fetching location");
-    let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Lowest});
+    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Lowest });
     setLatitude(location.coords.latitude);
     setLongitude(location.coords.longitude);
     console.log(location.coords.latitude);
@@ -62,7 +61,7 @@ const CourseAttendanceScreen = ({navigate}) => {
   const handleAttendance = async () => {
     setLoading(true);
     setModalVisible(false);
-    
+
     await ikraAxios({
       url: `${urlDev}/attendant`,
       method: 'POST',
@@ -75,11 +74,11 @@ const CourseAttendanceScreen = ({navigate}) => {
       onSuccess: (data) => {
         console.log(data);
         setLoading(false);
-        
-        if(data.status != 'ERROR'){
+
+        if (data.status != 'ERROR') {
           Alert.alert("Yoklama işlemi başarılı!");
         }
-        else{
+        else {
           Alert.alert(data.messages[0]);
         }
 
@@ -126,67 +125,67 @@ const CourseAttendanceScreen = ({navigate}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-<View style = {commonStyle.mainContainer}>
-
       <View style={commonStyle.mainContainer}>
-      {loading ? (<ActivityIndicator></ActivityIndicator>) :
-        (
-          <View style={styles.mainContainer}>
-            <Text style={styles.heading}>{course.courseCode}</Text>
-            <Text style={styles.subHeading}>{course.name}</Text>
 
-            <RNPickerSelect
-              onValueChange={handleSelectInstructor}
-              items={course.instructors.map(instructor => ({
-                label: `${instructor.firstName} ${instructor.lastName}`,
-                value: instructor.id,
-              }))}
-              style={pickerSelectStyles}
-              placeholder={{
-                label: 'Hoca seçiniz.',
-                value: null,
-              }}
-            />
-            <KeyboardAvoidingView
-              style={{ flex: 1 }}
-              behavior={Platform.OS === "ios" ? "padding" : null}
-            >
-              <FlatList
-                data={attendanceWeeks}
-                renderItem={renderAttendanceItem}
-                keyExtractor={(item) => item.attendance.id.toString()}
-              />
-            </KeyboardAvoidingView>
-            
-            <TouchableOpacity style={styles.attendanceButton} onPress={() => setModalVisible(true)}>
-              <Text style={styles.buttonText}>Yoklama Ver</Text>
-            </TouchableOpacity>
-          </View>
-        )
-      }
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="6 haneli kodu girin"
-              value={inputCode}
-              onChangeText={setInputCode}
-              keyboardType="numeric"
-              maxLength={6}
-            />
-            <TouchableOpacity style={styles.submitButton} onPress={handleAttendance}>
-              <Text style={styles.buttonText}>Onayla</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={commonStyle.mainContainer}>
+          {loading ? (<ActivityIndicator></ActivityIndicator>) :
+            (
+              <View style={styles.mainContainer}>
+                <Text style={styles.heading}>{course.courseCode}</Text>
+                <Text style={styles.subHeading}>{course.name}</Text>
+
+                <RNPickerSelect
+                  onValueChange={handleSelectInstructor}
+                  items={course.instructors.map(instructor => ({
+                    label: `${instructor.firstName} ${instructor.lastName}`,
+                    value: instructor.id,
+                  }))}
+                  style={pickerSelectStyles}
+                  placeholder={{
+                    label: 'Hoca seçiniz.',
+                    value: null,
+                  }}
+                />
+                <KeyboardAvoidingView
+                  style={{ flex: 1 }}
+                  behavior={Platform.OS === "ios" ? "padding" : null}
+                >
+                  <FlatList
+                    data={attendanceWeeks}
+                    renderItem={renderAttendanceItem}
+                    keyExtractor={(item) => item.attendance.id.toString()}
+                  />
+                </KeyboardAvoidingView>
+
+                <Button style={commonStyle.secondaryButton} onPress={() => setModalVisible(true)}>
+                  <Text style={styles.buttonText}>Yoklama Ver</Text>
+                </Button>
+              </View>
+            )
+          }
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalView}>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="6 haneli kodu girin"
+                  value={inputCode}
+                  onChangeText={setInputCode}
+                  keyboardType="numeric"
+                  maxLength={6}
+                />
+                <TouchableOpacity style={styles.submitButton} onPress={handleAttendance}>
+                  <Text style={styles.buttonText}>Onayla</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
-      </Modal>
-      </View>
       </View>
     </SafeAreaView>
   );
