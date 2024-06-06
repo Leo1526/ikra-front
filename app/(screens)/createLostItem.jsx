@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    
   },
   title: {
     fontSize: 24,
@@ -214,11 +213,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderColor: colors.primary,
     paddingHorizontal: 10,
-  },
-  picker: {
-    height: 50,
-    color: colors.text,
-    fontSize: 18,
   },
 });
 

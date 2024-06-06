@@ -84,6 +84,8 @@ const InternshipScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.mainContainer}>
+
       <FlatList
         data={displayedInternships}
         renderItem={renderItem}
@@ -92,6 +94,7 @@ const InternshipScreen = () => {
         onEndReached={loadMoreInternships}
         onEndReachedThreshold={0.1}
       />
+      </View>
     </SafeAreaView>
   );
 };
@@ -102,12 +105,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondaryBackground,
     padding: 20,
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: colors.text,
-    textAlign: "center",
+  mainContainer: {
+    ...StyleSheet.absoluteFillObject,
   },
   list: {
     paddingBottom: 20,
