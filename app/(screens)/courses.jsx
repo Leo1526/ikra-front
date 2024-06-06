@@ -62,8 +62,8 @@ const GridItemsPage = ({ navigation }) => {
     <Card style={styles.itemCard}>
       <TouchableOpacity onPress={() => navigation.navigate('courseDetailPage', { courseId: item.id })}>
         <Card.Content>
-          <Title style={styles.itemTitle}>{item.courseCode}</Title>
-          <Title style={styles.itemText}>{item.name}</Title>
+          <Title style={[commonStyle.textLabel, {color: colors.primaryLight, textAlign: 'center'}]}>{item.courseCode}</Title>
+          <Title style={[commonStyle.generalText, {fontSize: 16, textAlign: 'center'}]}>{item.name}</Title>
         </Card.Content>
       </TouchableOpacity>
     </Card>
@@ -83,7 +83,7 @@ const GridItemsPage = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={commonStyle.mainContainer}>
         <View style={styles.container}>
-          <Text style={styles.heading}>Tüm Dersler</Text>
+          <Text style={[commonStyle.textLabel, {fontSize: 24, color: colors.primary}]}>Tüm Dersler</Text>
           <Button
             icon="filter"
             mode="contained"
@@ -107,21 +107,21 @@ const GridItemsPage = ({ navigation }) => {
           transparent={true}
           onRequestClose={() => setFilterModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>Kod'a Göre Filtrele</Text>
+          <View style={commonStyle.modalOverlay}>
+            <View style={commonStyle.modalContent}>
+              <Text style={commonStyle.modalHeading}>Kod'a Göre Filtrele</Text>
               <TextInput
                 label="Kod Girin"
                 value={filteredKod}
                 onChangeText={setFilteredKod}
-                style={styles.input}
+                style={commonStyle.modalInput}
                 mode="outlined"
                 theme={{ colors: { primary: colors.primary } }}
               />
               <Button
                 mode="contained"
                 onPress={() => handleFilter(filteredKod)}
-                style={styles.modalButton}
+                style={commonStyle.primaryButton}
               >
                 Filtrele
               </Button>
@@ -159,26 +159,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 1,
   },
-  itemTitle: {
-    color: colors.textPrimary,  // Varsayılan yazı rengi
-    fontSize: 16,
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  itemText: {
-    color: colors.textPrimary,  // Varsayılan yazı rengi
-    fontSize: 16,
-    textAlign: 'center',
-  },
   row: {
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
   },
   filterButton: {
     backgroundColor: colors.primary,
@@ -187,29 +171,6 @@ const styles = StyleSheet.create({
   listContentContainer: {
     paddingBottom: 16,
     borderColor: colors.primary
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    width: '80%',
-    borderRadius: 10,
-  },
-  modalHeading: {
-    fontSize: 20,
-    marginBottom: 10,
-    color: colors.textPrimary,
-  },
-  input: {
-    marginBottom: 10,
-  },
-  modalButton: {
-    backgroundColor: colors.primary,
   },
 });
 

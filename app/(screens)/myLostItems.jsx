@@ -23,7 +23,6 @@ import {
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from "../common";
 
-import { MaterialIcons } from "@expo/vector-icons"; // Kamera ikonu için
 import { commonStyle } from "../../design/style";
 
 const MyLostItemsPage = ({ navigation }) => {
@@ -120,20 +119,26 @@ const MyLostItemsPage = ({ navigation }) => {
         </View>
       )}
       <Card.Content>
-        <Text style={styles.itemDescription}>
-          <Text style={styles.descriptionLabel}>Açıklama: </Text>
-          {item.description}
+        <Text style={[{ marginVertical: 8 }]}>
+          <Text style={[commonStyle.textLabel]}>Açıklama: </Text>
+          <Text style={[commonStyle.generalText, { fontSize: 16 }]}>
+            {item.description}
+          </Text>
         </Text>
         {item.lostAndFoundType === "ID_KNOWN" && (
-          <Text style={styles.itemDescription}>
-            <Text style={styles.descriptionLabel}>Kime ait: </Text>
-            {item.ownerInfo}
+          <Text style={[commonStyle.generalText, { marginVertical: 8 }]}>
+            <Text style={[commonStyle.textLabel]}>Kime ait: </Text>
+            <Text style={[commonStyle.generalText, { fontSize: 16 }]}>
+              {item.ownerInfo}
+            </Text>
           </Text>
         )}
       </Card.Content>
       {item.claims.length > 0 && (
         <View style={styles.notificationContainer}>
-          <Text style={styles.claimCount}>Talepler ({item.claims.length})</Text>
+          <Text style={[commonStyle.textLabel, { marginLeft: 6 }]}>
+            Talepler ({item.claims.length})
+          </Text>
           <IconButton
             icon="bell"
             iconColor={colors.primary}
@@ -153,7 +158,7 @@ const MyLostItemsPage = ({ navigation }) => {
             setOwnerInfo(item.ownerInfo);
           }}
           style={[styles.claimButton, { borderColor: colors.secondary }]}
-          labelStyle={[styles.claimButtonLabel, { color: colors.secondary }]}
+          labelStyle={[commonStyle.generalText, { color: colors.secondary }]}
         >
           Düzenle
         </Button>
@@ -164,7 +169,7 @@ const MyLostItemsPage = ({ navigation }) => {
             setFoundModalVisible(true);
           }}
           style={[styles.claimButton, { backgroundColor: colors.primary }]}
-          labelStyle={[{ color: "white" }]}
+          labelStyle={[commonStyle.generalText, { color: "white" }]}
         >
           Bulundu
         </Button>
@@ -202,7 +207,7 @@ const MyLostItemsPage = ({ navigation }) => {
                     style={styles.loadMoreButton}
                     onPress={handleShowAll}
                   >
-                    <Text style={styles.loadMoreButtonText}>Tümünü Gör...</Text>
+                    <Text style={commonStyle.textLabel}>Tümünü Gör...</Text>
                   </TouchableOpacity>
                 )
               }
@@ -230,7 +235,7 @@ const MyLostItemsPage = ({ navigation }) => {
                     multiline
                     maxLength={100}
                     numberOfLines={2}
-                    style={[commonStyle.input, styles.textInput]}
+                    style={[commonStyle.modalInput]}
                     right={
                       <TextInput.Affix text={`${description.length}/100`} />
                     }
@@ -242,7 +247,7 @@ const MyLostItemsPage = ({ navigation }) => {
                       value={ownerInfo}
                       onChangeText={setOwnerInfo}
                       mode="outlined"
-                      style={[commonStyle.input, styles.textInput]}
+                      style={[commonStyle.modalInput]}
                     />
                   )}
 
@@ -255,7 +260,7 @@ const MyLostItemsPage = ({ navigation }) => {
                         { borderColor: colors.secondary },
                       ]}
                       labelStyle={[
-                        styles.claimButtonLabel,
+                        commonStyle.generalText,
                         { color: colors.secondary },
                       ]}
                     >
@@ -268,7 +273,7 @@ const MyLostItemsPage = ({ navigation }) => {
                         styles.claimButton,
                         { backgroundColor: colors.primary },
                       ]}
-                      labelStyle={[{ color: "white" }]}
+                      labelStyle={[commonStyle.generalText, { color: "white" }]}
                     >
                       Onayla
                     </Button>
@@ -299,7 +304,7 @@ const MyLostItemsPage = ({ navigation }) => {
                         { borderColor: colors.secondary },
                       ]}
                       labelStyle={[
-                        styles.claimButtonLabel,
+                        commonStyle.generalText,
                         { color: colors.secondary },
                       ]}
                     >
@@ -315,7 +320,7 @@ const MyLostItemsPage = ({ navigation }) => {
                         styles.claimButton,
                         { backgroundColor: colors.primary },
                       ]}
-                      labelStyle={[{ color: "white" }]}
+                      labelStyle={[commonStyle.generalText, { color: "white" }]}
                     >
                       Evet
                     </Button>
@@ -340,10 +345,10 @@ const MyLostItemsPage = ({ navigation }) => {
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
                       <View style={styles.claimItem}>
-                        <Text style={styles.claimLabel}>İletişim:</Text>
-                        <Text style={styles.claimInfo}>{item.contactInfo}</Text>
-                        <Text style={styles.claimLabel}>Açıklama:</Text>
-                        <Text style={styles.claimInfo}>{item.description}</Text>
+                        <Text style={commonStyle.textLabel}>İletişim:</Text>
+                        <Text style={[commonStyle.generalText, {marginVertical:10}]}>{item.contactInfo}</Text>
+                        <Text style={commonStyle.textLabel}>Açıklama:</Text>
+                        <Text style={[commonStyle.generalText, {marginVertical:10}]}>{item.description}</Text>
                       </View>
                     )}
                     contentContainerStyle={styles.flatListContentContainer}
@@ -356,7 +361,6 @@ const MyLostItemsPage = ({ navigation }) => {
                       styles.claimButton,
                       { backgroundColor: colors.primary },
                     ]}
-                    labelStyle={[{ color: "white" }]}
                   >
                     Kapat
                   </Button>
@@ -373,6 +377,10 @@ const MyLostItemsPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
@@ -405,7 +413,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     alignSelf: "center",
-    color: colors.primary,
+    color: colors.text,
   },
   centeredHeading: {
     textAlign: "center",
@@ -414,19 +422,6 @@ const styles = StyleSheet.create({
     height: 200,
     width: "100%",
   },
-  itemDescription: {
-    fontSize: 18,
-    marginBottom: 8,
-    marginTop: 8,
-  },
-  descriptionLabel: {
-    fontSize: 16,
-    color: colors.primary,
-    marginTop: 4,
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
-
   heading: {
     fontSize: 20,
     fontWeight: "bold",
@@ -434,24 +429,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     padding: 10,
   },
-
-  textInput: {
-    marginBottom: 16,
-  },
   Container: {
     width: "100%",
     marginBottom: 16,
   },
-
   loadMoreButton: {
     backgroundColor: colors.background,
     marginTop: 20,
@@ -461,12 +447,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     padding: 10,
   },
-  loadMoreButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
   claimItem: {
     marginBottom: 10,
     borderWidth: 2,
@@ -474,36 +454,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
   },
-  claimLabel: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.primary,
-  },
-  claimInfo: {
-    fontSize: 14,
-    marginVertical: 10,
-  },
   notificationContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 10,
-  },
-  claimCount: {
-    fontSize: 15,
-    color: colors.primary,
-    fontWeight: "bold",
     marginLeft: 10,
   },
   divider: {
     marginVertical: 10,
     backgroundColor: colors.text,
   },
-
   imageContainer: {
     alignItems: "center",
     marginBottom: 10,
   },
-
   newRequestButton: {
     position: "absolute",
     bottom: 20,
@@ -537,12 +500,8 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderWidth: 1,
   },
-  claimButtonLabel: {
-    color: "green",
-    fontWeight: "500",
-  },
   flatList: {
-    maxHeight: 200, // FlatList'in maksimum yüksekliğini belirleyin, modal içerisine sığması için.
+    maxHeight: 300,
   },
   flatListContentContainer: {
     paddingBottom: 20,

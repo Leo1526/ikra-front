@@ -32,6 +32,8 @@ import CommentsPage from './app/(screens)/commentsPage';
 import MyCoursesScreen from './app/(course)/myCourses';
 import CourseAttendanceScreen from './app/(course)/courseAttendance';
 
+import CommunityDetails from './app/(community)/communityDetails';
+
 import AnnouncementsScreen from './app/(anno)/annoucements'
 import CreateAnnouncementScreen from './app/(anno)/createAnnouncement'
 import AnnouncementDetailsScreen from './app/(anno)/announcementDetails'
@@ -226,7 +228,8 @@ const HomeStack = () => {
       <Stack.Screen name='dining' component={DiningMenuScreen}/>
       <Stack.Screen name='lostItems' component={LostStack}/>
       <Stack.Screen name='requests' component={RequestStack}/>
-      <Stack.Screen name='myCourses' component={AttStack}/> 
+      <Stack.Screen name='myCourses' component={AttStack}/>
+      <Stack.Screen name='communityDetails' component={CommunityDetails}/> 
     </Stack.Navigator>
   );
 };
@@ -235,8 +238,16 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator 
       drawerContent={props => <Settings {...props} />}
-      initialRouteName="BottomTabNavigator" drawerPosition="right" 
-      screenOptions={{ headerShown: false, drawerPosition:"right"}}>
+      initialRouteName="BottomTabNavigator"
+      drawerPosition="right"
+      screenOptions={{
+        headerShown: false,
+        drawerPosition: "right",
+        drawerStyle: {
+          width: 210,
+        },
+      }}
+    >
       <Drawer.Screen name="BottomTabNavigator" component={BottomTabNavigator} /> 
     </Drawer.Navigator>
   );

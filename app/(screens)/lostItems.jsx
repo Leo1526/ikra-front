@@ -117,15 +117,19 @@ const LostItemsPage = ({ navigation }) => {
         </View>
       )}
       <View style={styles.itemContent}>
-        <Text style={styles.itemDescription}>
-          <Text style={styles.descriptionLabel}>Açıklama: </Text>
-          {item.description}
+        <Text style={[{ marginVertical: 8, marginLeft: 8 }]}>
+          <Text style={[commonStyle.textLabel]}>Açıklama: </Text>
+          <Text style={[commonStyle.generalText, { fontSize: 16 }]}>
+            {item.description}
+          </Text>
         </Text>
         {item.lostAndFoundType === "ID_KNOWN" && (
-          <Text style={styles.itemDescription}>
-            <Text style={styles.descriptionLabel}>Kime ait: </Text>
+          <Text style={[{ marginVertical: 8, marginLeft: 8 }]}>
+          <Text style={[commonStyle.textLabel]}>Kime ait: </Text>
+          <Text style={[commonStyle.generalText, { fontSize: 16 }]}>
             {item.ownerInfo}
           </Text>
+        </Text>
         )}
       </View>
       <Button
@@ -271,7 +275,10 @@ const styles = StyleSheet.create({
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
   },
-
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   list: {
     width: "100%",
     paddingBottom: 30,
@@ -294,23 +301,6 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     padding: 10,
   },
-  itemDescription: {
-    fontSize: 18,
-    marginBottom: 8,
-    marginLeft: 10,
-  },
-  descriptionLabel: {
-    fontSize: 16,
-    color: colors.primary,
-    marginTop: 4,
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
-
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   modalOverlay: {
     flex: 1,
     justifyContent: "center",
@@ -327,23 +317,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
-  },
-  claimButton: {
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 20,
-    alignSelf: "center",
-    backgroundColor: colors.background,
-    fontSize: 16,
-    letterSpacing: 2,
-    fontWeight: "500",
-    borderColor: "green",
-    borderWidth: 1,
-  },
-  button: {
-    backgroundColor: colors.secondary,
-    borderRadius: 20,
-    alignSelf: "center",
   },
   buttonContainer: {
     flexDirection: "row",

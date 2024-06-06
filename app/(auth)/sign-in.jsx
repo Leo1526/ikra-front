@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text,TouchableOpacity  } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, text } from '../../design/themes';
@@ -8,6 +8,8 @@ import * as common from "../common.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import PinInput from '../../components/PinInput.jsx';
+import { ikraAxios } from '../common.js';
 
 const SignIn = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -16,7 +18,42 @@ const SignIn = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorUsername, setErrorUsername] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
+  const [previousUserName, setPreviousUserName] = useState(null);
+  const [previousUserMail, setPreviousUserMail] = useState(null);
   const passwordRef = useRef(null);
+
+
+  const getAsyncData = async (key,onAccess) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+
+      if(value !== null) {
+        onAccess(value)
+        return value;
+      }
+    } catch(e) {
+      return null
+    }
+  };
+
+  const getPreviousUserData = async () =>{
+    await getAsyncData('userName', (value) => {
+      setPreviousUserName(value);
+    });
+    await getAsyncData('userMail', (value) => {
+      setPreviousUserMail(value);
+      setUsername(value)
+    });
+  } 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getPreviousUserData();
+    };
+
+    fetchData();
+  }, []);
+
 
   const handleLogin = async  () => {
     setErrorUsername(false)
@@ -25,7 +62,7 @@ const SignIn = ({navigation}) => {
       setErrorUsername(true);
       return
     } 
-    if (password.length < 2) {
+    if (password.length < 6) {
       setErrorPassword(true)
       return;
     }
@@ -53,19 +90,24 @@ const SignIn = ({navigation}) => {
         } else {
           await AsyncStorage.setItem('jwtToken', data.body.token);
           await AsyncStorage.setItem('expireDate', data.body.expireDate);
+          await AsyncStorage.setItem('userMail', username);
+
           navigation.navigate("DrawerNavigator")
         }
       } catch (error) {
         alert("Bağlantı hatası! " + error.message)
       }
     }
-
-    const handlePasswordChange = (text) => {
-      const numericText = text.replace(/[^0-9]/g, '');
-      setPassword(numericText);
-    };
-
   };
+
+  const changeUserEmail = () => {
+    setPreviousUserName('')
+    setPreviousUserMail('')
+  }
+
+  const forgetMyPassword = () => {
+    
+  }
 
   return (
 
@@ -81,62 +123,73 @@ const SignIn = ({navigation}) => {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.appName}>Hoşgeldiniz.</Text>
+            {previousUserName && (
+              <View style={{flex:1,flexDirection:'column', alignItems:'center', justifyContent: 'center',width:"100%"}}>
+                <Text style={styles.appName}>{previousUserName}</Text>
+                <TouchableOpacity onPress={changeUserEmail} style={styles.changeUserMailButton}>
+                  <Text style={styles.changeUserMailText}>Çıkış Yap</Text>
+                </TouchableOpacity>
+              </View>
+              ) }
           <View style={styles.form}>
 
-          <TextInput
-            label="Kullanıcı Adı"
-            value={username}
-            onChangeText={text => setUsername(text)}
-            selectionColor={colors.primary}
-            activeUnderlineColor={colors.primary}
-            style={commonStyle.input}
-            labelStyle={commonStyle.input}
-            theme={{ colors: { primary: 'blue' } }}
-            />
-          {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>}
-          <TextInput
-            label="Parola"
-            value={password}
-            onChangeText={text => setPassword(text)}
-            secureTextEntry={!showPassword}
-            style={commonStyle.input}
-            selectionColor={colors.primary}
-            activeUnderlineColor={colors.primary}
-            ref={passwordRef}
-            theme={{ colors: { primary: 'blue' } }}
-            right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
-            />
-          {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
-          <Button
-            mode="contained"
-            onPress={handleLogin}
-            style={commonStyle.primaryButton}
-            labelStyle={commonStyle.primaryButtonLabel}
-            >
-            Giriş Yap
-          </Button>
-          <Snackbar
-            visible={snackbarVisible}
-            onDismiss={() => setSnackbarVisible(false)}
-            duration={3000}
-            action={{
-              label: 'Tamam',
-              onPress: () => setSnackbarVisible(false),
-            }}
-          >
-            Kullanıcı adı veya parola hatalı
-          </Snackbar>
+            {!previousUserName && <TextInput
+              label="Kullanıcı Adı"
+              value={username}
+              onChangeText={text => setUsername(text)}
+              selectionColor={colors.primary}
+              activeUnderlineColor={colors.primary}
+              style={commonStyle.input}
+              labelStyle={commonStyle.input}
+              theme={{ colors: { primary: colors.primaryDark } }}
+              />}
+            {/* {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>} */}
+            {/* <TextInput
+              label="Parola"
+              value={password}
+              onChangeText={text => setPassword(text)}
+              secureTextEntry={!showPassword}
+              style={commonStyle.input}
+              selectionColor={colors.primary}
+              activeUnderlineColor={colors.primary}
+              ref={passwordRef}
+              theme={{ colors: { primary: 'blue' } }}
+              right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
+              /> */}
 
-          <View style={styles.textContainer}>
-            <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+            <PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
+
+            {/* {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>} */}
             <Button
-              onPress={() => navigation.navigate('sign-up')}
-              labelStyle={commonStyle.secondaryButtonLabel}
-              style={commonStyle.secondaryButton}
+              mode="contained"
+              onPress={handleLogin}
+              style={commonStyle.primaryButton}
+              labelStyle={commonStyle.primaryButtonLabel}
               >
-              Kayıt Ol
+              Giriş Yap
             </Button>
+            <Snackbar
+              visible={snackbarVisible}
+              onDismiss={() => setSnackbarVisible(false)}
+              duration={3000}
+              action={{
+                label: 'Tamam',
+                onPress: () => setSnackbarVisible(false),
+              }}
+            >
+              Kullanıcı adı veya parola hatalı
+            </Snackbar>
+
+            <View style={styles.textContainer}>
+              <TouchableOpacity onPress={forgetMyPassword}>
+                <Text style={styles.signupButtonText}>Şifremi unuttum. {'\u00A0'}</Text>
+              </TouchableOpacity>
+              <Button
+                onPress={() => navigation.navigate('sign-up')}
+                labelStyle={commonStyle.secondaryButtonLabel}
+                style={commonStyle.secondaryButton}>
+                Kayıt Ol
+              </Button>
             </View>
           </View>
         </ScrollView>
@@ -146,7 +199,21 @@ const SignIn = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+
+  pinContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  pin: {
+    width: 40,
+    height: 40,
+    borderBottomWidth: 2,
+    textAlign: 'center',
+    marginHorizontal: 5,
+  },
+  
   container: {
+    flexDirection: 'column',
     flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -155,7 +222,8 @@ const styles = StyleSheet.create({
     font: fonts.regular
   },
   form: {
-    marginTop: 60,
+    flex:7,
+    marginTop: 30,
     width: '100%',
   },
   logo: {
@@ -163,10 +231,27 @@ const styles = StyleSheet.create({
     height: 200,
   },
   appName: {
-    fontSize: 20,
-    marginBottom: 16,
-    
-    color: "#555555", // Uygulama adı rengi
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.primaryDark,
+  },
+  changeUserMailButton: {
+    borderWidth: 1,
+    borderColor: colors.red,
+    borderRadius: 5,
+    backgroundColor: colors.background,
+    marginTop: 8,
+    paddingVertical: 0, 
+    paddingHorizontal: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  changeUserMailText: {
+    fontSize: 12,
+    paddingVertical: 4,
+    paddingHorizontal:4,
+    margin: 0,
+    color: colors.red
   },
   input: {
     width: '100%',

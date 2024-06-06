@@ -67,6 +67,7 @@ const Home = ({ navigation }) => {
       setBalance(data.body.balance)
       setName(data.body.name)
       setStudentId(data.body.studentId)
+
       return
     }
     setName("Cüzdan verileriniz getirilirken hata oluştu.")
@@ -96,6 +97,7 @@ const Home = ({ navigation }) => {
           alert("Ana sayfa için cüzdan getirilirken hata oluştu!" + error?.message? error.message : "Bilinmeyen")
         },
         tokenRequired: true,
+        isUserGet:true
       })
     }
     fetchCard();
@@ -141,6 +143,7 @@ const Home = ({ navigation }) => {
       />
     }>
       <View style={styles.sliderContainer}>
+      {announcementImages.length > 0 ? (
         <Carousel
           data={announcementImages}
           renderItem={renderItem}
@@ -148,12 +151,18 @@ const Home = ({ navigation }) => {
           height={height*0.25}
           autoPlay
           loop
-          autoPlayInterval = {100000}
+          autoPlayInterval={100000}
           onSnapToItem={null}
           scrollAnimationDuration={1000}
           dotStyle={styles.dotStyle}
           activeDotStyle={styles.activeDotStyle}
         />
+      ) : (
+        
+        <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>DUYURU YOK</Text>
+      </View>
+      )}
       </View>
 
       {/* Card Balance Display */}
@@ -169,9 +178,18 @@ const Home = ({ navigation }) => {
         </View>
         
         <View style={styles.buttonContainer}>
-          <IconButton icon = "share-variant"  labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
-          </IconButton>
-          <Button icon = "card-account-details"  onPress={() => navigation.navigate('finance')} labelStyle={styles.buttonLabel} style={styles.button} >
+          <Button 
+            icon="share-variant" 
+            labelStyle={styles.buttonLabel} 
+            style={styles.button} 
+            onPress={copyToClipboard} 
+          >PAYLAŞ</Button>
+          <Button 
+            icon="card-account-details" 
+            onPress={() => navigation.navigate('finance')} 
+            labelStyle={styles.buttonLabel} 
+            style={styles.button}
+          >
             TÜMÜ
           </Button>
         </View>
@@ -224,6 +242,21 @@ const Home = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf:  "center",
+    marginLeft:50,
+    marginRight:50,
+    height: '60%',
+    width: '80%',
+    backgroundColor: '#D3D3D3',  // Açık gri arka plan rengi
+  },
+  emptyText: {
+    fontSize: 40,
+    color: 'white',
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -267,57 +300,61 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     backgroundColor: colors.background,
-    borderColor: colors.primary
+    borderColor: colors.primary,
   },
   infoContainer: {
     margin: 10,
-    flex:3,
+    flex: 18,
   },
   name: {
     color: colors.primary, 
-    fontWeight: '400',// White text color
+    fontWeight: '400',
     fontSize: 20,
   },
   studentNo: {
-    color: colors.secondary, // Light gray text color
+    color: colors.secondary, 
     fontSize: 15,
     marginBottom: 24,
   },
   balanceLabel: {
-    color: colors.primary, // Gray text color
+    color: colors.primary, 
     fontSize: 14,
   },
   balance: {
-    color: colors.primary, // White text color
+    color: colors.primary, 
     fontSize: 48,
   },
-  bakiyeContainer : {
+  bakiyeContainer: {
     flexDirection: 'row',
-    color: colors.primary, // White text color
-    alignItems: 'baseline', // Aligns the baseline of the text
+    color: colors.primary, 
+    alignItems: 'baseline', 
   },
   currency: {
     color: colors.primary,
-    fontSize: 24, // Smaller font size for the currency symbol
+    fontSize: 24, 
   },
   buttonContainer: {
-    flex:1,
-    marginRight: 20,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
+    flex: 7,
+    flexDirection: 'column', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginRight:20,
   },
   button: {
     color: colors.primary,
     borderWidth: 1,
     borderColor: colors.primary,
     borderRadius: 6,
+    marginVertical: 15,
+    alignSelf: 'stretch',
   },
   buttonLabel: {
     color: colors.primary,
+    fontSize:14,
   },
   iconContainer: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },

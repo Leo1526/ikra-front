@@ -111,16 +111,12 @@ const MyCoursesScreen = ({ navigate }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={commonStyle.mainContainer}>
-
-
-
-
         <FlatList
           data={myCourses}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.courseContainer} onPress={() => navigateToAttendance(item)}>
               <Text style={styles.courseText}>
-                <Text style={styles.courseCode}>{item.courseCode}</Text>
+                <Text style={[commonStyle.textLabel]}>{item.courseCode}</Text>
                 {'\n'}{item.name}
               </Text>
               <IconButton
@@ -166,8 +162,8 @@ const MyCoursesScreen = ({ navigate }) => {
                     renderItem={({ item }) => (
                       <TouchableOpacity style={styles.modalCourseContainer} onPress={() => addSelectedCourse(item)}>
                         <View>
-                          <Text style={styles.modalCourseCode}>{item.courseCode}</Text>
-                          <Text style={styles.modalCourseName}>{item.name}</Text>
+                          <Text style={commonStyle.textLabel}>{item.courseCode}</Text>
+                          <Text style={commonStyle.generalText}>{item.name}</Text>
                         </View>
                       </TouchableOpacity>
                     )}

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { navigate } from './navigationService';
+import { navigate, replace } from './navigationService';
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
 export const local = "http://192.168.1.16:8080";
 export const urlDev = "https://compact-codex-425018-n7.lm.r.appspot.com";
@@ -33,6 +33,7 @@ export const ikraAxios = async ({
   onError = defaultHandleFail,
   tokenRequired = true,
   setLoading = null,
+  isUserGet =false
 }) => {
   if(setLoading) {
     setLoading(true)
@@ -57,7 +58,15 @@ export const ikraAxios = async ({
       headers,
       timeout: 30000
     });
+    if(setLoading) {
+      setLoading(false)
+    }
     onSuccess(response.data);  // Callback fonksiyonunu çağır
+    
+    if(isUserGet){
+      await AsyncStorage.setItem("userName",response.data.body.name)
+    }
+
     return response.data;
   } catch (error) {
     onError(error);  // Callback fonksiyonunu çağır
@@ -85,10 +94,10 @@ export const checkTokenExpiration = async () => {
 };
 
 export const navigateToLoginPage = async (expired = false) => {
-  navigate('AuthStack');
+  await AsyncStorage.removeItem('jwtToken');
+  await AsyncStorage.removeItem('expireDate');
+  replace('AuthStack');
   if (expired) {
     alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
   }
-  return false;
-  var email = await AsyncStorage.getItem('username');
 }
