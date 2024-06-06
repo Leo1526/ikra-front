@@ -169,9 +169,18 @@ const Home = ({ navigation }) => {
         </View>
         
         <View style={styles.buttonContainer}>
-          <IconButton icon = "share-variant"  labelStyle={styles.buttonLabel} style={styles.button} onPress={copyToClipboard}>
-          </IconButton>
-          <Button icon = "card-account-details"  onPress={() => navigation.navigate('finance')} labelStyle={styles.buttonLabel} style={styles.button} >
+          <Button 
+            icon="share-variant" 
+            labelStyle={styles.buttonLabel} 
+            style={styles.button} 
+            onPress={copyToClipboard} 
+          >PAYLAŞ</Button>
+          <Button 
+            icon="card-account-details" 
+            onPress={() => navigation.navigate('finance')} 
+            labelStyle={styles.buttonLabel} 
+            style={styles.button}
+          >
             TÜMÜ
           </Button>
         </View>
@@ -267,57 +276,61 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     backgroundColor: colors.background,
-    borderColor: colors.primary
+    borderColor: colors.primary,
   },
   infoContainer: {
     margin: 10,
-    flex:3,
+    flex: 18,
   },
   name: {
     color: colors.primary, 
-    fontWeight: '400',// White text color
+    fontWeight: '400',
     fontSize: 20,
   },
   studentNo: {
-    color: colors.secondary, // Light gray text color
+    color: colors.secondary, 
     fontSize: 15,
     marginBottom: 24,
   },
   balanceLabel: {
-    color: colors.primary, // Gray text color
+    color: colors.primary, 
     fontSize: 14,
   },
   balance: {
-    color: colors.primary, // White text color
+    color: colors.primary, 
     fontSize: 48,
   },
-  bakiyeContainer : {
+  bakiyeContainer: {
     flexDirection: 'row',
-    color: colors.primary, // White text color
-    alignItems: 'baseline', // Aligns the baseline of the text
+    color: colors.primary, 
+    alignItems: 'baseline', 
   },
   currency: {
     color: colors.primary,
-    fontSize: 24, // Smaller font size for the currency symbol
+    fontSize: 24, 
   },
   buttonContainer: {
-    flex:1,
-    marginRight: 20,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
+    flex: 7,
+    flexDirection: 'column', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginRight:20,
   },
   button: {
     color: colors.primary,
     borderWidth: 1,
     borderColor: colors.primary,
     borderRadius: 6,
+    marginVertical: 15,
+    alignSelf: 'stretch',
   },
   buttonLabel: {
     color: colors.primary,
+    fontSize:14,
   },
   iconContainer: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
