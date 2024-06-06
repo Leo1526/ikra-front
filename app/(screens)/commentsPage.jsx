@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, SafeAreaView, StyleSheet, StatusBar, Image } from 'react-native';
-import { AirbnbRating } from 'react-native-ratings';
-import { Avatar } from 'react-native-paper';
-import { useRoute } from '@react-navigation/native';
-import { ikraAxios, url, urlDev } from '../common';
-import { commonStyle } from '../../design/style';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+  StyleSheet,
+  StatusBar,
+  Image,
+} from "react-native";
+import { AirbnbRating } from "react-native-ratings";
+import { Avatar } from "react-native-paper";
+import { useRoute } from "@react-navigation/native";
+import { ikraAxios, url, urlDev } from "../common";
+import { commonStyle } from "../../design/style";
 
 const hoursSpentMapping = {
   ZERO_FIVE: "0-5",
@@ -12,7 +21,7 @@ const hoursSpentMapping = {
   TEN_FIFTEEN: "10-15",
   FIFTEEN_TWENTY: "15-20",
   TWENTY_TWENTYFIVE: "20-25",
-  TWENTYFIVE_THIRTY: "25-30"
+  TWENTYFIVE_THIRTY: "25-30",
 };
 
 const Comment = ({ item }) => {
@@ -20,12 +29,12 @@ const Comment = ({ item }) => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ay 0'dan başlar, bu yüzden 1 eklenir.
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Ay 0'dan başlar, bu yüzden 1 eklenir.
     const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-  
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
     return `${day}/${month}/${year}
     ${hours}:${minutes}`;
   };
@@ -46,7 +55,7 @@ const Comment = ({ item }) => {
           <Text style={styles.dateText}>{formatDate(item.date)}</Text>
         </View>
       </View>
-      <Text>{item.comment}</Text>
+      <Text style={commonStyle.generalText}>{item.comment}</Text>
       {!expanded && (
         <TouchableOpacity onPress={() => setExpanded(true)}>
           <Text style={styles.showMoreText}>Daha fazla göster</Text>
@@ -54,10 +63,15 @@ const Comment = ({ item }) => {
       )}
       {expanded && (
         <View>
-          <Text></Text>
-          <Text>Ders Zorluğu: {item.difficulty}/10</Text>
-          <Text>Alınan Not: {item.courseGrade}</Text>
-          <Text>Harcanan Saat: {hoursSpentMapping[item.hoursSpent]}</Text>
+          <Text style={commonStyle.generalText}>
+            Ders Zorluğu: {item.difficulty}/10
+          </Text>
+          <Text style={commonStyle.generalText}>
+            Alınan Not: {item.courseGrade}
+          </Text>
+          <Text style={commonStyle.generalText}>
+            Harcanan Saat: {hoursSpentMapping[item.hoursSpent]}
+          </Text>
           <TouchableOpacity onPress={() => setExpanded(false)}>
             <Text style={styles.showMoreText}>Daha az göster</Text>
           </TouchableOpacity>
@@ -77,64 +91,61 @@ const CommentsPage = () => {
   const [loading, setLoading] = useState(false);
   const [noMoreComments, setNoMoreComments] = useState(false);
 
-
   useEffect(() => {
     fetchComments();
   }, []);
 
   const fetchComments = async () => {
-    if(noMoreComments) return;
+    if (noMoreComments) return;
     if (loading) return;
 
     setLoading(true);
     try {
       await ikraAxios({
         url: `${urlDev}/courseStats/byCourseId?courseId=${course.id}&page=${page}&size=${ITEMS_PER_PAGE}`,
-        method: 'GET',
+        method: "GET",
         onSuccess: (data) => {
-          console.log(data.body[0])
+          console.log(data.body[0]);
 
-          if(data.body.length === 0){
+          if (data.body.length === 0) {
             setNoMoreComments(true);
           }
           setComments((prevComments) => [...prevComments, ...data.body]);
           setPage((prevPage) => prevPage + 1);
         },
         onError: (error) => {
-          console.error('Error fetching meal data:', error);
+          console.error("Error fetching meal data:", error);
         },
       });
     } catch (error) {
-      console.error('Error in fetchProposals:', error);
+      console.error("Error in fetchProposals:", error);
     } finally {
       setLoading(false);
     }
   };
 
-
-
   const renderItem = ({ item }) => {
     return <Comment item={item} />;
   };
 
-
   return (
     <SafeAreaView style={styles.safeArea}>
-      
       <View style={commonStyle.mainContainer}>
-
-        <Text style={styles.headerText}>{course.name}</Text>
-      <FlatList
-        contentContainerStyle={styles.flatListContent}
-        data={comments}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        onEndReached={fetchComments}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={loading && <Text>Yükleniyor...</Text>}
-      />
+        <Text
+          style={[commonStyle.textLabel, { fontSize: 20, textAlign: "center" }]}
+        >
+          {course.name}
+        </Text>
+        <FlatList
+          contentContainerStyle={styles.flatListContent}
+          data={comments}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          onEndReached={fetchComments}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={loading && <Text>Yükleniyor...</Text>}
+        />
       </View>
-
     </SafeAreaView>
   );
 };
@@ -142,63 +153,43 @@ const CommentsPage = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: "#f4f4f4",
     paddingTop: StatusBar.currentHeight,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    alignContent:"center",
-    textAlign:"center"
   },
   flatListContent: {
     padding: 10,
   },
   commentCard: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
     marginBottom: 10,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
   commentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   commentHeaderText: {
     marginLeft: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     flex: 1,
   },
   dateText: {
-    color: '#888',
+    color: "#888",
     marginLeft: 10,
     flex: 1,
-    textAlign: 'right',
+    textAlign: "right",
   },
   showMoreText: {
-    color: '#007bff',
+    color: "#007bff",
     marginTop: 10,
   },
 });

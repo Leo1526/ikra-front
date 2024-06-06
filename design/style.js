@@ -87,7 +87,7 @@ export const commonStyle = {
   },
   generalText:{
     fontsize: 16,
-    color: colors.secondary
+    color: colors.text
   },
   textLabel: {
     fontSize: 16,
