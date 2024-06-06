@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,8 @@ import * as common from "../common.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import PinInput from '../../components/PinInput.jsx';
+
 
 const SignIn = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -16,16 +18,53 @@ const SignIn = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorUsername, setErrorUsername] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
+  const [previousUserName, setPreviousUserName] = useState(null);
+  const [previousUserMail, setPreviousUserMail] = useState(null);
   const passwordRef = useRef(null);
 
+
+  const getAsyncData = async (key,onAccess) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+
+      if(value !== null) {
+        onAccess(value)
+        return value;
+      }
+    } catch(e) {
+      return null
+    }
+  };
+
+  const getPreviousUserData = async () =>{
+    await getAsyncData('userName', (value) => {
+      setPreviousUserName(value);
+    });
+    await getAsyncData('userMail', (value) => {
+      setPreviousUserMail(value);
+      setUsername(value)
+    });
+  } 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getPreviousUserData();
+    };
+
+    fetchData();
+  }, []);
+
+
   const handleLogin = async  () => {
+    console.log(previousUserName)
+    console.log(previousUserMail)
     setErrorUsername(false)
     setErrorPassword(false)
     if (username.length < 8) {
       setErrorUsername(true);
       return
     } 
-    if (password.length < 2) {
+    if (password.length < 6) {
       setErrorPassword(true)
       return;
     }
@@ -53,18 +92,14 @@ const SignIn = ({navigation}) => {
         } else {
           await AsyncStorage.setItem('jwtToken', data.body.token);
           await AsyncStorage.setItem('expireDate', data.body.expireDate);
+          await AsyncStorage.setItem('userMail', username);
+
           navigation.navigate("DrawerNavigator")
         }
       } catch (error) {
         alert("Bağlantı hatası! " + error.message)
       }
     }
-
-    const handlePasswordChange = (text) => {
-      const numericText = text.replace(/[^0-9]/g, '');
-      setPassword(numericText);
-    };
-
   };
 
   return (
@@ -81,7 +116,8 @@ const SignIn = ({navigation}) => {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.appName}>Hoşgeldiniz.</Text>
+          {<Text style={styles.appName}>Hoşgeldiniz.</Text>}
+          {previousUserName &&<Text style={styles.appName}>{previousUserName}</Text> }
           <View style={styles.form}>
 
           <TextInput
@@ -94,8 +130,8 @@ const SignIn = ({navigation}) => {
             labelStyle={commonStyle.input}
             theme={{ colors: { primary: 'blue' } }}
             />
-          {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>}
-          <TextInput
+          {/* {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>} */}
+          {/* <TextInput
             label="Parola"
             value={password}
             onChangeText={text => setPassword(text)}
@@ -106,8 +142,11 @@ const SignIn = ({navigation}) => {
             ref={passwordRef}
             theme={{ colors: { primary: 'blue' } }}
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
-            />
-          {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>}
+            /> */}
+
+<PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin); handleLogin}} />
+
+          {/* {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>} */}
           <Button
             mode="contained"
             onPress={handleLogin}
@@ -146,6 +185,19 @@ const SignIn = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+
+  pinContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  pin: {
+    width: 40,
+    height: 40,
+    borderBottomWidth: 2,
+    textAlign: 'center',
+    marginHorizontal: 5,
+  },
+  
   container: {
     flexGrow: 1,
     justifyContent: 'flex-start',

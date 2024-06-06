@@ -67,6 +67,7 @@ const Home = ({ navigation }) => {
       setBalance(data.body.balance)
       setName(data.body.name)
       setStudentId(data.body.studentId)
+
       return
     }
     setName("Cüzdan verileriniz getirilirken hata oluştu.")
@@ -96,6 +97,7 @@ const Home = ({ navigation }) => {
           alert("Ana sayfa için cüzdan getirilirken hata oluştu!" + error?.message? error.message : "Bilinmeyen")
         },
         tokenRequired: true,
+        isUserGet:true
       })
     }
     fetchCard();
@@ -141,6 +143,7 @@ const Home = ({ navigation }) => {
       />
     }>
       <View style={styles.sliderContainer}>
+      {announcementImages.length > 0 ? (
         <Carousel
           data={announcementImages}
           renderItem={renderItem}
@@ -148,12 +151,18 @@ const Home = ({ navigation }) => {
           height={height*0.25}
           autoPlay
           loop
-          autoPlayInterval = {100000}
+          autoPlayInterval={100000}
           onSnapToItem={null}
           scrollAnimationDuration={1000}
           dotStyle={styles.dotStyle}
           activeDotStyle={styles.activeDotStyle}
         />
+      ) : (
+        
+        <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>DUYURU YOK</Text>
+      </View>
+      )}
       </View>
 
       {/* Card Balance Display */}
@@ -224,6 +233,21 @@ const Home = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf:  "center",
+    marginLeft:50,
+    marginRight:50,
+    height: '60%',
+    width: '80%',
+    backgroundColor: '#D3D3D3',  // Açık gri arka plan rengi
+  },
+  emptyText: {
+    fontSize: 40,
+    color: 'white',
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -233,7 +257,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   image: {
-    height: 200,
+    height: 150,
     resizeMode: 'contain'
   },
   dotStyle: {

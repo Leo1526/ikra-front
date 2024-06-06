@@ -32,6 +32,7 @@ export const ikraAxios = async ({
   onError = defaultHandleFail,
   tokenRequired = true,
   setLoading = null,
+  isUserGet =false
 }) => {
   if(setLoading) {
     setLoading(true)
@@ -60,6 +61,11 @@ export const ikraAxios = async ({
       setLoading(false)
     }
     onSuccess(response.data);  // Callback fonksiyonunu çağır
+    
+    if(isUserGet){
+      await AsyncStorage.setItem("userName",response.data.body.name)
+    }
+
     return response.data;
   } catch (error) {
     onError(error);  // Callback fonksiyonunu çağır
