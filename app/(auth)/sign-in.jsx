@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import PinInput from '../../components/PinInput.jsx';
-
+import { ikraAxios } from '../common.js';
 
 const SignIn = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -105,6 +105,10 @@ const SignIn = ({navigation}) => {
     setPreviousUserMail('')
   }
 
+  const forgetMyPassword = () => {
+    
+  }
+
   return (
 
     <KeyboardAvoidingView
@@ -177,12 +181,13 @@ const SignIn = ({navigation}) => {
             </Snackbar>
 
             <View style={styles.textContainer}>
-              <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+              <TouchableOpacity onPress={forgetMyPassword}>
+                <Text style={styles.signupButtonText}>Şifremi unuttum. {'\u00A0'}</Text>
+              </TouchableOpacity>
               <Button
                 onPress={() => navigation.navigate('sign-up')}
                 labelStyle={commonStyle.secondaryButtonLabel}
-                style={commonStyle.secondaryButton}
-                >
+                style={commonStyle.secondaryButton}>
                 Kayıt Ol
               </Button>
             </View>

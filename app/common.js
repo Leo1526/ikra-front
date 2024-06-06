@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { navigate } from './navigationService';
+import { navigate, replace } from './navigationService';
 export const url = "https://compact-codex-425018-n7.lm.r.appspot.com";
 export const urlDev = "http://192.168.1.104:8080";
 
@@ -95,7 +95,7 @@ export const checkTokenExpiration = async () => {
 export const navigateToLoginPage = async (expired = false) => {
   await AsyncStorage.removeItem('jwtToken');
   await AsyncStorage.removeItem('expireDate');
-  navigate('AuthStack');
+  replace('AuthStack');
   if (expired) {
     alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
   }
