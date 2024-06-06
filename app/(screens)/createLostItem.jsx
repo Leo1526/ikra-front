@@ -158,7 +158,7 @@ const CreateLostPage = ({ navigation }) => {
               selectedValue={idType}
               onValueChange={setIdType}
               items={[
-                { label: "ID", value: "ID_KNOWN" },
+                { label: "Kimliği Belli", value: "ID_KNOWN" },
                 { label: "Diğer", value: "ID_NOT_KNOWN" },
               ]}
               style={pickerSelectStyles}

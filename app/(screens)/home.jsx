@@ -109,7 +109,8 @@ const Home = ({ navigation }) => {
   };
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(studentId);
+    Clipboard.setString(studentId.toString());
+    alert('Öğrenci numarası kopyalandı!');
   };
   const [isDragging, setIsDragging] = useState(false);
   const renderItem = ({ item }) => (

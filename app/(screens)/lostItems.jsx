@@ -193,8 +193,8 @@ const LostItemsPage = ({ navigation }) => {
                     onValueChange={setTemporaryFilterCategory}
                     items={[
                       { label: "Tümü", value: "all" },
-                      { label: "Kimlik", value: "ID_KNOWN" },
-                      { label: "Kimlik Değil", value: "ID_NOT_KNOWN" },
+                      { label: "Kimliği Belli", value: "ID_KNOWN" },
+                      { label: "Diğer", value: "ID_NOT_KNOWN" },
                     ]}
                     style={pickerSelectStyles}
                   />
