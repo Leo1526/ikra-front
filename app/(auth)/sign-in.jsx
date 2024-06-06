@@ -116,7 +116,7 @@ const SignIn = ({navigation}) => {
             style={styles.logo}
             resizeMode="contain"
           />
-          {<Text style={styles.appName}>Hoşgeldiniz.</Text>}
+          {<Text style={styles.appName}>Hoşgeldiniz</Text>}
           {previousUserName &&<Text style={styles.appName}>{previousUserName}</Text> }
           <View style={styles.form}>
 
@@ -144,7 +144,7 @@ const SignIn = ({navigation}) => {
             right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
             /> */}
 
-<PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin); handleLogin}} />
+<PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
 
           {/* {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>} */}
           <Button
