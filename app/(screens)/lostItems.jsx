@@ -271,7 +271,10 @@ const styles = StyleSheet.create({
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
   },
-
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   list: {
     width: "100%",
     paddingBottom: 30,
@@ -306,11 +309,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10,
   },
-
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   modalOverlay: {
     flex: 1,
     justifyContent: "center",
@@ -327,23 +325,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
-  },
-  claimButton: {
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 20,
-    alignSelf: "center",
-    backgroundColor: colors.background,
-    fontSize: 16,
-    letterSpacing: 2,
-    fontWeight: "500",
-    borderColor: "green",
-    borderWidth: 1,
-  },
-  button: {
-    backgroundColor: colors.secondary,
-    borderRadius: 20,
-    alignSelf: "center",
   },
   buttonContainer: {
     flexDirection: "row",

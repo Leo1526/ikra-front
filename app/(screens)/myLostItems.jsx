@@ -23,7 +23,6 @@ import {
 import { colors } from "../../design/themes";
 import { ikraAxios, urlDev } from "../common";
 
-import { MaterialIcons } from "@expo/vector-icons"; // Kamera ikonu için
 import { commonStyle } from "../../design/style";
 
 const MyLostItemsPage = ({ navigation }) => {
@@ -374,6 +373,10 @@ const styles = StyleSheet.create({
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
     padding: 16,
@@ -426,7 +429,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10,
   },
-
   heading: {
     fontSize: 20,
     fontWeight: "bold",
@@ -434,16 +436,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     padding: 10,
   },
-
   textInput: {
     marginBottom: 16,
   },
@@ -451,7 +448,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 16,
   },
-
   loadMoreButton: {
     backgroundColor: colors.background,
     marginTop: 20,
@@ -466,7 +462,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
   claimItem: {
     marginBottom: 10,
     borderWidth: 2,
@@ -498,12 +493,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: colors.text,
   },
-
   imageContainer: {
     alignItems: "center",
     marginBottom: 10,
   },
-
   newRequestButton: {
     position: "absolute",
     bottom: 20,
@@ -542,7 +535,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   flatList: {
-    maxHeight: 200, // FlatList'in maksimum yüksekliğini belirleyin, modal içerisine sığması için.
+    maxHeight: 200,
   },
   flatListContentContainer: {
     paddingBottom: 20,
