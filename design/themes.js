@@ -8,14 +8,19 @@ export const colors = {
     secondaryBackground: "#E0E3E8",
     text: "#222222",
     primaryLight: '#5777A8',
-    listItem:"white"
+    listItem:"white",
+    green: "green",
+    red: "red",
+    golden: "#FAD35E",
 };
 
 export const text = {
   primaryDark: '#222222',
   primaryLight: '#FFFFFF',
   secondaryDark: '#555555',
-  secondaryLight: "#CCCCCC"
+  secondaryLight: "#CCCCCC",
+  lightBlack: "#333333",
+  darkGray: "#666666",
 }
   
 export const fonts = {

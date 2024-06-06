@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, View, Text, TouchableOpacity, StatusBar, Image } 
 import { Divider } from 'react-native-paper';
 import { colors } from '../../design/themes';
 import { ikraAxios, urlDev } from '../common';
+import { commonStyle } from '../../design/style';
 
 const RequestsPage = ({navigation}) => {
   const [requests, setRequests] = useState([]);
@@ -86,13 +87,13 @@ const RequestsPage = ({navigation}) => {
         </View>
       )}
       <View style={styles.requestContent}>
-        <Text style={styles.requestText}>{item.proposal}</Text>
+        <Text style={[commonStyle.generalText, {fontSize: 18, marginBottom: 8}]}>{item.proposal}</Text>
         <View style={styles.optionsContainer}>
           {item.options.map((option) => (
             <TouchableOpacity key={option.id} style={styles.optionContainer} onPress={() => handleOptionPress(item.id, option.id)}>
               <View style={styles.optionRow}>
                 <View style={[styles.dot, { backgroundColor: item.usersVote === option.id ? colors.secondary : colors.primary }]} />
-                <Text style={styles.optionText}>{option.description}</Text>
+                <Text style={commonStyle.generalText}>{option.description}</Text>
               </View>
               {item.userHasVoted && (
                 <View style={styles.progressBarContainer}>

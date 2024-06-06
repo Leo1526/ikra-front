@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, TouchableWithoutFee
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
-import { colors } from '../../design/themes';
+import { colors, text } from '../../design/themes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
 import { ikraAxios, urlDev } from '../common';
@@ -111,11 +111,11 @@ const CourseAttendanceScreen = () => {
     return (
       <View style={styles.weekContainer}>
         <View style={styles.numberContainer}>
-          <Text style={styles.numberText}>{index + 1}.</Text>
+          <Text style={[commonStyle.textLabel]}>{index + 1}.</Text>
         </View>
         <View style={styles.dateContainer}>
-          <Text style={styles.dateText}>{formattedDate}</Text>
-          <Text style={styles.timeText}>{formattedTime}</Text>
+          <Text style={[commonStyle.generalText, {fontSize: 16, color: text.lightBlack, textAlign: 'center'}]}>{formattedDate}</Text>
+          <Text style={[commonStyle.generalText, {fontSize: 14, color: text.darkGray, textAlign: 'center'}]}>{formattedTime}</Text>
         </View>
         {item.hasAttended ? (
           <Icon name="check" size={24} color="green" />
@@ -134,8 +134,8 @@ const CourseAttendanceScreen = () => {
           {loading ? (<ActivityIndicator></ActivityIndicator>) :
             (
               <View style={styles.mainContainer}>
-                <Text style={styles.heading}>{course.courseCode}</Text>
-                <Text style={styles.subHeading}>{course.name}</Text>
+                <Text style={[commonStyle.textLabel, {fontSize: 28, marginBottom: 10, textAlign: 'center'}]}>{course.courseCode}</Text>
+                <Text style={[commonStyle.generalText, {fontSize: 22, marginBottom: 20, textAlign: 'center', color: colors.primary}]}>{course.name}</Text>
 
                 <RNPickerSelect
                   onValueChange={handleSelectInstructor}
@@ -159,7 +159,7 @@ const CourseAttendanceScreen = () => {
                     keyExtractor={(item) => item.attendance.id.toString()}
                     ListEmptyComponent={() => (
                       <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyText}>Daha önce yoklama alınmadı.</Text>
+                        <Text style={[commonStyle.generalText, {color: text.darkGray, fontSize: 16}]}>Daha önce yoklama alınmadı.</Text>
                       </View>
                     )}
                   />
@@ -217,40 +217,9 @@ const styles = StyleSheet.create({
     height: "100%",
 
   },
-  heading: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#354D73',
-  },
-  subHeading: {
-    fontSize: 22,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#354D73',
-  },
-  selectBoxInput: {
-    width: '100%',
-    marginBottom: 16,
-    backgroundColor: colors.background,
-    borderRadius: 8,
-    height: 50,
-    justifyContent: 'center',
-    paddingLeft: 10,
-  },
   emptyContainer: {
     padding: 20,
     alignItems: 'center'
-  },
-  emptyText: {
-    fontSize: 16,
-    color: 'grey'
-  },
-  attendanceRate: {
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'center',
   },
   picker: {
     height: 50,
@@ -271,75 +240,9 @@ const styles = StyleSheet.create({
     width: 30,
     alignItems: 'center',
   },
-  numberText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   dateContainer: {
     flex: 1,
     justifyContent: 'center',
-  },
-  dateText: {
-    fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
-  },
-  timeText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-  },
-  codeInput: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    flex: 1,
-    marginRight: 10,
-  },
-  submitButton: {
-    padding: 10,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  attendanceButton: {
-    padding: 15,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: 300,
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    alignItems: 'center',
-    elevation: 5,
-  },
-  generateCodeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  generateButton: {
-    padding: 15,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    marginTop: 20,
   },
 });
 

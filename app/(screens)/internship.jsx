@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../design/themes";
 import { urlDev, ikraAxios } from "../common";
@@ -48,6 +56,12 @@ const InternshipScreen = () => {
     ]);
   };
 
+  const handleUrlPress = (url) => {
+    Linking.openURL("https://" + url).catch((err) =>
+      console.error("An error occurred", err)
+    );
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.internshipContainer}>
       <View style={styles.imageContainer}>
@@ -84,18 +98,32 @@ const InternshipScreen = () => {
         >
           {item.name}
         </Text>
-        <Text style={[commonStyle.generalText, {marginBottom: 10}]}>{item.description}</Text>
-        <Text style={[{marginBottom: 10}]}>
-          <Text style={[commonStyle.textLabel, {fontSize: 14}]}>Website: </Text>
-          <Text style={[commonStyle.generalText]}>{item.companyWebsite}</Text>
+        <Text style={[commonStyle.generalText, { marginBottom: 10 }]}>
+          {item.description}
         </Text>
-        <Text style={[{marginBottom: 10}]}>
-          <Text style={[commonStyle.textLabel, {fontSize: 14}]}>Başvuru linki: </Text>
-          <Text style={[commonStyle.generalText]}>{item.applicationLink}</Text>
+        <Text style={[{  marginBottom: 10 }]}>
+          <Text style={[commonStyle.textLabel, { fontSize: 14 }]}>
+            Website:{" "}
+          </Text>
+          <TouchableOpacity onPress={() => handleUrlPress(item.companyWebsite)}>
+            <Text style={styles.linket}>{item.companyWebsite}</Text>
+          </TouchableOpacity>
         </Text>
-        <Text style={[{marginBottom: 10}]}>
-        <Text style={[commonStyle.textLabel, {fontSize: 14}]}>Son başvuru tarihi: </Text>
-        <Text style={[commonStyle.generalText]}>{item.applicationDeadline}</Text>
+        <Text style={[{ marginBottom: 10 }]}>
+          <Text style={[commonStyle.textLabel, { fontSize: 14 }]}>
+            Başvuru linki:{" "}
+          </Text>
+          <TouchableOpacity onPress={() => handleUrlPress(item.applicationLink)}>
+            <Text style={styles.linket}>{item.applicationLink}</Text>
+          </TouchableOpacity>
+        </Text>
+        <Text style={[{ marginBottom: 10 }]}>
+          <Text style={[commonStyle.textLabel, { fontSize: 14 }]}>
+            Son başvuru tarihi:{" "}
+          </Text>
+          <Text style={[commonStyle.generalText]}>
+            {item.applicationDeadline}
+          </Text>
         </Text>
       </View>
     </View>
@@ -149,6 +177,13 @@ const styles = StyleSheet.create({
   requestImage: {
     height: 200,
     width: "100%",
+  },
+
+  linket: {
+    color: "blue",
+    fontSize: 14,
+    fontWeight: "bold",
+    top: 2,
   },
 });
 
