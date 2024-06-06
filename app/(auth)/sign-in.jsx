@@ -21,6 +21,7 @@ const SignIn = ({navigation}) => {
   const [previousUserName, setPreviousUserName] = useState(null);
   const [previousUserMail, setPreviousUserMail] = useState(null);
   const passwordRef = useRef(null);
+  const [forgetMyPasswordMode, setForgetMyPasswordMode] = useState(false)
 
 
   const getAsyncData = async (key,onAccess) => {
@@ -105,8 +106,30 @@ const SignIn = ({navigation}) => {
     setPreviousUserMail('')
   }
 
-  const forgetMyPassword = () => {
-    
+  const activateForgetMyPassword = () => {
+    setForgetMyPasswordMode(true)
+  }
+
+  const forgetMyPasswordSubmit = () => {
+    if (!username) {
+      alert("Lütfen email adresinizi girin.")
+    }
+    ikraAxios({
+      url: common.urlDev + "/resetPassword?username="+username,
+      method: 'POST',
+      tokenRequired: false,
+      onSuccess: (data) => {
+        console.log()
+        if (data.body.status === 'SUCCESS') {
+          alert("Mailinize yeni şifreniz iletildi.\nGiriş yaptıktan sonra şifrenizi değiştirebilirsiniz.")
+          return;
+        }
+        alert("Şifremi unuttum servisinde hata! " + data.body.message)
+      },
+      onError: () => {
+        alert("Şifremi unuttum servisinde beklenmeyen hata!")
+      }
+    })
   }
 
   return (
@@ -123,7 +146,7 @@ const SignIn = ({navigation}) => {
             style={styles.logo}
             resizeMode="contain"
           />
-            {previousUserName && (
+            {previousUserName && !forgetMyPasswordMode && (
               <View style={{flex:1,flexDirection:'column', alignItems:'center', justifyContent: 'center',width:"100%"}}>
                 <Text style={styles.appName}>{previousUserName}</Text>
                 <TouchableOpacity onPress={changeUserEmail} style={styles.changeUserMailButton}>
@@ -133,7 +156,7 @@ const SignIn = ({navigation}) => {
               ) }
           <View style={styles.form}>
 
-            {!previousUserName && <TextInput
+            {(!previousUserName || forgetMyPasswordMode ) && <TextInput
               label="Kullanıcı Adı"
               value={username}
               onChangeText={text => setUsername(text)}
@@ -156,18 +179,29 @@ const SignIn = ({navigation}) => {
               theme={{ colors: { primary: 'blue' } }}
               right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
               /> */}
-
-            <PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
-
+            {!forgetMyPasswordMode && 
+              <PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
+            }
             {/* {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>} */}
-            <Button
-              mode="contained"
-              onPress={handleLogin}
-              style={commonStyle.primaryButton}
-              labelStyle={commonStyle.primaryButtonLabel}
-              >
-              Giriş Yap
-            </Button>
+            {!forgetMyPasswordMode ? (
+              <Button
+                mode="contained"
+                onPress={handleLogin}
+                style={commonStyle.primaryButton}
+                labelStyle={commonStyle.primaryButtonLabel}
+                >
+                Giriş Yap
+              </Button>
+            ):(
+              <Button
+                mode="contained"
+                onPress={forgetMyPasswordSubmit}
+                style={commonStyle.primaryButton}
+                labelStyle={commonStyle.primaryButtonLabel}
+                >
+                Şifremi Gönder
+              </Button>
+            )}
             <Snackbar
               visible={snackbarVisible}
               onDismiss={() => setSnackbarVisible(false)}
@@ -180,17 +214,27 @@ const SignIn = ({navigation}) => {
               Kullanıcı adı veya parola hatalı
             </Snackbar>
 
-            <View style={styles.textContainer}>
-              <TouchableOpacity onPress={forgetMyPassword}>
-                <Text style={styles.signupButtonText}>Şifremi unuttum. {'\u00A0'}</Text>
-              </TouchableOpacity>
-              <Button
-                onPress={() => navigation.navigate('sign-up')}
-                labelStyle={commonStyle.secondaryButtonLabel}
-                style={commonStyle.secondaryButton}>
-                Kayıt Ol
-              </Button>
-            </View>
+            {!forgetMyPasswordMode &&             
+              <View style={styles.textContainer}>
+                <TouchableOpacity onPress={activateForgetMyPassword}>
+                  <Text style={styles.signupButtonText}>Şifremi unuttum. {'\u00A0'}</Text>
+                </TouchableOpacity>
+                <Button
+                  onPress={() => navigation.navigate('sign-up')}
+                  labelStyle={commonStyle.secondaryButtonLabel}
+                  style={commonStyle.secondaryButton}>
+                  Kayıt Ol
+                </Button>
+              </View>}
+              {forgetMyPasswordMode &&
+                <View style={styles.container}>
+                  <Button onPress={() => setForgetMyPasswordMode(false)}
+                    labelStyle={commonStyle.secondaryButtonLabel}
+                    style={commonStyle.secondaryButton}>
+                    Geri Dön
+                  </Button>
+                </View>
+              }
           </View>
         </ScrollView>
       </SafeAreaView>  
