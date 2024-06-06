@@ -24,9 +24,10 @@ const DiningMenuScreen = () => {
   const [ratingModalVisible, setRatingModalVisible] = useState(false);
   const [rating, setRating] = useState(0);
   const [page, setPage] = useState(0);
+  const [noMoreMeals, setNoMoreMeals] = useState(false);
 
   useEffect(() => {
-    fetchMeals();
+    fetchMeals(false);
   }, []);
 
   const fetchMeals = async (onReview) => {
@@ -34,19 +35,27 @@ const DiningMenuScreen = () => {
     var pageRequest = page;
     if (onReview) {
       pageRequest = pageRequest - 1;
+    } 
+
+    if (!onReview && noMoreMeals) {
+      return;
     }
 
     await ikraAxios({
-      url: urlDev + "/meal?page=" + pageRequest + "&size=3",
+      url: urlDev + '/meal?page=' + pageRequest + '&size=4',
       onSuccess: (data) => {
-        if (!onReview) {
-          setMealList((prevMealList) => [...prevMealList, ...data.body]);
+        console.log(data);
+
+        if(!onReview){
+          setMealList(prevMealList => [...prevMealList, ...data.body]);
           setPage(page + 1);
-        } else {
-          const updatedMealList = mealList.map((meal) => {
-            const updatedMeal = data.body.find(
-              (newMeal) => newMeal.id === meal.id
-            );
+          if(data.body.length < PAGE_SIZE) {
+            setNoMoreMeals(true);
+          }
+        }
+        else {
+            const updatedMealList = mealList.map(meal => {
+            const updatedMeal = data.body.find(newMeal => newMeal.id === meal.id);
             return updatedMeal ? updatedMeal : meal;
           });
 
@@ -113,10 +122,11 @@ const DiningMenuScreen = () => {
   const currentData = mealList.slice(startIndex, endIndex);
 
   const handlePageChange = (direction) => {
-    if (direction === "next" && currentPage < totalPages) {
+    if (direction === 'next' && !noMoreMeals) {
+      console.log("pageChange");
       setCurrentPage(currentPage + 1);
-      fetchMeals();
-    } else if (direction === "prev" && currentPage > 1) {
+      fetchMeals(false);
+    } else if (direction === 'prev' && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
