@@ -196,7 +196,7 @@ const AnnouncementsScreen = ({ navigation }) => {
                     <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
                 ) : (
                     <FlatList
-                        contentContainerStyle={{ flexGrow: 1, marginTop:10}}
+                        contentContainerStyle={{ flexGrow: 1}}
                         style={{ flex: 1 }}
                         data={schoolAnnouncements}
                         renderItem={renderAnnouncementItem}
@@ -212,7 +212,7 @@ const AnnouncementsScreen = ({ navigation }) => {
                     <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
                 ) : (
                     <FlatList
-                        contentContainerStyle={{ flexGrow: 1, marginTop:10}}
+                        contentContainerStyle={{ flexGrow: 1}}
                         style={{ flex: 1 }}
                         data={departmentAnnouncements}
                         renderItem={renderAnnouncementItem}
@@ -228,7 +228,7 @@ const AnnouncementsScreen = ({ navigation }) => {
                     <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
                 ) : (
                     <FlatList
-                        contentContainerStyle={{ flexGrow: 1, marginTop:10 }}
+                        contentContainerStyle={{ flexGrow: 1 }}
                         style={{ flex: 1 }}
                         data={communityAnnouncements}
                         renderItem={renderAnnouncementItem}

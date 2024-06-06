@@ -93,10 +93,10 @@ export const checkTokenExpiration = async () => {
 };
 
 export const navigateToLoginPage = async (expired = false) => {
+  await AsyncStorage.removeItem('jwtToken');
+  await AsyncStorage.removeItem('expireDate');
   navigate('AuthStack');
   if (expired) {
     alert("Oturum süreniz doldu. Tekrar giriş yapınız.")
   }
-  return false;
-  var email = await AsyncStorage.getItem('username');
 }

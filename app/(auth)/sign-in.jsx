@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Text,TouchableOpacity  } from 'react-native';
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, text } from '../../design/themes';
@@ -56,8 +56,6 @@ const SignIn = ({navigation}) => {
 
 
   const handleLogin = async  () => {
-    console.log(previousUserName)
-    console.log(previousUserMail)
     setErrorUsername(false)
     setErrorPassword(false)
     if (username.length < 8) {
@@ -102,6 +100,11 @@ const SignIn = ({navigation}) => {
     }
   };
 
+  const changeUserEmail = () => {
+    setPreviousUserName('')
+    setPreviousUserMail('')
+  }
+
   return (
 
     <KeyboardAvoidingView
@@ -116,66 +119,72 @@ const SignIn = ({navigation}) => {
             style={styles.logo}
             resizeMode="contain"
           />
-          {<Text style={styles.appName}>Hoşgeldiniz</Text>}
-          {previousUserName &&<Text style={styles.appName}>{previousUserName}</Text> }
+            {previousUserName && (
+              <View style={{flex:1,flexDirection:'column', alignItems:'center', justifyContent: 'center',width:"100%"}}>
+                <Text style={styles.appName}>{previousUserName}</Text>
+                <TouchableOpacity onPress={changeUserEmail} style={styles.changeUserMailButton}>
+                  <Text style={styles.changeUserMailText}>Çıkış Yap</Text>
+                </TouchableOpacity>
+              </View>
+              ) }
           <View style={styles.form}>
 
-          <TextInput
-            label="Kullanıcı Adı"
-            value={username}
-            onChangeText={text => setUsername(text)}
-            selectionColor={colors.primary}
-            activeUnderlineColor={colors.primary}
-            style={commonStyle.input}
-            labelStyle={commonStyle.input}
-            theme={{ colors: { primary: 'blue' } }}
-            />
-          {/* {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>} */}
-          {/* <TextInput
-            label="Parola"
-            value={password}
-            onChangeText={text => setPassword(text)}
-            secureTextEntry={!showPassword}
-            style={commonStyle.input}
-            selectionColor={colors.primary}
-            activeUnderlineColor={colors.primary}
-            ref={passwordRef}
-            theme={{ colors: { primary: 'blue' } }}
-            right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
-            /> */}
+            {!previousUserName && <TextInput
+              label="Kullanıcı Adı"
+              value={username}
+              onChangeText={text => setUsername(text)}
+              selectionColor={colors.primary}
+              activeUnderlineColor={colors.primary}
+              style={commonStyle.input}
+              labelStyle={commonStyle.input}
+              theme={{ colors: { primary: colors.primaryDark } }}
+              />}
+            {/* {errorUsername && <Text style={commonStyle.errorText}>Kullanıcı adı en az 8 karakter uzunluğunda olmalı.</Text>} */}
+            {/* <TextInput
+              label="Parola"
+              value={password}
+              onChangeText={text => setPassword(text)}
+              secureTextEntry={!showPassword}
+              style={commonStyle.input}
+              selectionColor={colors.primary}
+              activeUnderlineColor={colors.primary}
+              ref={passwordRef}
+              theme={{ colors: { primary: 'blue' } }}
+              right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} color={colors.primary} onPress={() => setShowPassword(!showPassword)} />}
+              /> */}
 
-<PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
+            <PinInput length={6} pinWidth={47} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
 
-          {/* {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>} */}
-          <Button
-            mode="contained"
-            onPress={handleLogin}
-            style={commonStyle.primaryButton}
-            labelStyle={commonStyle.primaryButtonLabel}
-            >
-            Giriş Yap
-          </Button>
-          <Snackbar
-            visible={snackbarVisible}
-            onDismiss={() => setSnackbarVisible(false)}
-            duration={3000}
-            action={{
-              label: 'Tamam',
-              onPress: () => setSnackbarVisible(false),
-            }}
-          >
-            Kullanıcı adı veya parola hatalı
-          </Snackbar>
-
-          <View style={styles.textContainer}>
-            <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+            {/* {errorPassword && <Text style={commonStyle.errorText}>Şifre en az 8 karakter uzunluğunda olmalı.</Text>} */}
             <Button
-              onPress={() => navigation.navigate('sign-up')}
-              labelStyle={commonStyle.secondaryButtonLabel}
-              style={commonStyle.secondaryButton}
+              mode="contained"
+              onPress={handleLogin}
+              style={commonStyle.primaryButton}
+              labelStyle={commonStyle.primaryButtonLabel}
               >
-              Kayıt Ol
+              Giriş Yap
             </Button>
+            <Snackbar
+              visible={snackbarVisible}
+              onDismiss={() => setSnackbarVisible(false)}
+              duration={3000}
+              action={{
+                label: 'Tamam',
+                onPress: () => setSnackbarVisible(false),
+              }}
+            >
+              Kullanıcı adı veya parola hatalı
+            </Snackbar>
+
+            <View style={styles.textContainer}>
+              <Text style={styles.signupButtonText}>Hesabın yok mu? {'\u00A0'}</Text>
+              <Button
+                onPress={() => navigation.navigate('sign-up')}
+                labelStyle={commonStyle.secondaryButtonLabel}
+                style={commonStyle.secondaryButton}
+                >
+                Kayıt Ol
+              </Button>
             </View>
           </View>
         </ScrollView>
@@ -199,6 +208,7 @@ const styles = StyleSheet.create({
   },
   
   container: {
+    flexDirection: 'column',
     flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -207,7 +217,8 @@ const styles = StyleSheet.create({
     font: fonts.regular
   },
   form: {
-    marginTop: 60,
+    flex:7,
+    marginTop: 30,
     width: '100%',
   },
   logo: {
@@ -215,10 +226,27 @@ const styles = StyleSheet.create({
     height: 200,
   },
   appName: {
-    fontSize: 20,
-    marginBottom: 16,
-    
-    color: "#555555", // Uygulama adı rengi
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.primaryDark,
+  },
+  changeUserMailButton: {
+    borderWidth: 1,
+    borderColor: colors.red,
+    borderRadius: 5,
+    backgroundColor: colors.background,
+    marginTop: 8,
+    paddingVertical: 0, 
+    paddingHorizontal: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  changeUserMailText: {
+    fontSize: 12,
+    paddingVertical: 4,
+    paddingHorizontal:4,
+    margin: 0,
+    color: colors.red
   },
   input: {
     width: '100%',

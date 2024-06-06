@@ -238,8 +238,16 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator 
       drawerContent={props => <Settings {...props} />}
-      initialRouteName="BottomTabNavigator" drawerPosition="right" 
-      screenOptions={{ headerShown: false, drawerPosition:"right"}}>
+      initialRouteName="BottomTabNavigator"
+      drawerPosition="right"
+      screenOptions={{
+        headerShown: false,
+        drawerPosition: "right",
+        drawerStyle: {
+          width: 210,
+        },
+      }}
+    >
       <Drawer.Screen name="BottomTabNavigator" component={BottomTabNavigator} /> 
     </Drawer.Navigator>
   );
