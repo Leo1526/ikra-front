@@ -62,7 +62,7 @@ const CommunityDetails = () => {
       </View>
     );
   }
-  
+
   const { bytes, mimeType } = community.image;
 
   return (
