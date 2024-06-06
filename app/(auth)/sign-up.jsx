@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { colors, text } from '../../design/themes';
 import { ikraAxios, urlDev, url } from '../common';
 import { API_BASE_URL } from '../../constants/constants';
+import PinInput from '../../components/PinInput';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -225,6 +226,7 @@ const SignUp = () => {
             ) : (
             <RNPickerSelect
               onValueChange={(value) => setDepartment(value)}
+              
               items={departments}
               disabled={departments.length === 0}
               style={{
@@ -263,14 +265,17 @@ const SignUp = () => {
               style={styles.input}
               keyboardType="numeric"
             />
-            <TextInput
+            {/* <TextInput
               label="Parola"
               value={password}
               onChangeText={text => setPassword(text)}
               secureTextEntry={!showPassword}
               style={styles.input}
               right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
-            />
+            /> */}
+<PinInput length={6} pinWidth = {50} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
+<PinInput length={6} pinWidth = {50} labelAlign= {"center"} label = {"Parola Tekrarı"}placeholderText={"TEKRAR"} onPinComplete={(pin) => {console.log('PIN:', pin); setPassword(pin)}} />
+            
             <Button
               mode="contained"
               onPress={handleSignUp}
@@ -317,6 +322,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   page: {
+    
     width: "100%",
     height: "100%",
     justifyContent: 'center',
@@ -343,7 +349,6 @@ const styles = StyleSheet.create({
   selectBoxInput: {
     width: '100%',
     marginBottom: 16,
-    marginLeft: 15,
     backgroundColor: colors.background,
     borderRadius: 8,
     height: 50,
