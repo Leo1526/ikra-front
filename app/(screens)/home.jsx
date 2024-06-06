@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   image: {
-    height: 150,
+    height: 200,
     resizeMode: 'contain'
   },
   dotStyle: {
