@@ -15,7 +15,7 @@ const Settings = ({navigation}) => {
           )}
           labelStyle={styles.defaultStyle} 
           style={styles.defaultButton}
-          onPress={() => navigation.navigate('forgotMyPassword')}
+          onPress={() => navigation.navigate('changePassword')}
         >
           Şifre Değiştir
         </Button>

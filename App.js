@@ -11,6 +11,8 @@ import SignIn from './app/(auth)/sign-in';
 import SignUp from './app/(auth)/sign-up';
 import Home from './app/(screens)/home';
 
+import ChangePasswordScreen from './app/(screens)/changePassword';
+
 import { navigationRef } from './app/navigationService';
 
 import Settings from './app/(screens)/settings';
@@ -229,7 +231,8 @@ const HomeStack = () => {
       <Stack.Screen name='lostItems' component={LostStack}/>
       <Stack.Screen name='requests' component={RequestStack}/>
       <Stack.Screen name='myCourses' component={AttStack}/>
-      <Stack.Screen name='communityDetails' component={CommunityDetails}/> 
+      <Stack.Screen name='communityDetails' component={CommunityDetails}/>
+      <Stack.Screen name='changePassword' component={ChangePasswordScreen}/> 
     </Stack.Navigator>
   );
 };
