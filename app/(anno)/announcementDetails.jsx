@@ -90,8 +90,7 @@ const AnnouncementDetails = ({navigation}) => {
   }
 
   const handleCommunityPress = (communityId) => {
-    // Handle the community button press
-    alert(`Community ID: ${communityId}`);
+    navigation.navigate('communityDetails', communityId)
   }
 
   const { image, mime, title, body, communityId, communityName ,insertDate, canEdit } = announcement;
