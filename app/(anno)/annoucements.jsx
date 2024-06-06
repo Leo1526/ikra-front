@@ -51,11 +51,11 @@ const AnnouncementsScreen = ({ navigation }) => {
                 }
             },
             onError: (error) => {
-                alert('Error fetching Announcement Data: ' + error);
+                alert('Okul duyuruları getirilirken hata: ' + error);
             },
           });
         } catch (error) {
-          alert('Error in fetch Announcements: ' + error);
+          alert('Okul duyuruları getirilirken bilinmeyen hata: ' + error);
         } finally {
           setLoading(false);
         }
@@ -75,15 +75,15 @@ const AnnouncementsScreen = ({ navigation }) => {
                         setCommunityLastDataLength(data.body.length);
                         return;
                     } else {
-                        alert("Duyurular getirilirken hata! " +  error);
+                        alert("Topluluk duyuruları getirilirken hata! " +  error);
                     }
                 },
                 onError: (error) => {
-                    alert('Error fetching Announcement Data: ' + error);
+                    alert('Topluluk duyuruları getirilirken hata: ' + error);
                 },
             });
         } catch (error) {
-          alert('Error in fetch Announcements: ' + error);
+          alert('Topluluk duyuruları getirilirken bilinmeyen hata: ' + error);
         } finally {
           setLoading(false);
         }
@@ -103,22 +103,26 @@ const AnnouncementsScreen = ({ navigation }) => {
                     setDepartmentLastDataLength(data.body.length);
                     return;
                 } else {
-                    alert("Duyurular getirilirken hata! " +  error);
+                    alert("Departman duyuruları getirilirken hata! " +  error);
                 }
             },
             onError: (error) => {
-                alert('Error fetching Announcement Data: ' + error);
+                alert('Departman duyurları getirilirken bilinmeyen hata: ' + error);
             },
           });
         } catch (error) {
-          alert('Error in fetch Announcements: ' + error);
+          alert('Departman duyuruları getirilirken: ' + error);
         } finally {
           setLoading(false);
         }
     };
 
-    const handleViewDetails = () => {
-        navigation.navigate('');
+    const handleViewDetails = (id) => {
+        navigation.navigate('announcementDetails', {id});
+    }
+
+    const handleCommunityPress = (id) => {
+        navigation.navigate('communityDetails', {id})
     }
 
     const renderAnnouncementItem = ({ item, index }) => (
@@ -131,13 +135,17 @@ const AnnouncementsScreen = ({ navigation }) => {
             )}
             <View style={styles.announcementContent}>
                 <Text style={styles.announcementTitle}>{item.title}</Text>
+                <TouchableOpacity
+                    style={styles.detailsButton}
+                    onPress={() => handleViewDetails(item.id)}>
+                    <Text style={styles.detailsButtonText}>Detayları Göster &#10140;</Text>
+                </TouchableOpacity>
                 <View style={styles.announcementFooter}>
-                    <TouchableOpacity
-                        style={styles.detailsButton}
-                        onPress={handleViewDetails}
-                    >
-                        <Text style={styles.detailsButtonText}>View Details</Text>
+                    {item.communityName && (
+                    <TouchableOpacity style={styles.communityButton} onPress={() => handleCommunityPress(item.communityId)}>
+                        <Text style={styles.communityButtonText}>{item.communityName}</Text>
                     </TouchableOpacity>
+                    )}
                     <Text style={styles.announcementInsertDate}>{new Date(item.insertDate).toLocaleDateString()}</Text>
                 </View>
             </View>
@@ -183,7 +191,7 @@ const AnnouncementsScreen = ({ navigation }) => {
                     <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
                 ) : (
                     <FlatList
-                        contentContainerStyle={{ flexGrow: 1, marginTop:20 }}
+                        contentContainerStyle={{ flexGrow: 1, marginTop:10}}
                         style={{ flex: 1 }}
                         data={schoolAnnouncements}
                         renderItem={renderAnnouncementItem}
@@ -199,7 +207,7 @@ const AnnouncementsScreen = ({ navigation }) => {
                     <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
                 ) : (
                     <FlatList
-                        contentContainerStyle={{ flexGrow: 1 }}
+                        contentContainerStyle={{ flexGrow: 1, marginTop:10}}
                         style={{ flex: 1 }}
                         data={departmentAnnouncements}
                         renderItem={renderAnnouncementItem}
@@ -215,7 +223,7 @@ const AnnouncementsScreen = ({ navigation }) => {
                     <Text style={styles.noAnnouncementsText}>Duyuru Yok</Text>
                 ) : (
                     <FlatList
-                        contentContainerStyle={{ flexGrow: 1 }}
+                        contentContainerStyle={{ flexGrow: 1, marginTop:10 }}
                         style={{ flex: 1 }}
                         data={communityAnnouncements}
                         renderItem={renderAnnouncementItem}
@@ -275,11 +283,10 @@ const styles = StyleSheet.create({
     },
     announcementItem: {
         flexDirection: 'row',
-        backgroundColor: 'white',
+        backgroundColor: colors.background,
         padding: 10,
-        marginVertical: 5,
-        marginHorizontal: 10,
-        borderRadius: 8,
+        borderColor: colors.primaryDark,
+        borderTopWidth:1,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
@@ -287,41 +294,59 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     announcementImage: {
-        width: 100,
+        width: '25%',  // 1/4 of the width
         height: 100,
-        borderRadius: 0,
+        borderRadius: 8,
+        marginRight: 10,
     },
     announcementContent: {
         flex: 1,
-        paddingLeft: 10,
         justifyContent: 'space-between',
     },
     announcementTitle: {
         fontSize: 18,
         fontWeight: 'bold',
     },
-    announcementFooter: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-    },
-    announcementInsertDate: {
-        fontSize: 12,
-        color: '#555',
-        alignSelf: 'flex-end',
-    },
     detailsButton: {
-        backgroundColor: colors.primary,
-        padding: 10,
+        position: 'absolute',
+        top: '50%',
+        transform: [{ translateY: -10 }],  // Adjust vertical alignment
+        right: 0,
+        backgroundColor: '#698FC8',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
         borderRadius: 5,
-        alignItems: 'center',
-        alignSelf: 'flex-start',
     },
     detailsButtonText: {
         color: 'white',
         fontWeight: 'bold',
     },
-
+    announcementFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    communityButton: {
+        backgroundColor: colors.secondary,
+        padding: 5,
+        borderRadius: 5,
+    },
+    communityButtonText: {
+        color: colors.background,
+        fontWeight: 'bold',
+    },
+    announcementInsertDate: {
+        position: 'absolute',
+        bottom: 5,
+        right: 5,
+        fontSize: 12,
+        color: '#555',
+    },
+    footerLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
 });
 
 export default AnnouncementsScreen;

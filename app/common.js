@@ -56,6 +56,9 @@ export const ikraAxios = async ({
       headers,
       timeout: 30000
     });
+    if(setLoading) {
+      setLoading(false)
+    }
     onSuccess(response.data);  // Callback fonksiyonunu çağır
     return response.data;
   } catch (error) {
