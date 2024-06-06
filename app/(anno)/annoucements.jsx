@@ -28,7 +28,6 @@ const AnnouncementsScreen = ({ navigation }) => {
     const [communityLastDataLength, setCommunityLastDataLength] = useState(5);
     
     const [activePage, setActivePage] = useState('schoolAnnouncements');
-
     useEffect(() => {
         navigateSchoolAnnouncements();
     }, []);
@@ -125,14 +124,19 @@ const AnnouncementsScreen = ({ navigation }) => {
         navigation.navigate('communityDetails', {id})
     }
 
-    const renderAnnouncementItem = ({ item, index }) => (
+    const renderAnnouncementItem = ({ item, index }) => {
+        imageSource = require('../../assets/images/announcement-placeholder.png')
+        if (item.image) {
+          imageSource = { uri: `data:${item.mime};base64,${item.image}` };
+        }
+
+        return (
         <View style={styles.announcementItem}>
-            {item.image && (
-                <Image
-                    source={item.image ? { uri: `data:${item.mimeType};base64,${item.image}` } : require('../../assets/images/placeholder.png')}
-                    style={styles.announcementImage}
-                />
-            )}
+            <Image
+                source={imageSource}
+                style={styles.announcementImage}
+                onError={(e) => console.log('Error loading image:', e.nativeEvent.error)}
+            />
             <View style={styles.announcementContent}>
                 <Text style={styles.announcementTitle}>{item.title}</Text>
                 <TouchableOpacity
@@ -150,7 +154,8 @@ const AnnouncementsScreen = ({ navigation }) => {
                 </View>
             </View>
         </View>
-    );
+        )
+    };
 
     const navigateSchoolAnnouncements = () => {
         setActivePage('schoolAnnouncements');
@@ -258,10 +263,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#698FC8',
+        paddingHorizontal: 10,
+        paddingVertical:5,
+        backgroundColor: colors.primaryLight,
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        borderBottomColor: colors.primaryDark,
         zIndex: 1000
     },
     iconContainer: {
@@ -284,9 +290,10 @@ const styles = StyleSheet.create({
     announcementItem: {
         flexDirection: 'row',
         backgroundColor: colors.background,
-        padding: 10,
+        paddingVertical: 10,
+        paddingLeft:10,
         borderColor: colors.primaryDark,
-        borderTopWidth:1,
+        borderBottomWidth:1,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
@@ -308,18 +315,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     detailsButton: {
-        position: 'absolute',
-        top: '50%',
-        transform: [{ translateY: -10 }],  // Adjust vertical alignment
-        right: 0,
-        backgroundColor: '#698FC8',
-        paddingVertical: 5,
+        backgroundColor: colors.primary,
+        padding: 5,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        alignSelf: 'flex-end',
+        marginTop: 5,
     },
     detailsButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
+        color: colors.background,
+        fontWeight: 'thin',
     },
     announcementFooter: {
         flexDirection: 'row',
