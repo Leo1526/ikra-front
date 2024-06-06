@@ -24,7 +24,7 @@ const RequestsPage = ({navigation}) => {
       await ikraAxios({
         url: `${urlDev}/proposals/universityId?page=${page}&size=${size}`,
         onSuccess: (data) => {
-          if(data.body.length === 0){
+          if(data.body.length < size){
             setNoMoreComments(true);
           }
           setRequests((prevRequests) => [...prevRequests, ...data.body]);
@@ -87,35 +87,35 @@ const RequestsPage = ({navigation}) => {
       )}
       <View style={styles.requestContent}>
         <Text style={styles.requestText}>{item.proposal}</Text>
-        {item.options.map((option) => (
-          <TouchableOpacity key={option.id} style={styles.optionContainer} onPress={() => handleOptionPress(item.id, option.id)}>
-            <View style={styles.optionRow}>
-              <View style={[styles.dot, { backgroundColor: item.usersVote === option.id ? colors.secondary : colors.primary }]} />
-              <Text style={styles.optionText}>{option.description}</Text>
-            </View>
-            {item.userHasVoted && (
-              <View style={styles.progressBarContainer}>
-                <View style={[styles.progressBar, { width: `${option.votePct * 100}%`, backgroundColor: colors.primary }]}>
-                  <Text style={styles.percentageText}>{`${Math.round(option.votePct * 100)}%`}</Text>
-                </View>
+        <View style={styles.optionsContainer}>
+          {item.options.map((option) => (
+            <TouchableOpacity key={option.id} style={styles.optionContainer} onPress={() => handleOptionPress(item.id, option.id)}>
+              <View style={styles.optionRow}>
+                <View style={[styles.dot, { backgroundColor: item.usersVote === option.id ? colors.secondary : colors.primary }]} />
+                <Text style={styles.optionText}>{option.description}</Text>
               </View>
-            )}
-          </TouchableOpacity>
-        ))}
+              {item.userHasVoted && (
+                <View style={styles.progressBarContainer}>
+                  <View style={[styles.progressBar, { width: `${option.votePct * 100}%`, backgroundColor: colors.primary }]}>
+                    <Text style={styles.percentageText}>{`${Math.round(option.votePct * 100)}%`}</Text>
+                  </View>
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text style={styles.voteCount}>{item.totalVoteCount} Oy</Text>
       </View>
       {index < requests.length - 1 && <Divider style={styles.divider} />}
     </View>
   );
 
   const handleNewRequestPress = () => {
-    // Handle the action when the new request button is pressed
     console.log('New request button pressed');
     navigation.navigate('createRequest');
-    // For example, navigate to a new screen or open a modal
   };
 
   return (
-    
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <FlatList
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   requestCard: {
-    marginBottom: 10,
+    marginBottom: 20, // Increased space between requests
     paddingHorizontal: 16,
   },
   imageContainer: {
@@ -161,8 +161,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 8,
   },
+  optionsContainer: {
+    marginTop: 8, // Space between the title and options
+  },
   optionContainer: {
-    marginBottom: 4,
+    marginBottom: 8, // Increased space between options
   },
   optionRow: {
     flexDirection: 'row',
@@ -184,10 +187,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.1)',
     borderRadius: 50,
     position: 'relative',
-    height: 15,
+    height: 25,
   },
   progressBar: {
-    height: 15,
+    height: 25,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
@@ -221,6 +224,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 30,
     fontWeight: 'bold',
+  },
+  voteCount: {
+    position: 'absolute',
+    bottom: 0,
+    right: 16,
+    fontSize: 14,
+    color: colors.text,
   },
 });
 

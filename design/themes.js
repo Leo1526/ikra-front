@@ -6,7 +6,9 @@ export const colors = {
     secondary: '#FF6347',
     background: '#F4F6F8',
     secondaryBackground: "#E0E3E8",
-    text: "#222222"
+    text: "#222222",
+    primaryLight: '#5777A8',
+    listItem:"white"
 };
 
 export const text = {

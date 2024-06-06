@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Text, StyleSheet, FlatList, Clipboard } from 'react-native';
+import { Button, IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TransactionItem from '../../components/TransactionItem';
 import { commonStyle } from '../../design/style';
 import { colors } from '../../design/themes';
 import { urlDev, ikraAxios } from '../common';
 
-const FinanceScreen = ({navigation}) => {
+const FinanceScreen = ({ navigation }) => {
   const [cardBalance, setCardBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const [name, setName] = useState("");
+  const [studentId, setStudentId] = useState(11111111);
 
   useEffect(() => {
     ikraAxios({
       url: urlDev + '/wallets',
       onSuccess: (data) => {
         setCardBalance(data.body.balance);
+        setName(data.body.name);
+        setStudentId(data.body.studentId);
         console.log(data);
       },
       onError: (error) => {
@@ -23,11 +27,9 @@ const FinanceScreen = ({navigation}) => {
       },
     });
 
-
     ikraAxios({
       url: urlDev + '/transactions/byPage?page=0&size=5',
       onSuccess: (data) => {
-        //console.log(data);
         setTransactions(data.body);
         console.log(transactions);
       },
@@ -37,16 +39,29 @@ const FinanceScreen = ({navigation}) => {
     })
   }, []);
 
+  const copyToClipboard = () => {
+    Clipboard.setString(studentId.toString());
+    alert('Öğrenci numarası kopyalandı!');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.centerView}>
           <View style={styles.balanceContainer}>
-            <Text style={styles.balanceHeading}>Kart Bakiyesi</Text>
+            <Text style={styles.userName}>{name}</Text>
+            <View style={styles.studentIdContainer}>
+              <Text style={styles.studentId}>{studentId}</Text>
+              <IconButton
+                icon="content-copy"
+                size={20}
+                onPress={copyToClipboard}
+                style={styles.copyButton}
+              />
+            </View>
             <View style={styles.balanceAmountContainer}>
-              <Text style={styles.currencySymbol}>₺</Text>
-              <Text style={styles.balanceAmount}>{cardBalance}</Text>
+              <Text style={styles.balanceHeading}>Bakiye</Text>
+              <Text style={styles.balanceAmount}>{cardBalance} ₺</Text>
             </View>
           </View>
         </View>
@@ -104,7 +119,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   centerView: {
     alignItems: 'center',
@@ -112,31 +127,44 @@ const styles = StyleSheet.create({
   },
   balanceContainer: {
     backgroundColor: colors.background,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    alignItems: 'center',
-    width: '60%'
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    padding: 20,
+    width: '90%',
+    elevation: 5,
   },
-  balanceHeading: {
-    fontSize: 20,
-    fontWeight: 'thin',
+  userName: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: colors.text,
+    marginBottom: 10,
+  },
+  studentIdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  studentId: {
+    fontSize: 20,
+    color: colors.text,
+    marginRight: 10,
+  },
+  copyButton: {
+    marginLeft: 10,
   },
   balanceAmountContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginTop: 8,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
-  currencySymbol: {
-    fontSize: 24,
-    fontWeight: 'thin',
+  balanceHeading: {
+    fontSize: 18,
     color: colors.text,
+    marginBottom: 5,
   },
   balanceAmount: {
-    fontSize: 36,
-    fontWeight: 'thin',
+    fontSize: 30,
+    fontWeight: 'bold',
     color: colors.text,
   },
   transactionsContainer: {
@@ -145,7 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
-    justifyContent: 'center', // Center content vertically
+    justifyContent: 'center',
   },
   transactionsHeading: {
     fontSize: 20,
@@ -162,16 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.text,
   },
-  transaction: {
-    backgroundColor: colors.text,
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  transactionText: {
-    fontSize: 16,
-    color: colors.background,
-  },
   button: {
     backgroundColor: colors.secondary,
     width: '60%',
@@ -179,17 +197,17 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.text,
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 16,
   },
   link: {
-    color: colors.secondary,
+    color: '#007AFF', // iOS sistem mavisi rengi
     fontSize: 18,
     fontWeight: 'bold',
   },
   rightEnd: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   }
 });
 

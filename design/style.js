@@ -10,8 +10,32 @@ export const commonStyle = {
     borderTopWidth: 0,
     letterSpacing: 2,
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+  },
+  modalHeading: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalInput: {
+    marginBottom: 16,
+    backgroundColor:colors.background
+  },
   mainContainer: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor:colors.background,
+    paddingHorizontal: 10,
+    padding:10
   },  
   primaryButton: {
     width: '100%',
@@ -38,7 +62,7 @@ export const commonStyle = {
     colors: colors.primary,
     fontWeight: '500',
     borderColor: colors.primary,
-    borderWidth: 1,
+    borderWidth: 1
   },
   secondaryButtonLabel: {
     color: colors.primary,

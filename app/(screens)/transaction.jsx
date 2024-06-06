@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Image, StyleSheet, Platform, KeyboardAvoidingView, Text, Alert, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput, Button, Modal, List, Checkbox } from 'react-native-paper'; // Modal ve List ekledik
-import { colors, fonts, text} from '../../design/themes'; // Gerekli renkler ve yazı tipleri
+import { colors, fonts, text } from '../../design/themes'; // Gerekli renkler ve yazı tipleri
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as commonStyles from '../../design/style';
 import { ikraAxios } from '../common';
 import { urlDev, url } from '../common';
+import { commonStyle } from '../../design/style';
+
+const CheckboxWithLabel = ({ label, status, onPress }) => {
+  return (
+    <View style={styles.checkboxContainer}>
+      <Text style={styles.checkboxLabel}>{label}</Text>
+      <Checkbox.Android
+        status={status}
+        onPress={onPress}
+      />
+    </View>
+  );
+};
 
 const TransactionPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
@@ -18,7 +31,6 @@ const TransactionPage = () => {
   const [sendToRecipients, setSendToRecipients] = useState(false); // Kayıtlı alıcılara gönder seçeneği
   const [fetchedName, setFetchedName] = useState("");
   const [recipients, setRecipients] = useState([]);
-  
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -51,7 +63,7 @@ const TransactionPage = () => {
 
   const fetchRecipientName = async () => {
     console.log("onedit");
-    if(accountNumber == ""){
+    if (accountNumber == "") {
       setRecipientDisplayName("");
       setRecipientName("");
       return;
@@ -61,6 +73,7 @@ const TransactionPage = () => {
     await ikraAxios({
       url: urlDev + '/users/nameByStudentId?studentId=' + accountNumber,
       onSuccess: (data) => {
+        console.log(data.body);
         const usersName = `${data.body.firstName} ${data.body.lastName}`;
         const maskedName = nameMasker(usersName);
         setRecipientDisplayName(maskedName);
@@ -72,23 +85,19 @@ const TransactionPage = () => {
     });
 
     console.log("request sonrası");
-  
   };
 
   const handleSendMoney = async () => {
-    if(accountNumber == ""){
+    if (accountNumber == "") {
       Alert.alert("Hata", "Lütfen hesap numarasını giriniz.");
       return;
-    }
-    else if (amount == "") {
+    } else if (amount == "") {
       Alert.alert("Hata", "Lütfen yollamak istediğiniz miktarı giriniz.");
       return;
-    }
-    else if (parseFloat(amount) <= 0) {
+    } else if (parseFloat(amount) <= 0) {
       Alert.alert("Hata", "Lütfen sıfırdan büyük bir miktar giriniz.");
       return;
     }
-
 
     if (enteredName.toLowerCase() === recipientName.toLowerCase()) {
       makeTxRequest();
@@ -102,21 +111,19 @@ const TransactionPage = () => {
       url: urlDev + '/transactions',
       method: 'POST',
       data: {
-        "receiver" : accountNumber,
-        "amount" : amount,
-        "description" : description,
-        "txType" : "WITH_STUDENT_NO",
+        "receiver": accountNumber,
+        "amount": amount,
+        "description": description,
+        "txType": "WITH_STUDENT_NO",
         "saveUser": sendToRecipients
       },
       onSuccess: (data) => {
         console.log(data);
-        if (data.status == "ERROR"){
+        if (data.status == "ERROR") {
           Alert.alert("Bakiye yetersiz!");
         } else {
           Alert.alert("Para gönderme işlemi başarılı!");
         }
-        
-        
       },
       onError: (error) => {
         console.error('Error executing transaction: ', error);
@@ -143,108 +150,105 @@ const TransactionPage = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.safeArea}
-    >
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <Image
-            source={require('../../assets/images/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.appName}>Uygulama Adı</Text>
-
-          {/* Kayıtlı alıcıları göstermek için buton */}
-          <Button
-        mode="outlined"
-        onPress={getSavedUsers}
-        style={styles.savedReceiversButton}
-        contentStyle={styles.buttonContent} // İçerik stilini belirtmek için contentStyle kullanıyoruz
-        labelStyle={styles.buttonLabel} // Etiketin stilini belirtmek için labelStyle kullanıyoruz
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.safeArea}
       >
-        Kayıtlı Alıcıları Göster
-      </Button>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+
+            {/* Kayıtlı alıcıları göstermek için buton */}
+            <Button
+              mode="outlined"
+              onPress={getSavedUsers}
+              style={commonStyle.secondaryButton}
+              contentStyle={styles.buttonContent} // İçerik stilini belirtmek için contentStyle kullanıyoruz
+              labelStyle={commonStyle.secondaryButtonLabel} // Etiketin stilini belirtmek için labelStyle kullanıyoruz
+            >
+              Kayıtlı Alıcıları Göster
+            </Button>
+
+            <TextInput
+              label="Öğrenci Numarası"
+              value={accountNumber}
+              onChangeText={(text) => {
+                const filteredText = text.replace(/[^0-9]/g, '');
+                setAccountNumber(filteredText);
+              }}
+              style={styles.input}
+              keyboardType="numeric"
+              onEndEditing={fetchRecipientName}
+            />
+            {recipientDisplayName ? (
+              <>
+                <Text style={styles.infoText}>Alıcı: {recipientDisplayName}</Text>
+                <TextInput
+                  label="Alıcı Adını Doğrula"
+                  value={enteredName}
+                  onChangeText={(text) => {
+                    setEnteredName(text);
+                  }}
+                  style={styles.input}
+                />
+              </>
+            ) : null}
+            <TextInput
+              label="Gönderilecek Miktar"
+              value={amount}
+              onChangeText={(text) => {
+                const filteredText = text.replace(/[^0-9]/g, '');
+                setAmount(filteredText);
+              }}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+            <TextInput
+              label="Açıklama"
+              value={description}
+              onChangeText={setDescription}
+              style={styles.input}
+              maxLength={50}
+              multiline
+              numberOfLines={2}
+              right={<TextInput.Affix text={`${description.length}/50`} />}
+            />
+
+            <CheckboxWithLabel
+              label="Kayıtlı alıcılara kaydet"
+              status={sendToRecipients ? 'checked' : 'unchecked'}
+              onPress={() => setSendToRecipients(!sendToRecipients)}
+            />
+
+            <Button mode="contained" onPress={handleSendMoney} style={commonStyle.secondaryButton} labelStyle={commonStyle.secondaryButtonLabel}>
+              Para Gönder
+            </Button>
 
 
-          <TextInput
-            label="Öğrenci Numarası"
-            value={accountNumber}
-            onChangeText={(text) => {
-              const filteredText = text.replace(/[^0-9]/g, '');
-              setAccountNumber(filteredText);
-            }}
-            style={styles.input}
-            keyboardType="numeric"
-            onEndEditing={fetchRecipientName}
-          />
-          {recipientDisplayName ? (
-            <>
-              <Text style={styles.infoText}>Alıcı: {recipientDisplayName}</Text>
-              <TextInput
-                label="Alıcı Adını Doğrula"
-                value={enteredName}
-                onChangeText={(text) => {
-                  setEnteredName(text);
-                }}
-                style={styles.input}
-              />
-            </>
-          ) : null}
-          <TextInput
-            label="Gönderilecek Miktar"
-            value={amount}
-            onChangeText={(text) => {
-              const filteredText = text.replace(/[^0-9]/g, '');
-              setAmount(filteredText);
-            }}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <TextInput
-            label="Açıklama"
-            value={description}
-            onChangeText={setDescription}
-            style={styles.input}
-            maxLength={50}
-            multiline
-            numberOfLines={2}
-            right={<TextInput.Affix text={`${description.length}/50`} />}
-          />
 
-          <Checkbox.Item
-            label="Kayıtlı alıcılara kaydet"
-            status={sendToRecipients ? 'checked' : 'unchecked'}
-            onPress={() => setSendToRecipients(!sendToRecipients)}
-            style={styles.checkbox}
-            labelStyle={styles.checkboxLabel}
-          />
+            {/* Modal */}
+            <Modal style={{ height: '65%' }} visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+              <View style={styles.modalContent}>
+                <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
+                <ScrollView style={{ height: '100%' }}>
+                  <List.Section>
+                    {recipients.map((recipient) => (
+                      <TouchableOpacity key={recipient.studentId} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
+                        <List.Item title={`${recipient.studentId} - ${recipient.name}`} />
+                      </TouchableOpacity>
+                    ))}
+                  </List.Section>
+                </ScrollView>
+              </View>
+            </Modal>
 
-          <Button mode="contained" onPress={handleSendMoney} style={commonStyles.primaryButton}>
-            Para Gönder
-          </Button>
-
-
-
-          {/* Modal */}
-          <Modal style={{ height: '65%' }} visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
-          <View style={styles.modalContent}>
-          <Text style={styles.subheader}>Kayıtlı Alıcılar</Text>
-            <ScrollView style={{ height: '100%' }}>
-              <List.Section>
-                {recipients.map((recipient) => (
-                  <TouchableOpacity key={recipient.studentId} onPress={() => selectRecipient(recipient)} style={styles.touchable}>
-                    <List.Item title={`${recipient.studentId} - ${recipient.name}`} />
-                  </TouchableOpacity>
-                ))}
-              </List.Section>
-            </ScrollView>
           </View>
-        </Modal>
-        </View>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
@@ -252,7 +256,7 @@ const TransactionPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 16,
     backgroundColor: colors.background, // SignIn'den alınan genel arka plan rengi
@@ -270,7 +274,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 4,
   },
-
   subheader: {
     marginTop: 0,
     fontSize: 18,
@@ -279,10 +282,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: "center"
   },
-
   input: {
     width: '90%',
-    marginBottom: 16,
+    marginBottom: 24, // Artırılmış boşluk
     backgroundColor: colors.background, // SignIn'den alınan giriş alanı rengi
     borderRadius: 8,
   },
@@ -299,6 +301,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     height: 100,
+    marginTop: 0, // Üst boşluğu kaldırmak için
   },
   appName: {
     fontSize: 24,
@@ -319,7 +322,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondaryBackground,
     margin: 40,
     borderRadius: 10,
-
   },
   buttonContent: {
     width: '100%', // İçerik genişliğini buton genişliğine eşitliyoruz
@@ -329,16 +331,16 @@ const styles = StyleSheet.create({
     color: text.secondaryDark,
     fontWeight: "normal"
   },
-  checkbox: {
-    alignSelf: 'flex-start',
-    marginLeft: '5%',
-
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   checkboxLabel: {
     fontSize: 16,
     color: colors.text,
+    marginRight: 8, // Checkbox ile yazı arasına boşluk ekler
   },
-
 });
 
 export default TransactionPage;

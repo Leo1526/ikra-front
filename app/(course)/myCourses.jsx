@@ -5,7 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ikraAxios, urlDev } from '../common';
 import { commonStyle } from '../../design/style';
-const MyCoursesScreen = ({navigate}) => {
+import { Button, IconButton } from 'react-native-paper';
+import { colors } from '../../design/themes';
+const MyCoursesScreen = ({ navigate }) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -45,19 +47,15 @@ const MyCoursesScreen = ({navigate}) => {
   };
 
   const addSelectedCourse = async (course) => {
-    const newCourses = [course];
-    const updatedCourses = [...myCourses, ...newCourses];
-
     await ikraAxios({
       url: urlDev + '/savedCourse?courseId=' + course.id,
       method: 'POST',
-      onSuccess: (data) => {},
+      onSuccess: (data) => { fetchMyCourses(); console.log(myCourses) },
       onError: (error) => {
         console.error('Error adding saved course:', error);
       },
     });
 
-    setMyCourses(updatedCourses);
     setModalVisible(false);
   };
 
@@ -66,22 +64,24 @@ const MyCoursesScreen = ({navigate}) => {
       "Ders Silinecek",
       "Emin misiniz?",
       [
-        { text: "Hayır", onPress: () => {}, style: "cancel" },
-        { text: "Evet", onPress: async () => {
-          const updatedCourses = myCourses.filter(item => item.courseCode !== course.courseCode);
-          setMyCourses(updatedCourses);
-        }}
+        { text: "Hayır", onPress: () => { return}, style: "cancel" },
+        {
+          text: "Evet", onPress: async () => {
+
+            ikraAxios({
+              url: urlDev + '/savedCourse?courseId=' + course.id,
+              method: 'DELETE',
+              onSuccess: (data) => { fetchMyCourses()},
+              onError: (error) => {
+                console.error('Error adding saved course:', error);
+              },
+            });
+          }
+        }
       ]
     );
 
-    ikraAxios({
-      url: urlDev + '/savedCourse?courseId=' + course.id,
-      method: 'DELETE',
-      onSuccess: (data) => {},
-      onError: (error) => {
-        console.error('Error adding saved course:', error);
-      },
-    });
+
   };
 
   const handleCloseModal = () => {
@@ -96,7 +96,7 @@ const MyCoursesScreen = ({navigate}) => {
 
   const handleSearch = () => {
     filteredCourses.forEach((element) => console.log(element.courseCode));
-    const filteredList = allCourses.filter(course => 
+    const filteredList = allCourses.filter(course =>
       course.courseCode.toLowerCase().includes(searchText.toLowerCase())
     );
 
@@ -110,67 +110,75 @@ const MyCoursesScreen = ({navigate}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-<View style = {commonStyle.mainContainer}>
+      <View style={commonStyle.mainContainer}>
 
-      <Text style={styles.heading}>Derslerim</Text>
 
-      <TouchableOpacity style={styles.addButton} onPress={handleOpenModal}>
-        <Text style={styles.buttonText}>Ders Ekle</Text>
-      </TouchableOpacity>
 
-      <FlatList
-        data={myCourses}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.courseContainer} onPress={() => navigateToAttendance(item)}>
-            <Text style={styles.courseText}><Text style={styles.courseCode}>{item.courseCode}</Text>{'\n'}{item.name}</Text>
-            <TouchableOpacity style={styles.removeButton} onPress={() => removeCourse(item)}>
-              <Text style={styles.buttonText}>Sil</Text>
+
+        <FlatList
+          data={myCourses}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.courseContainer} onPress={() => navigateToAttendance(item)}>
+              <Text style={styles.courseText}>
+                <Text style={styles.courseCode}>{item.courseCode}</Text>
+                {'\n'}{item.name}
+              </Text>
+              <IconButton
+                icon="trash-can"
+                size={24} // İstediğiniz boyutu burada belirleyin
+                onPress={() => removeCourse(item)}
+                style={styles.removeButton}
+              />
             </TouchableOpacity>
-          </TouchableOpacity>
-        )}
-        keyExtractor={item => item.courseCode}
-        ListEmptyComponent={<Text style={styles.emptyText}>Henüz ders eklemediniz.</Text>}
-      />
+          )}
+          keyExtractor={item => item.courseCode}
+          ListEmptyComponent={<Text style={styles.emptyText}>Henüz ders eklemediniz.</Text>}
+        />
+        <View style={{ flex: 1, position: "absolute", bottom: 15, width: "90%", alignSelf: "center" }}>
+          <Button style={commonStyle.secondaryButton} labelStyle={commonStyle.secondaryButtonLabel} onPress={handleOpenModal}>
+            Ders Ekle
+          </Button>
+        </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleCloseModal}
-      >
-        <TouchableWithoutFeedback onPress={handleCloseModal}>
-          <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback>
-              <View style={styles.modalContent}>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.searchBar}
-                    placeholder="Ders Kodu Ara"
-                    value={searchText}
-                    onChangeText={setSearchText}
-                  />
-                  <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-                    <Icon name="search" size={20} color="#000" />
-                  </TouchableOpacity>
-                </View>
-                <FlatList
-                  data={filteredCourses}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.modalCourseContainer} onPress={() => addSelectedCourse(item)}>
-                      <View>
-                        <Text style={styles.modalCourseCode}>{item.courseCode}</Text>
-                        <Text style={styles.modalCourseName}>{item.name}</Text>
-                      </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={handleCloseModal}
+        >
+          <TouchableWithoutFeedback onPress={handleCloseModal}>
+            <View style={styles.modalContainer}>
+              <TouchableWithoutFeedback>
+                <View style={styles.modalContent}>
+                  <View style={styles.searchContainer}>
+                    <TextInput
+                      style={styles.searchBar}
+                      placeholder="Ders Kodu Ara"
+                      value={searchText}
+                      onChangeText={setSearchText}
+                    />
+                    <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+                      <Icon name="search" size={20} color="#000" />
                     </TouchableOpacity>
-                  )}
-                  keyExtractor={item => item.courseCode}
-                  ItemSeparatorComponent={() => <View style={styles.separator} />}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+                  </View>
+                  <FlatList
+                    data={filteredCourses}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity style={styles.modalCourseContainer} onPress={() => addSelectedCourse(item)}>
+                        <View>
+                          <Text style={styles.modalCourseCode}>{item.courseCode}</Text>
+                          <Text style={styles.modalCourseName}>{item.name}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={item => item.courseCode}
+                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -193,9 +201,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 15,
     marginVertical: 5,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    elevation: 2,
+    backgroundColor: colors.listItem,
+    borderRadius: 0,
+    elevation: 5,
   },
   modalCourseContainer: {
     flexDirection: 'row',
@@ -218,12 +226,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   removeButton: {
-    padding: 10,
-    backgroundColor: '#f44336',
-    borderRadius: 5,
+    padding: 3,
   },
   buttonText: {
-    color: '#fff',
+    color: colors,
     fontWeight: 'bold',
   },
   emptyText: {
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 10,
   },
-  
+
   modalCourseCode: {
     fontSize: 16,
     fontWeight: 'bold',

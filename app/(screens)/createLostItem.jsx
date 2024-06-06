@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Card, Button, Title } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNPickerSelect from 'react-native-picker-select';
@@ -9,7 +9,7 @@ import { colors, fonts } from '../../design/themes'; // Gerekli renkler ve yazı
 import { commonStyle } from '../../design/style';
 import { ikraAxios, urlDev } from '../common';
 
-const CreateLostPage = ({navigation}) => {
+const CreateLostPage = ({ navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const [description, setDescription] = useState('');
   const [idType, setIdType] = useState('');
@@ -29,15 +29,23 @@ const CreateLostPage = ({navigation}) => {
 
     if (!pickerResult.canceled) {
       const myUri = pickerResult.assets[0].uri; // assets dizisinden URI alınır
-      console.log("file address: ", myUri);
       setImageUri(myUri);
     }
   };
 
   const handleSubmit = () => {
+    if (!description || !imageUri || !idType) {
+      alert("Lütfen tüm alanları doldurun!");
+      return;
+    }
+    if(idType === "ID_KNOWN" && !idNumber){
+      alert("Lütfen kimlik bilgisi alanını doldurun!");
+      return;
+    }
+
     Alert.alert(
       "Onay",
-      "Kayıp eşya bildirim bedeli 5 TL'dir. Onaylıyor musunuz?",
+      "Kayıp eşya oluşturulacak. Onaylıyor musunuz?",
       [
         {
           text: "İptal",
@@ -72,7 +80,6 @@ const CreateLostPage = ({navigation}) => {
           'Content-Type': 'multipart/form-data',
         },
         onSuccess: (data) => {
-          console.log("Kayıp eşya bildirildi:", data.body);
           alert("Kayıp eşya bildirildi!");
           setDescription("");
           setIdType("");
@@ -90,58 +97,68 @@ const CreateLostPage = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Title style={styles.title}>Kayıp Eşya Bildir</Title>
-        {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode='contain' />}
-        <TouchableOpacity style={styles.photoButton} onPress={handleChoosePhoto}>
-          <MaterialIcons name="camera-alt" size={24} color={colors.primary} />
-          <Text style={styles.photoButtonText}>Fotoğraf Yükle</Text>
-        </TouchableOpacity>
-        <TextInput
-          label="Eşya Tanımı"
-          value={description}
-          onChangeText={setDescription}
-          mode="outlined"
-          style={[commonStyle.input, styles.textInput]}
-          theme={{ colors: { primary: colors.primary } }}
-          labelStyle={styles.textInputLabel}
-        />
-        <View style={styles.spacer} />
-        <RNPickerSelect
-          selectedValue={idType}
-          onValueChange={setIdType}
-          items={[
-            { label: "ID", value: "ID_KNOWN" },
-            { label: "Diğer", value: "ID_NOT_KNOWN" },
-          ]}
-          style={pickerSelectStyles}
-          placeholder={{
-            label: 'Bir kategori seçin',
-            value: null,
-          }}
-        />
-        {idType === "ID_KNOWN" && (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+  >
+    <SafeAreaView style={[styles.safeArea,]}>
+      <View style={[commonStyle.mainContainer,]}>
+
+
+
+        <ScrollView contentContainerStyle={[styles.scrollContainer,]}>
+          <Title style={styles.title}>Kayıp Eşya Bildir</Title>
+          {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode='contain' />}
+          <TouchableOpacity style={styles.photoButton} onPress={handleChoosePhoto}>
+            <MaterialIcons name="camera-alt" size={24} color={colors.primary} />
+            <Text style={styles.photoButtonText}>Fotoğraf Yükle</Text>
+          </TouchableOpacity>
           <TextInput
-            label="Kimlik Bilgisi"
-            value={idNumber}
-            onChangeText={setIdNumber}
+            label="Eşya Tanımı"
+            value={description}
+            onChangeText={setDescription}
             mode="outlined"
-            style={commonStyle.input}
+            style={[commonStyle.input, styles.textInput]}
             theme={{ colors: { primary: colors.primary } }}
+            labelStyle={styles.textInputLabel}
           />
-        )}
-        <Button
-          mode="outlined"
-          onPress={handleSubmit}
-          color={colors.primary}
-          style={styles.submitButton}
-          labelStyle={styles.buttonText}
-        >
-          Bildir
-        </Button>
-      </ScrollView>
+          <View style={styles.spacer} />
+          <RNPickerSelect
+            selectedValue={idType}
+            onValueChange={setIdType}
+            items={[
+              { label: "ID", value: "ID_KNOWN" },
+              { label: "Diğer", value: "ID_NOT_KNOWN" },
+            ]}
+            style={pickerSelectStyles}
+            placeholder={{
+              label: 'Bir kategori seçin',
+              value: null,
+            }}
+          />
+          {idType === "ID_KNOWN" && (
+            <TextInput
+              label="Kimlik Bilgisi"
+              value={idNumber}
+              onChangeText={setIdNumber}
+              mode="outlined"
+              style={commonStyle.input}
+              theme={{ colors: { primary: colors.primary } }}
+            />
+          )}
+          <Button
+            mode="outlined"
+            onPress={handleSubmit}
+            style={commonStyle.secondaryButton}
+            labelStyle={[commonStyle.secondaryButtonLabel, {fontSize:16}]}
+          >
+            Bildir
+          </Button>
+        </ScrollView>
+      </View>
     </SafeAreaView>
+    </KeyboardAvoidingView>
+
   );
 };
 
@@ -151,8 +168,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   container: {
+    flex: 1,
+  },
+  scrollContainer: {
     flexGrow: 1,
-    padding: 16,
+    
   },
   title: {
     fontSize: 24,
@@ -195,30 +215,8 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     paddingHorizontal: 10,
   },
-  pickerContainer: {
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  pickerLabel: {
-    fontSize: 18,
-    color: colors.text,
-    marginBottom: 8,
-  },
   picker: {
     height: 50,
-    color: colors.text,
-    fontSize: 18,
-  },
-  submitButton: {
-    marginTop: 20,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  buttonText: {
     color: colors.text,
     fontSize: 18,
   },

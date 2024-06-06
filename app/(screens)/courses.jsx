@@ -6,7 +6,7 @@ import { colors } from '../../design/themes';  // Varsayılan renkleriniz burada
 import { ikraAxios, url, urlDev } from '../common';
 import { commonStyle } from '../../design/style';
 
-const GridItemsPage = ({navigation}) => {
+const GridItemsPage = ({ navigation }) => {
 
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filteredKod, setFilteredKod] = useState('');
@@ -81,54 +81,53 @@ const GridItemsPage = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-<View style = {commonStyle.mainContainer}>
-
-      <View style={styles.container}>
-        <Text style={styles.heading}>Tüm İşlemler</Text>
-        <Button
-          icon="filter"
-          mode="contained"
-          onPress={() => setFilterModalVisible(true)}
-          style={styles.filterButton}
-        >
-          Filtrele
-        </Button>
-      </View>
-      <FlatList
-        data={filteredItems}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        numColumns={2}  // İki sütunlu bir grid yapısı
-        columnWrapperStyle={styles.row}  // Satırları düzgün hizalamak için
-        contentContainerStyle={styles.listContentContainer}  // Liste içeriğinin stili
-      />
-      <Modal
-        visible={filterModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setFilterModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalHeading}>Kod'a Göre Filtrele</Text>
-            <TextInput
-              label="Kod Girin"
-              value={filteredKod}
-              onChangeText={setFilteredKod}
-              style={styles.input}
-              mode="outlined"
-              theme={{ colors: { primary: colors.primary } }}
-            />
-            <Button
-              mode="contained"
-              onPress={() => handleFilter(filteredKod)}
-              style={styles.modalButton}
-            >
-              Filtrele
-            </Button>
-          </View>
+      <View style={commonStyle.mainContainer}>
+        <View style={styles.container}>
+          <Text style={styles.heading}>Tüm Dersler</Text>
+          <Button
+            icon="filter"
+            mode="contained"
+            onPress={() => setFilterModalVisible(true)}
+            style={styles.filterButton}
+          >
+            Filtrele
+          </Button>
         </View>
-      </Modal>
+        <FlatList
+          data={filteredItems}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          numColumns={2}  // İki sütunlu bir grid yapısı
+          columnWrapperStyle={styles.row}  // Satırları düzgün hizalamak için
+          contentContainerStyle={styles.listContentContainer}  // Liste içeriğinin stili
+        />
+        <Modal
+          visible={filterModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setFilterModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeading}>Kod'a Göre Filtrele</Text>
+              <TextInput
+                label="Kod Girin"
+                value={filteredKod}
+                onChangeText={setFilteredKod}
+                style={styles.input}
+                mode="outlined"
+                theme={{ colors: { primary: colors.primary } }}
+              />
+              <Button
+                mode="contained"
+                onPress={() => handleFilter(filteredKod)}
+                style={styles.modalButton}
+              >
+                Filtrele
+              </Button>
+            </View>
+          </View>
+        </Modal>
       </View>
 
     </SafeAreaView>
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 1,
   },
   itemTitle: {
     color: colors.textPrimary,  // Varsayılan yazı rengi
