@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../design/themes";
 import { urlDev, ikraAxios } from "../common";
+import { commonStyle } from "../../design/style";
 
 const PAGE_SIZE = 5;
 
@@ -57,26 +52,50 @@ const InternshipScreen = () => {
     <View style={styles.internshipContainer}>
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: `data:${item.jobAdvertImage.mimeType};base64,${item.jobAdvertImage.bytes}` }}
+          source={{
+            uri: `data:${item.jobAdvertImage.mimeType};base64,${item.jobAdvertImage.bytes}`,
+          }}
           style={styles.requestImage}
           resizeMode="contain"
         />
       </View>
       <View>
-        <Text style={styles.companyName}>{item.companyName}</Text>
-        <Text style={styles.internshipTitle}>{item.name}</Text>
-        <Text style={styles.internshipDescription}>{item.description}</Text>
-        <Text style={styles.internshipDescription}>
-          <Text style={styles.labelStyle}>Website: </Text>
-          {item.companyWebsite}
+        <Text
+          style={[
+            commonStyle.textLabel,
+            {
+              fontSize: 20,
+              marginBottom: 15,
+              color: colors.secondary,
+              alignSelf: "center",
+            },
+          ]}
+        >
+          {item.companyName}
         </Text>
-        <Text style={styles.internshipDescription}>
-          <Text style={styles.labelStyle}>Başvuru linki: </Text>
-          {item.applicationLink}
+        <Text
+          style={[
+            commonStyle.textLabel,
+            {
+              fontSize: 16,
+              marginBottom: 10,
+            },
+          ]}
+        >
+          {item.name}
         </Text>
-        <Text style={styles.internshipDescription}>
-          <Text style={styles.labelStyle}>Son başvuru tarihi: </Text>
-          {item.applicationDeadline}
+        <Text style={[commonStyle.generalText, {marginBottom: 10}]}>{item.description}</Text>
+        <Text style={[{marginBottom: 10}]}>
+          <Text style={[commonStyle.textLabel, {fontSize: 14}]}>Website: </Text>
+          <Text style={[commonStyle.generalText]}>{item.companyWebsite}</Text>
+        </Text>
+        <Text style={[{marginBottom: 10}]}>
+          <Text style={[commonStyle.textLabel, {fontSize: 14}]}>Başvuru linki: </Text>
+          <Text style={[commonStyle.generalText]}>{item.applicationLink}</Text>
+        </Text>
+        <Text style={[{marginBottom: 10}]}>
+        <Text style={[commonStyle.textLabel, {fontSize: 14}]}>Son başvuru tarihi: </Text>
+        <Text style={[commonStyle.generalText]}>{item.applicationDeadline}</Text>
         </Text>
       </View>
     </View>
@@ -85,15 +104,14 @@ const InternshipScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.mainContainer}>
-
-      <FlatList
-        data={displayedInternships}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.list}
-        onEndReached={loadMoreInternships}
-        onEndReachedThreshold={0.1}
-      />
+        <FlatList
+          data={displayedInternships}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.list}
+          onEndReached={loadMoreInternships}
+          onEndReachedThreshold={0.1}
+        />
       </View>
     </SafeAreaView>
   );
@@ -122,30 +140,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     color: colors.secondary,
-    alignSelf: 'center',
-  },
-  internshipTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: colors.primary,
-  },
-  internshipDescription: {
-    fontSize: 14,
-    marginBottom: 10,
-    color: colors.text,
-  },
-  labelStyle: {
-    fontWeight: 'bold',
-    color: colors.primary, 
+    alignSelf: "center",
   },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
   },
   requestImage: {
     height: 200,
-    width: '100%',
+    width: "100%",
   },
 });
 

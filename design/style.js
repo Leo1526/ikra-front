@@ -85,4 +85,13 @@ export const commonStyle = {
     secondaryDark: '#555555',
     secondaryLight: '#CCCCCC',
   },
+  generalText:{
+    fontsize: 16,
+    color: colors.secondary
+  },
+  textLabel: {
+    fontSize: 16,
+    color: colors.primary,
+    fontWeight: "bold",
+  },
 };

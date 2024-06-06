@@ -117,15 +117,19 @@ const LostItemsPage = ({ navigation }) => {
         </View>
       )}
       <View style={styles.itemContent}>
-        <Text style={styles.itemDescription}>
-          <Text style={styles.descriptionLabel}>Açıklama: </Text>
-          {item.description}
+        <Text style={[{ marginVertical: 8, marginLeft: 8 }]}>
+          <Text style={[commonStyle.textLabel]}>Açıklama: </Text>
+          <Text style={[commonStyle.generalText, { fontSize: 16 }]}>
+            {item.description}
+          </Text>
         </Text>
         {item.lostAndFoundType === "ID_KNOWN" && (
-          <Text style={styles.itemDescription}>
-            <Text style={styles.descriptionLabel}>Kime ait: </Text>
+          <Text style={[{ marginVertical: 8, marginLeft: 8 }]}>
+          <Text style={[commonStyle.textLabel]}>Kime ait: </Text>
+          <Text style={[commonStyle.generalText, { fontSize: 16 }]}>
             {item.ownerInfo}
           </Text>
+        </Text>
         )}
       </View>
       <Button
@@ -296,18 +300,6 @@ const styles = StyleSheet.create({
   itemContent: {
     borderColor: colors.primary,
     padding: 10,
-  },
-  itemDescription: {
-    fontSize: 18,
-    marginBottom: 8,
-    marginLeft: 10,
-  },
-  descriptionLabel: {
-    fontSize: 16,
-    color: colors.primary,
-    marginTop: 4,
-    fontWeight: "bold",
-    marginLeft: 10,
   },
   modalOverlay: {
     flex: 1,
