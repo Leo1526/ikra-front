@@ -19,7 +19,6 @@ const CommunityDetails = () => {
   const size = 5;
 
   useEffect(() => {
-    YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
     const fetchCommunityDetails = async () => {
       try {
         await ikraAxios({

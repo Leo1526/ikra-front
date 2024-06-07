@@ -120,12 +120,11 @@ const AnnouncementHeader = ({navigation, title }) => {
 const AnnouncementStack = () => {
   return (
     <AnnStack.Navigator
-    initialRouteName='announcementsScreen'
+    // initialRouteName='announcementsScreen'
     screenOptions={{ headerShown: false}}
     >
       <AnnStack.Screen name='announcementsScreen' component={AnnouncementsScreen} />
       <AnnStack.Screen name='createAnnouncement' component={CreateAnnouncementScreen} />
-      <AnnStack.Screen name='announcementDetails' component={AnnouncementDetailsScreen}/>
     </AnnStack.Navigator>
   );
 };
@@ -231,6 +230,7 @@ const HomeStack = () => {
       <Stack.Screen name='lostItems' component={LostStack}/>
       <Stack.Screen name='requests' component={RequestStack}/>
       <Stack.Screen name='myCourses' component={AttStack}/>
+      <Stack.Screen name='announcementDetails' component={AnnouncementDetailsScreen}/>
       <Stack.Screen name='communityDetails' component={CommunityDetails}/>
       <Stack.Screen name='changePassword' component={ChangePasswordScreen}/> 
     </Stack.Navigator>
