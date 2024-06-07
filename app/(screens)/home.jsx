@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, RefreshControl,Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Card, Title, Paragraph, Button, IconButton } from 'react-native-paper';
-import { ikraAxios, urlDev, url } from '../common';
+import { ikraAxios, urlDev, url, formatBalance } from '../common';
 import Carousel from 'react-native-reanimated-carousel';
 import { colors, text } from '../../design/themes';
 import * as Clipboard from 'expo-clipboard';
@@ -110,7 +110,6 @@ const Home = ({ navigation }) => {
 
   const copyToClipboard = async () => {
     Clipboard.setString(studentId.toString());
-    alert('Öğrenci numarası kopyalandı!');
   };
   const [isDragging, setIsDragging] = useState(false);
   const renderItem = ({ item }) => (
@@ -174,7 +173,7 @@ const Home = ({ navigation }) => {
           <Text style={styles.balanceLabel}>Bakiye</Text>
           <View style={styles.bakiyeContainer}>
             <Text style={styles.currency}>₺</Text>
-            <Text style={styles.balance}>{balance}</Text>
+            <Text style={styles.balance}>{formatBalance(balance)}</Text>
           </View>
         </View>
         
@@ -247,10 +246,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf:  "center",
-    marginLeft:50,
-    marginRight:50,
-    height: '60%',
-    width: '80%',
+    height: '100%',
+    width: '100%',
     backgroundColor: '#D3D3D3',  // Açık gri arka plan rengi
   },
   emptyText: {
