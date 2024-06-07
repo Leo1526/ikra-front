@@ -47,22 +47,24 @@ const FinanceScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <View style={styles.centerView}>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.userName}>{name}</Text>
-            <View style={styles.studentIdContainer}>
-              <Text style={styles.studentId}>{studentId}</Text>
-              <IconButton
-                icon="content-copy"
-                size={20}
-                onPress={copyToClipboard}
-                style={styles.copyButton}
-              />
+
+        <View style={styles.balanceContainer}>
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.studentNo}>{studentId}</Text>
+            <Text style={styles.balanceLabel}>Bakiye</Text>
+            <View style={styles.bakiyeContainer}>
+              <Text style={styles.currency}>₺</Text>
+              <Text style={styles.balance}>{formatBalance(cardBalance)}</Text>
             </View>
-            <View style={styles.balanceAmountContainer}>
-              <Text style={styles.balanceHeading}>Bakiye</Text>
-              <Text style={styles.balanceAmount}>{formatBalance(cardBalance)} ₺</Text>
-            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button 
+              icon="share-variant" 
+              labelStyle={styles.buttonLabel} 
+              style={styles.button} 
+              onPress={copyToClipboard} 
+            >PAYLAŞ</Button>
           </View>
         </View>
 
@@ -126,49 +128,67 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   balanceContainer: {
-    backgroundColor: colors.background,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    padding: 20,
-    width: '90%',
-    elevation: 5,
-  },
-  userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 10,
-  },
-  studentIdContainer: {
+    margin: 15,
+    flex: 1,
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+    borderWidth: 2,
+    borderRadius: 10,
+    backgroundColor: colors.background,
+    borderColor: colors.primary,
   },
-  studentId: {
+  infoContainer: {
+    margin: 10,
+    flex: 18,
+  },
+  name: {
+    color: colors.primary, 
+    fontWeight: '400',
     fontSize: 20,
-    color: colors.text,
-    marginRight: 10,
   },
-  copyButton: {
-    marginLeft: 10,
+  studentNo: {
+    color: colors.secondary, 
+    fontSize: 15,
+    marginBottom: 24,
   },
-  balanceAmountContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
+  balanceLabel: {
+    color: colors.primary, 
+    fontSize: 14,
   },
-  balanceHeading: {
-    fontSize: 18,
-    color: colors.text,
-    marginBottom: 5,
+  balance: {
+    color: colors.primary, 
+    fontSize: 48,
   },
-  balanceAmount: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: colors.text,
+  bakiyeContainer: {
+    flexDirection: 'row',
+    color: colors.primary, 
+    alignItems: 'baseline', 
+  },
+  currency: {
+    color: colors.primary,
+    fontSize: 24, 
+  },
+  buttonContainer: {
+    flex: 10,
+    flexDirection: 'column', 
+    justifyContent: 'flex-start', 
+    alignItems: 'center', 
+    marginRight:15,
+  },
+  button: {
+    color: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 6,
+    marginVertical: 15,
+    alignSelf: 'stretch',
+  },
+  buttonLabel: {
+    color: colors.primary,
+    fontSize:14,
   },
   transactionsContainer: {
-    flex: 1,
+    flex: 2,
     backgroundColor: colors.background,
     borderRadius: 8,
     padding: 16,
@@ -189,10 +209,6 @@ const styles = StyleSheet.create({
   noTransactionsText: {
     fontSize: 18,
     color: colors.text,
-  },
-  button: {
-    backgroundColor: colors.secondary,
-    width: '60%',
   },
   buttonText: {
     color: colors.text,
