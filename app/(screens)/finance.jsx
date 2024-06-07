@@ -216,9 +216,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   link: {
-    color: '#007AFF', // iOS sistem mavisi rengi
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: colors.primary,
+    fontSize: 14,
+    textTransform: 'uppercase',
+    fontWeight: 'thin',
   },
   rightEnd: {
     flexDirection: 'row',

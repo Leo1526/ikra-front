@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, LogBox } from 'react-native';
 import { Link } from '@react-navigation/native';
 import {checkTokenExpiration} from './common'
 import App from '../App'
@@ -12,6 +12,7 @@ const Index = () => {
     const jwtToken = async () => {
       setJwtToken(checkTokenExpiration())
     }
+    LogBox.ignoreAllLogs();
   })
   return (
     <SafeAreaProvider style={styles.scontainer}>
