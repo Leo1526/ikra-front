@@ -183,16 +183,34 @@ const CommunityDetails = () => {
         )}
       </View>
       )}
+      {/* <View style={styles.addAnnouncementView}>
+        <Button 
+          style={styles.addAnnouncementButton}
+          labelStyle={styles.addAnnouncementLabel}>
+          +
+        </Button>
+      </View> */}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingTop:2,
-  },
+  // addAnnouncementView: {
+  //   height: 100,
+  //   width: 100,
+  //   position: 'absolute',
+  //   right:20,
+  //   bottom:20,
+  // },
+  // addAnnouncementButton: {
+  //   borderRadius: 100,
+  //   backgroundColor: colors.primaryDark,
+  // },
+  // scrollContainer: {
+  //   flexGrow: 1,
+  //   alignItems: 'center',
+  //   paddingTop:2,
+  // },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',

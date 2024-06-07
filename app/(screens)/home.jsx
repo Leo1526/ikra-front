@@ -105,7 +105,7 @@ const Home = ({ navigation }) => {
 
 
   const handleAnnouncementClick = (id) => {
-    console.log(id)
+    navigation.navigate('announcementDetails', {id});
   };
 
   const copyToClipboard = async () => {
