@@ -8,7 +8,7 @@ import {colors} from '../../design/themes'
 const Settings = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.upperRow}>
         <Button
           icon={({ size, color }) => (
             <Icon name="lock-outline" size={24} color={colors.primaryDark} /> // Adjust the size value here
@@ -42,13 +42,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: colors.secondaryBackground,
   },
   footer: {
     width: "100%",
     flex:1, 
     justifyContent: 'flex-end'
   },
-  header: {
+  upperRow: {
     width: "75%",
     flex:1, 
     justifyContent: 'flex-start'

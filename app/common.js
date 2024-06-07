@@ -14,6 +14,26 @@ export const errorInput = (ref) => {
   }
 };
 
+export const formatBalance = (value) => {
+  console.log(value)
+  if (value === null || value === undefined) {
+    return '';
+  }
+  value = value.toString()
+  let dotIndex = value.indexOf(".")
+  if (dotIndex != -1) {
+    console.log(dotIndex)
+    let kurus = value.slice(dotIndex + 1)
+    if (kurus.length == 1) {
+      value = value + "0";
+    }
+    if (kurus.length > 2) {
+      value = value.slice(0, dotIndex + 3)
+    } 
+  }
+  value = value.replaceAll(".",",")
+  return value;
+}
 
 const defaultHandleSuccess = (data) => {
   console.log('Data fetched successfully:', data);

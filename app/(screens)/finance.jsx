@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import TransactionItem from '../../components/TransactionItem';
 import { commonStyle } from '../../design/style';
 import { colors } from '../../design/themes';
-import { urlDev, ikraAxios } from '../common';
+import { urlDev, ikraAxios, formatBalance } from '../common';
 
 const FinanceScreen = ({ navigation }) => {
   const [cardBalance, setCardBalance] = useState(0);
@@ -61,7 +61,7 @@ const FinanceScreen = ({ navigation }) => {
             </View>
             <View style={styles.balanceAmountContainer}>
               <Text style={styles.balanceHeading}>Bakiye</Text>
-              <Text style={styles.balanceAmount}>{cardBalance} ₺</Text>
+              <Text style={styles.balanceAmount}>{formatBalance(cardBalance)} ₺</Text>
             </View>
           </View>
         </View>
